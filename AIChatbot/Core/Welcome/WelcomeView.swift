@@ -8,20 +8,52 @@
 import SwiftUI
 
 struct WelcomeView: View {
+    @State var imageName: String = Constants.randomImage
+    
     var body: some View {
         NavigationStack {
             VStack {
-                Text("Welcome!")
-                    .frame(maxHeight: .infinity)
+                ImageLoaderView(urlString: imageName)
+                    .ignoresSafeArea()
                 
-                NavigationLink {
-                    OnboardingCompletedView()
-                } label: {
-                    Text("Get Started")
-                        .callToActionButton()
+                VStack {
+                    Text("AI Chat 🤖")
+                        .font(.largeTitle)
+                        .fontWeight(.semibold)
+                    
+                    Text("Twitter: @ devsmond")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.top)
+                
+                VStack(spacing: 8) {
+                    NavigationLink {
+                        OnboardingCompletedView()
+                    } label: {
+                        Text("Get Started")
+                            .callToActionButton()
+                    }
+                    
+                    Text("Already have an account? Sign in.")
+                        .underline()
+                        .padding(8)
+                        .tappableBackground()
+                }
+                .padding()
+                
+                HStack(spacing: 8) {
+                    Link(destination: URL(string: Constants.termsOfServiceURL)!) {
+                        Text("Terms of Service")
+                    }
+                    Circle()
+                        .fill(.accent)
+                        .frame(width: 4)
+                    Link(destination: URL(string: Constants.privacyPolicyURL)!) {
+                        Text("Privacy Policy")
+                    }
                 }
             }
-            .padding()
         }
     }
 }
