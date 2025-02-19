@@ -32,7 +32,7 @@ struct OnboardingIntroView: View {
             ctaButton
         }
         .font(.title3)
-        
+        .toolbar(.hidden, for: .navigationBar)
     }
     
     private var ctaButton: some View  {
