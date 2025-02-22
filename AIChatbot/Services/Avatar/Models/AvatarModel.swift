@@ -10,20 +10,20 @@ import Foundation
 struct AvatarModel: Hashable {
     let avatarID: String
     let name: String?
-    let characterOption: CharacterOption?
-    let characterAction: CharacterAction?
-    let characterLocation: CharacterLocation?
-    let profileImageName: String?
+    let characterOption: CharacterOption
+    let characterAction: CharacterAction
+    let characterLocation: CharacterLocation
+    let profileImageName: String
     let authorID: String?
     let dateCreated: Date?
 
     init(
         avatarID: String,
         name: String? = nil,
-        characterOption: CharacterOption? = nil,
-        characterAction: CharacterAction? = nil,
-        characterLocation: CharacterLocation? = nil,
-        profileImageName: String? = nil,
+        characterOption: CharacterOption,
+        characterAction: CharacterAction,
+        characterLocation: CharacterLocation,
+        profileImageName: String,
         authorID: String? = nil,
         dateCreated: Date? = nil
     ) {
@@ -38,7 +38,8 @@ struct AvatarModel: Hashable {
     }
     
     var characterDescription: String {
-        AvatarDescriptionBuilder(avatar: self).characterDescription
+        let prefix = characterOption.startsWithVowel ? "An" : "A"
+        return "\(prefix) \(AvatarDescriptionBuilder(avatar: self).characterDescription)"
     }
     
     static var mock: AvatarModel {
@@ -61,7 +62,7 @@ struct AvatarDescriptionBuilder {
     let characterLocation: CharacterLocation
     
     var characterDescription: String {
-        "A \(characterOption.rawValue) that is \(characterAction.rawValue) at the \(characterLocation.rawValue)"
+        "\(characterOption.rawValue) that is \(characterAction.rawValue) at the \(characterLocation.rawValue)"
     }
     
     init(characterOption: CharacterOption, characterAction: CharacterAction, characterLocation: CharacterLocation) {
@@ -71,9 +72,9 @@ struct AvatarDescriptionBuilder {
     }
     
     init(avatar: AvatarModel) { // convenience initializer
-        self.characterOption = avatar.characterOption ?? .default
-        self.characterAction = avatar.characterAction ?? .default
-        self.characterLocation = avatar.characterLocation ?? .default
+        self.characterOption = avatar.characterOption
+        self.characterAction = avatar.characterAction
+        self.characterLocation = avatar.characterLocation
     }
 }
 
@@ -82,6 +83,15 @@ enum CharacterOption: String, CaseIterable, Hashable {
     
     static var `default`: Self {
         .man
+    }
+    
+    var startsWithVowel: Bool {
+        switch self {
+        case .alien:
+            true
+        default:
+            false
+        }
     }
     
     var textdescription: String {
