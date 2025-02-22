@@ -48,10 +48,10 @@ struct AvatarModel: Hashable {
     
     static var mocks: [AvatarModel] {
         [
-            AvatarModel(avatarID: UUID().uuidString, name: "Alpha", characterOption: .alien, characterAction: .crying, characterLocation: .beach, profileImageName: Constants.randomImage, authorID: UUID().uuidString, dateCreated: .now),
+            AvatarModel(avatarID: "avatar_1", name: "Alpha", characterOption: .alien, characterAction: .crying, characterLocation: .beach, profileImageName: Constants.randomImage, authorID: UUID().uuidString, dateCreated: .now),
             AvatarModel(avatarID: UUID().uuidString, name: "Beta", characterOption: .dog, characterAction: .sitting, characterLocation: .forest, profileImageName: Constants.randomImage, authorID: UUID().uuidString, dateCreated: .now),
             AvatarModel(avatarID: UUID().uuidString, name: "Gamma", characterOption: .cat, characterAction: .relaxing, characterLocation: .home, profileImageName: Constants.randomImage, authorID: UUID().uuidString, dateCreated: .now),
-            AvatarModel(avatarID: UUID().uuidString, name: "Delta", characterOption: .woman, characterAction: .shopping, characterLocation: .space, profileImageName: Constants.randomImage, authorID: UUID().uuidString, dateCreated: .now),
+            AvatarModel(avatarID: UUID().uuidString, name: "Delta", characterOption: .woman, characterAction: .shopping, characterLocation: .space, profileImageName: Constants.randomImage, authorID: UUID().uuidString, dateCreated: .now)
         ]
     }
 }
