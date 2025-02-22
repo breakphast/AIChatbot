@@ -1,0 +1,59 @@
+//
+//  HeroCellView.swift
+//  AIChatbot
+//
+//  Created by Desmond Fitch on 2/21/25.
+//
+
+import SwiftUI
+import SDWebImageSwiftUI
+
+struct HeroCellView: View {
+    var title: String? = "This is some title"
+    var subtitle: String? = "This is some subtitile that will go here."
+    var imageName: String? = Constants.randomImage
+    
+    var body: some View {
+        ZStack {
+            if let imageName {
+                ImageLoaderView(urlString: imageName)
+            } else {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(.accent)
+            }
+        }
+        .overlay(alignment: .bottomLeading, content: {
+            VStack(alignment: .leading, spacing: 4) {
+                if let title {
+                    Text(title)
+                        .font(.headline)
+                }
+                if let subtitle {
+                    Text(subtitle)
+                        .font(.subheadline)
+                }
+            }
+            .foregroundStyle(.white)
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                LinearGradient(colors: [.black.opacity(0), .black.opacity(0.3), .black.opacity(0.7)], startPoint: .top, endPoint: .bottom)
+            )
+        })
+        .cornerRadius(16)
+    }
+}
+
+#Preview {
+    ScrollView {
+        VStack {
+            HeroCellView()
+                .frame(width: 300, height: 200)
+            HeroCellView(imageName: nil)
+                .frame(width: 300, height: 200)
+            HeroCellView()
+                .frame(width: 300, height: 200)
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
