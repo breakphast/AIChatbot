@@ -35,7 +35,7 @@ struct OnboardingIntroView: View {
         .toolbar(.hidden, for: .navigationBar)
     }
     
-    private var ctaButton: some View  {
+    private var ctaButton: some View {
         VStack(spacing: 8) {
             NavigationLink {
                 OnboardingColorView()
