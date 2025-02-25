@@ -43,4 +43,10 @@ extension View {
                 LinearGradient(colors: [.black.opacity(0), .black.opacity(0.3), .black.opacity(0.7)], startPoint: .top, endPoint: .bottom)
             )
     }
+    
+    func buttonPaddingSplit(_ amount: CGFloat) -> some View {
+        self
+            .padding(.horizontal, amount)
+            .padding(.vertical, amount / 2)
+    }
 }
