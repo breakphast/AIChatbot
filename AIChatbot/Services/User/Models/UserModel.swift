@@ -34,26 +34,27 @@ struct UserModel {
     static var mock: Self {
         mocks[0]
     }
-    
+        
     static var mocks: [Self] {
-        [
+        let now = Date()
+        return [
             UserModel(
-                userID: "user_1",
-                dateCreated: Date(),
+                userID: "user1",
+                dateCreated: now,
                 didCompleteOnboarding: true,
-                profileColorHex: "#33FF57"
+                profileColorHex: "#33A1FF"
             ),
             UserModel(
-                userID: "user_2",
-                dateCreated: Date().addingTimeInterval(-86400), // 1 day ago
+                userID: "user2",
+                dateCreated: now.addingTimeInterval(-86400),
                 didCompleteOnboarding: false,
                 profileColorHex: "#FF5733"
             ),
             UserModel(
-                userID: "user_3",
-                dateCreated: Date().addingTimeInterval(-604800), // 1 week ago
-                didCompleteOnboarding: nil,
-                profileColorHex: "#3357FF"
+                userID: "user3",
+                dateCreated: now.addingTimeInterval(-604800),
+                didCompleteOnboarding: true,
+                profileColorHex: "#7DFF33"
             )
         ]
     }

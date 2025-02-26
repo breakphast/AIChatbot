@@ -49,4 +49,13 @@ extension View {
             .padding(.horizontal, amount)
             .padding(.vertical, amount / 2)
     }
+    
+    @ViewBuilder
+    func ifSatisfiesCondition(_ condition: Bool, transform: (Self) -> some View) -> some View {
+        if condition {
+            transform(self)
+        } else {
+            self
+        }
+    }
 }

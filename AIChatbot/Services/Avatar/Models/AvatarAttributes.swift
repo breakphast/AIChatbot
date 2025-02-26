@@ -15,30 +15,15 @@ enum CharacterOption: String, CaseIterable, Hashable {
     var startsWithVowel: Bool {
         switch self {
         case .alien:
-            true
+            return true
         default:
-            false
-        }
-    }
-    
-    var textdescription: String {
-        switch self {
-        case .man:
-            "Men"
-        case .woman:
-            "Women"
-        case .alien:
-            "Aliens"
-        case .dog:
-            "Dogs"
-        case .cat:
-            "Cats"
+            return false
         }
     }
 }
 
 enum CharacterAction: String, CaseIterable, Hashable {
-    case eating, walking, smiling, sitting, drinking, shopping, studying, working, relaxing, fighting, crying
+    case smiling, sitting, eating, drinking, walking, shopping, studying, working, relaxing, fighting, crying
     
     static var `default`: Self {
         .smiling
@@ -46,7 +31,7 @@ enum CharacterAction: String, CaseIterable, Hashable {
 }
 
 enum CharacterLocation: String, CaseIterable, Hashable {
-    case home, park, beach, forest, city, mountain, desert, space
+    case park, mall, museum, city, desert, forest, space
     
     static var `default`: Self {
         .park
@@ -57,20 +42,21 @@ struct AvatarDescriptionBuilder {
     let characterOption: CharacterOption
     let characterAction: CharacterAction
     let characterLocation: CharacterLocation
-    
-    var characterDescription: String {
-        "\(characterOption.rawValue) that is \(characterAction.rawValue) at the \(characterLocation.rawValue)"
-    }
-    
+
     init(characterOption: CharacterOption, characterAction: CharacterAction, characterLocation: CharacterLocation) {
         self.characterOption = characterOption
         self.characterAction = characterAction
         self.characterLocation = characterLocation
     }
     
-    init(avatar: AvatarModel) { // convenience initializer
-        self.characterOption = avatar.characterOption
-        self.characterAction = avatar.characterAction
-        self.characterLocation = avatar.characterLocation
+    init(avatar: AvatarModel) {
+        self.characterOption = avatar.characterOption ?? .default
+        self.characterAction = avatar.characterAction ?? .default
+        self.characterLocation = avatar.characterLocation ?? .default
+    }
+    
+    var characterDescription: String {
+        let prefix = characterOption.startsWithVowel ? "An" : "A"
+        return "\(prefix) \(characterOption.rawValue) that is \(characterAction.rawValue) in the \(characterLocation.rawValue)."
     }
 }

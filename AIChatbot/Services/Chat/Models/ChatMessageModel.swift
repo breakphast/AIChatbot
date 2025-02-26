@@ -40,40 +40,40 @@ struct ChatMessageModel: Identifiable {
         
         return seenByIDs.contains(userID)
     }
-    
+        
     static var mocks: [ChatMessageModel] {
         let now = Date()
         return [
             ChatMessageModel(
-                id: "msg_1",
-                chatID: "mock_chat_1",
-                authorID: "user_1",
-                content: "Hey, how's it going?",
-                seenByIDs: ["user_2", "user_3"],
+                id: "msg1",
+                chatID: "1",
+                authorID: "user1",
+                content: "Hello, how are you?",
+                seenByIDs: ["user2", "user3"],
                 dateCreated: now.adding(minutes: -30)
             ),
             ChatMessageModel(
-                id: "msg_2",
-                chatID: "mock_chat_2",
-                authorID: "user_2",
-                content: "Not bad, just working on something cool.",
-                seenByIDs: ["user_1"],
+                id: "msg2",
+                chatID: "2",
+                authorID: "user2",
+                content: "I'm doing well, thanks for asking!",
+                seenByIDs: ["user1"],
                 dateCreated: now.adding(hours: -2)
             ),
             ChatMessageModel(
-                id: "msg_3",
-                chatID: "mock_chat_3",
-                authorID: "user_3",
-                content: "Anyone up for a late-night chat?",
-                seenByIDs: ["user_1", "user_2", "user_4"],
+                id: "msg3",
+                chatID: "3",
+                authorID: "user3",
+                content: "Anyone up for a game tonight?",
+                seenByIDs: ["user1", "user2", "user4"],
                 dateCreated: now.adding(hours: -4, days: -1)
             ),
             ChatMessageModel(
-                id: "msg_4",
-                chatID: "mock_chat_4",
-                authorID: "user_4",
-                content: "Just finished a big project, feeling great!",
-                seenByIDs: ["user_1", "user_2"],
+                id: "msg4",
+                chatID: "1",
+                authorID: "user1",
+                content: "Sure, count me in!",
+                seenByIDs: nil,
                 dateCreated: now.adding(weeks: -1)
             )
         ]
