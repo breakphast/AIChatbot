@@ -29,7 +29,7 @@ struct CategoryCellView: View {
                     .cellGradientForText()
             }
         })
-        .cornerRadius(16)
+        .cornerRadius(cornerRadius)
     }
 }
 
