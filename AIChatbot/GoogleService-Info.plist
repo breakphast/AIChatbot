@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyC_fBrg6WH9j7o4uo56jJnDzfWSPkD0T4Q</string>
+	<string>AIzaSyAtjsLNngoU01ne7YOExcMTnhgnx8mORgA</string>
 	<key>GCM_SENDER_ID</key>
-	<string>679522017100</string>
+	<string>485972754700</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.devsmond.AIChatbot</string>
+	<string>com.devsmond.AIChat</string>
 	<key>PROJECT_ID</key>
-	<string>aichatbot-41522</string>
+	<string>aichat-4696b</string>
 	<key>STORAGE_BUCKET</key>
-	<string>aichatbot-41522.firebasestorage.app</string>
+	<string>aichat-4696b.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:679522017100:ios:7616c6697f74978aea39e9</string>
+	<string>1:485972754700:ios:b7c746ca6ed262a52f8929</string>
 </dict>
 </plist>
