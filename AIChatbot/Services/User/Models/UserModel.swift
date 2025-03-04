@@ -6,8 +6,13 @@
 //
 
 import SwiftUI
+import SwiftfulFirestore
+import IdentifiableByString
 
-struct UserModel: Codable {
+struct UserModel: Codable, StringIdentifiable {
+    var id: String {
+        userID
+    }
     let userID: String
     let email: String?
     let isAnonymous: Bool?

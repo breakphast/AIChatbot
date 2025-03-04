@@ -11,4 +11,5 @@ struct Constants {
     static let randomImage = "https://picsum.photos/id/1018/600/600"
     static let privacyPolicyURL = "https://www.apple.com"
     static let termsOfServiceURL = "https://www.apple.com"
+    static let accentColorHex = "#FF5757"
 }
