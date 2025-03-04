@@ -1,5 +1,5 @@
 //
-//  MockAuthService.swift
+//  MockauthManager.swift
 //  AIChatbot
 //
 //  Created by Desmond Fitch on 3/2/25.
@@ -35,5 +35,11 @@ struct MockAuthService: AuthService {
     
     func deleteAccount() async throws {
         
+    }
+    
+    func addAuthenticatedUserListener(onListenerAttached: (any NSObjectProtocol) -> Void) -> AsyncStream<UserAuthInfo?> {
+        AsyncStream { continuation in
+            continuation.yield(currentUser)
+        }
     }
 }

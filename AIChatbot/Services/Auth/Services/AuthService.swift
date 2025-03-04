@@ -1,5 +1,5 @@
 //
-//  AuthService.swift
+//  authManager.swift
 //  AIChatbot
 //
 //  Created by Desmond Fitch on 3/2/25.
@@ -14,8 +14,5 @@ protocol AuthService: Sendable {
     func signInApple() async throws -> (user: UserAuthInfo, isNewUser: Bool)
     func signOut() throws
     func deleteAccount() async throws
-}
-
-extension EnvironmentValues {
-    @Entry var authService: AuthService = MockAuthService()
+    func addAuthenticatedUserListener(onListenerAttached: (any NSObjectProtocol) -> Void) -> AsyncStream<UserAuthInfo?>
 }
