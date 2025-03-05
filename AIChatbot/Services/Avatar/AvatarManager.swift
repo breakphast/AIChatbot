@@ -21,30 +21,20 @@ class AvatarManager {
     func createAvatar(avatar: AvatarModel, image: UIImage) async throws {
         try await service.createAvatar(avatar: avatar, image: image)
     }
-}
-
-protocol AvatarService: Sendable {
-    func createAvatar(avatar: AvatarModel, image: UIImage) async throws
-}
-
-struct MockAvatarService: AvatarService {
-    func createAvatar(avatar: AvatarModel, image: UIImage) async throws {
-        
-    }
-}
-
-struct FirebaseAvatarService: AvatarService {
-    var collection: CollectionReference {
-        Firestore.firestore().collection("avatars")
+    
+    func getFeaturedAvatars() async throws -> [AvatarModel] {
+        try await service.getFeaturedAvatars()
     }
     
-    func createAvatar(avatar: AvatarModel, image: UIImage) async throws {
-        let path = "avatars/\(avatar.avatarID)"
-        let url = try await FirebaseImageUploadService().uploadImage(image: image, path: path)
-        
-        var avatar = avatar
-        avatar.updateProfileImage(imageName: url.absoluteString)
-        
-        try await collection.setDocument(document: avatar)
-     }
+    func getPopularAvatars() async throws -> [AvatarModel] {
+        try await service.getPopularAvatars()
+    }
+    
+    func getAvatarsForCategory(category: CharacterOption) async throws -> [AvatarModel] {
+        try await service.getAvatarsForCategory(category: category)
+    }
+    
+    func getAvatarsForAuthor(userID: String) async throws -> [AvatarModel] {
+        try await service.getAvatarsForAuthor(userID: userID)
+    }
 }
