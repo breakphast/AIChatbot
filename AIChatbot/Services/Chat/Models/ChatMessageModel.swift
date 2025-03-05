@@ -11,7 +11,7 @@ struct ChatMessageModel: Identifiable {
     let id: String
     let chatID: String
     let authorID: String?
-    let content: String?
+    let content: AIChatModel?
     let seenByIDs: [String]?
     let dateCreated: Date?
     
@@ -19,7 +19,7 @@ struct ChatMessageModel: Identifiable {
         id: String,
         chatID: String,
         authorID: String? = nil,
-        content: String? = nil,
+        content: AIChatModel? = nil,
         seenByIDs: [String]? = nil,
         dateCreated: Date? = nil
     ) {
@@ -48,7 +48,7 @@ struct ChatMessageModel: Identifiable {
                 id: "msg1",
                 chatID: "1",
                 authorID: "user1",
-                content: "Hello, how are you?",
+                content: AIChatModel(role: .user, content: "Hello how are you?"),
                 seenByIDs: ["user2", "user3"],
                 dateCreated: now.adding(minutes: -30)
             ),
@@ -56,7 +56,7 @@ struct ChatMessageModel: Identifiable {
                 id: "msg2",
                 chatID: "2",
                 authorID: "user2",
-                content: "I'm doing well, thanks for asking!",
+                content: AIChatModel(role: .assistant, content: "I'm doing well, thanks for asking!"),
                 seenByIDs: ["user1"],
                 dateCreated: now.adding(hours: -2)
             ),
@@ -64,7 +64,7 @@ struct ChatMessageModel: Identifiable {
                 id: "msg3",
                 chatID: "3",
                 authorID: "user3",
-                content: "Anyone up for a game tonight?",
+                content: AIChatModel(role: .user, content: "Anyone up for a game tonight?"),
                 seenByIDs: ["user1", "user2", "user4"],
                 dateCreated: now.adding(hours: -4, days: -1)
             ),
@@ -72,7 +72,7 @@ struct ChatMessageModel: Identifiable {
                 id: "msg4",
                 chatID: "1",
                 authorID: "user1",
-                content: "Sure, count me in!",
+                content: AIChatModel(role: .assistant, content: "Sure, count me in!"),
                 seenByIDs: nil,
                 dateCreated: now.adding(weeks: -1)
             )

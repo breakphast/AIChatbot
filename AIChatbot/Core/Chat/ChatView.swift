@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ChatView: View {
     @Environment(AvatarManager.self) private var avatarManager
+    @Environment(AIManager.self) private var aiManager
     @State private var chatMessages: [ChatMessageModel] = ChatMessageModel.mocks
     @State private var avatar: AvatarModel?
     @State private var currentUser: UserModel? = .mock
@@ -131,23 +132,42 @@ struct ChatView: View {
         
         let content = textFieldText
         
-        do {
-            try TextValidationHelper.checkIfTextIsValid(text: content)
-            
-            let message = ChatMessageModel(
-                id: UUID().uuidString,
-                chatID: UUID().uuidString,
-                authorID: currentUser.userID,
-                content: content,
-                seenByIDs: nil,
-                dateCreated: .now
-            )
-            
-            chatMessages.append(message)
-            scrollPosition = message.id
-            textFieldText = ""
-        } catch let error {
-            showAlert = AnyAppAlert(error: error)
+        Task {
+            do {
+                try TextValidationHelper.checkIfTextIsValid(text: content)
+                
+                let newChatMessage = AIChatModel(role: .user, content: content)
+                
+                let message = ChatMessageModel(
+                    id: UUID().uuidString,
+                    chatID: UUID().uuidString,
+                    authorID: currentUser.userID,
+                    content: newChatMessage,
+                    seenByIDs: nil,
+                    dateCreated: .now
+                )
+                
+                chatMessages.append(message)
+                scrollPosition = message.id
+                textFieldText = ""
+                
+                let aiChats = chatMessages.compactMap({ $0.content })
+                
+                let response = try await aiManager.generateText(chats: aiChats)
+                
+                let newAIMessage = ChatMessageModel(
+                    id: UUID().uuidString,
+                    chatID: UUID().uuidString,
+                    authorID: avatarID,
+                    content: response,
+                    seenByIDs: nil,
+                    dateCreated: .now
+                )
+                
+                chatMessages.append(newAIMessage)
+            } catch let error {
+                showAlert = AnyAppAlert(error: error)
+            }
         }
     }
     
@@ -175,5 +195,6 @@ struct ChatView: View {
     NavigationStack {
         ChatView()
             .environment(AvatarManager(service: MockAvatarService()))
+            .previewEnvironment()
     }
 }
