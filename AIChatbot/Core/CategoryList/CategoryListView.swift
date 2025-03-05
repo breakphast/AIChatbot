@@ -12,7 +12,7 @@ struct CategoryListView: View {
     @Binding var path: [NavigationPathOption]
     var category: CharacterOption = .alien
     var imageName: String = Constants.randomImage
-    @State private var avatars = AvatarModel.mocks
+    @State private var avatars = [AvatarModel]()
     @State private var showAlert: AnyAppAlert?
     @State private var isLoading = true
     
@@ -26,10 +26,17 @@ struct CategoryListView: View {
             )
             .removeListRowFormatting()
             
-            if avatars.isEmpty && isLoading {
+            if isLoading {
                 ProgressView()
                     .padding(40)
                     .frame(maxWidth: .infinity)
+                    .listRowSeparator(.hidden)
+                    .removeListRowFormatting()
+            } else if avatars.isEmpty {
+                Text("No avatars found 😢")
+                    .frame(maxWidth: .infinity)
+                    .padding(40)
+                    .foregroundStyle(.secondary)
                     .listRowSeparator(.hidden)
                     .removeListRowFormatting()
             } else {
@@ -68,7 +75,22 @@ struct CategoryListView: View {
     }
 }
 
-#Preview {
+#Preview("Has data") {
     CategoryListView(path: .constant([]))
         .environment(AvatarManager(service: MockAvatarService()))
+}
+
+#Preview("No data") {
+    CategoryListView(path: .constant([]))
+        .environment(AvatarManager(service: MockAvatarService(avatars: [])))
+}
+
+#Preview("Slow loading") {
+    CategoryListView(path: .constant([]))
+        .environment(AvatarManager(service: MockAvatarService(delay: 4)))
+}
+
+#Preview("Error loading") {
+    CategoryListView(path: .constant([]))
+        .environment(AvatarManager(service: MockAvatarService(delay: 4, showError: true)))
 }

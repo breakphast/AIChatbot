@@ -151,8 +151,5 @@ struct ProfileView: View {
 
 #Preview {
     ProfileView()
-        .environment(AppState())
-        .environment(UserManager(services: MockUserServices(user: .mock)))
-        .environment(AvatarManager(service: MockAvatarService()))
-        .environment(AuthManager(service: MockAuthService(user: .mock())))
+        .previewEnvironment()
 }

@@ -10,9 +10,13 @@ import SwiftUI
 struct ExploreView: View {
     @Environment(AvatarManager.self) private var avatarManager
     let avatar = AvatarModel.mock
-    @State private var featuredAvatars = [AvatarModel]()
+    
     @State private var categories = CharacterOption.allCases
+    
+    @State private var featuredAvatars = [AvatarModel]()
     @State private var popularAvatars = [AvatarModel]()
+    @State private var isLoadingFeatured: Bool = false
+    @State private var isLoadingPopular: Bool = false
     
     @State private var path: [NavigationPathOption] = []
     
@@ -20,10 +24,14 @@ struct ExploreView: View {
         NavigationStack(path: $path) {
             List {
                 if featuredAvatars.isEmpty && popularAvatars.isEmpty {
-                    ProgressView()
-                        .padding(40)
-                        .frame(maxWidth: .infinity)
-                        .removeListRowFormatting()
+                    ZStack {
+                        if isLoadingFeatured || isLoadingPopular {
+                            loadingIndicator
+                        } else {
+                            errorMessageView
+                        }
+                    }
+                    .removeListRowFormatting()
                 }
                 
                 if !featuredAvatars.isEmpty {
@@ -43,6 +51,43 @@ struct ExploreView: View {
                 await loadPopularAvatars()
             }
         }
+    }
+    
+    private func onTryAgainPressed() {
+        isLoadingFeatured = true
+        isLoadingPopular = true
+        
+        Task {
+            await loadFeaturedAvatars()
+        }
+        Task {
+            await loadPopularAvatars()
+        }
+    }
+    
+    private var loadingIndicator: some View {
+        ProgressView()
+            .padding(40)
+            .frame(maxWidth: .infinity)
+            .removeListRowFormatting()
+    }
+    
+    private var errorMessageView: some View {
+        VStack(alignment: .center, spacing: 8) {
+            Text("Error")
+                .font(.headline)
+            Text("Please check your internet connection and try again.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+            Button("Try Again") {
+                onTryAgainPressed()
+            }
+            .tint(.blue)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(40)
+        .removeListRowFormatting()
     }
     
     private func loadFeaturedAvatars() async {
@@ -143,7 +188,17 @@ struct ExploreView: View {
     }
 }
 
-#Preview {
+#Preview("Has Data") {
     ExploreView()
         .environment(AvatarManager(service: MockAvatarService()))
+}
+
+#Preview("No Data") {
+    ExploreView()
+        .environment(AvatarManager(service: MockAvatarService(avatars: [], delay: 2)))
+}
+
+#Preview("Slow loading") {
+    ExploreView()
+        .environment(AvatarManager(service: MockAvatarService(delay: 10)))
 }

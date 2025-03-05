@@ -35,7 +35,7 @@ struct FirebaseAvatarService: RemoteAvatarService {
             .first(upTo: 5) ?? []
     }
     
-    func getPopularAvatars() async throws -> [AvatarMreceodel] {
+    func getPopularAvatars() async throws -> [AvatarModel] {
         try await collection
             .order(by: AvatarModel.CodingKeys.clickCount.rawValue, descending: true)
             .limit(to: 200)

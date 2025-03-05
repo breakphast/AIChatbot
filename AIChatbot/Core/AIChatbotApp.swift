@@ -49,3 +49,14 @@ struct Dependencies {
         userManager = UserManager(services: ProductionUserServices())
     }
 }
+
+extension View {
+    func previewEnvironment(isSignedIn: Bool = true) -> some View {
+        self
+            .environment(AppState())
+            .environment(UserManager(services: MockUserServices(user: isSignedIn ? .mock : nil)))
+            .environment(AvatarManager(service: MockAvatarService()))
+            .environment(AuthManager(service: MockAuthService(user: isSignedIn ? .mock() : nil)))
+            .environment(AIManager(service: MockAIService()))
+    }
+}
