@@ -6,14 +6,19 @@
 //
 
 import Foundation
+import SwiftfulFirestore
+import IdentifiableByString
 
-struct AvatarModel: Hashable {
+struct AvatarModel: Hashable, Codable, StringIdentifiable {
+    var id: String {
+        avatarID
+    }
     let avatarID: String
     let name: String?
     let characterOption: CharacterOption?
     let characterAction: CharacterAction?
     let characterLocation: CharacterLocation?
-    let profileImageName: String?
+    private(set) var profileImageName: String?
     let authorID: String?
     let dateCreated: Date?
 
@@ -39,6 +44,21 @@ struct AvatarModel: Hashable {
     
     var characterDescription: String {
         AvatarDescriptionBuilder(avatar: self).characterDescription
+    }
+    
+    mutating func updateProfileImage(imageName: String) {
+        profileImageName = imageName
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case avatarID = "avatar_id"
+        case name
+        case characterOption = "character_option"
+        case characterAction = "character_action"
+        case characterLocation = "character_location"
+        case profileImageName = "profile_image_name"
+        case authorID = "author_id"
+        case dateCreated = "date_created"
     }
     
     static var mock: AvatarModel {
