@@ -35,8 +35,9 @@ struct FirebaseAvatarService: RemoteAvatarService {
             .first(upTo: 5) ?? []
     }
     
-    func getPopularAvatars() async throws -> [AvatarModel] {
+    func getPopularAvatars() async throws -> [AvatarMreceodel] {
         try await collection
+            .order(by: AvatarModel.CodingKeys.clickCount.rawValue, descending: true)
             .limit(to: 200)
             .getAllDocuments()
     }
@@ -51,6 +52,13 @@ struct FirebaseAvatarService: RemoteAvatarService {
     func getAvatarsForAuthor(userID: String) async throws -> [AvatarModel] {
         try await collection
             .whereField(AvatarModel.CodingKeys.authorID.rawValue, isEqualTo: userID)
+            .order(by: AvatarModel.CodingKeys.dateCreated.rawValue, descending: true)
             .getAllDocuments()
+    }
+    
+    func incrementAvatarClickCount(avatarID: String) async throws {
+        try await collection.document(avatarID).updateData([
+            AvatarModel.CodingKeys.clickCount.rawValue: FieldValue.increment(Int64(1))
+        ])
     }
 }

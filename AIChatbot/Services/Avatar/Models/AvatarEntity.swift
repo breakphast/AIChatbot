@@ -18,6 +18,7 @@ class AvatarEntity {
     var profileImageName: String?
     var authorID: String?
     var dateCreated: Date?
+    var clickCount: Int?
     var dateAdded: Date
     
     init(from model: AvatarModel) {
@@ -30,6 +31,7 @@ class AvatarEntity {
         self.authorID = model.authorID
         self.dateCreated = model.dateCreated
         self.dateAdded = .now
+        self.clickCount = model.clickCount
     }
     
     func toModel() -> AvatarModel {
@@ -41,7 +43,8 @@ class AvatarEntity {
             characterLocation: characterLocation,
             profileImageName: profileImageName,
             authorID: authorID,
-            dateCreated: dateCreated
+            dateCreated: dateCreated,
+            clickCount: clickCount
         )
     }
 }
