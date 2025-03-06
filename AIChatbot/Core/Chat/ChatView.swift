@@ -25,6 +25,7 @@ struct ChatView: View {
     @State private var showAlert: AnyAppAlert?
     @State private var showChatSettings: AnyAppAlert?
     @State private var showProfileModal = false
+    @State private var isGeneratingResponse = false
     
     var avatarID: String = AvatarModel.mock.avatarID
     
@@ -35,14 +36,20 @@ struct ChatView: View {
         }
         .animation(.bouncy, value: showProfileModal)
         .navigationTitle(avatar?.name ?? "")
-        .toolbarTitleDisplayMode(.inline) 
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Image(systemName: "ellipsis")
-                    .padding()
-                    .anyButton {
-                        onChatSettingsPressed()
+                HStack {
+                    if isGeneratingResponse {
+                        ProgressView()
                     }
+                    
+                    Image(systemName: "ellipsis")
+                        .padding()
+                        .anyButton {
+                            onChatSettingsPressed()
+                        }
+                }
             }
         }
         .showCustomAlert(type: .confirmationDialog, alert: $showChatSettings)
@@ -147,35 +154,60 @@ struct ChatView: View {
         
         Task {
             do {
+                // Get userID
                 let uid = try authManager.getAuthID()
+                // Validate textField text
                 try TextValidationHelper.checkIfTextIsValid(text: content)
                 
+                // If chat is nil then create a new chat
                 if chat == nil {
-                    let newChat = ChatModel.new(userID: uid, avatarID: avatarID)
-                    try await chatManager.createNewChat(chat: newChat)
-                    self.chat = newChat
+                    chat = try await createNewChat(uid: uid)
                 }
                 
+                // If there is no chat, throw error (should never happen)
+                guard let chat else {
+                    throw ChatViewError.noChat
+                }
+                
+                // Create user chat
                 let newChatMessage = AIChatModel(role: .user, content: content)
+                let message = ChatMessageModel.newUserMessage(chatID: chat.id, userID: uid, message: newChatMessage)
                 
-                let chatID = UUID().uuidString
-                let message = ChatMessageModel.newUserMessage(chatID: chatID, userID: uid, message: newChatMessage)
-                
+                // Upload user chat
+                try await chatManager.addchatMessage(chatID: chat.id, message: message)
                 chatMessages.append(message)
+                
+                // Clear text field & scroll to bottom
                 scrollPosition = message.id
                 textFieldText = ""
                 
+                // Generate AI response
+                isGeneratingResponse = true
                 let aiChats = chatMessages.compactMap({ $0.content })
-                
                 let response = try await aiManager.generateText(chats: aiChats)
+
+                // Create AI chat
+                let newAIMessage = ChatMessageModel.newAIMessage(chatID: chat.id, avatarID: avatarID, message: response)
                 
-                let newAIMessage = ChatMessageModel.newAIMessage(chatID: chatID, avatarID: avatarID, message: response)
-                
+                // Upload AI chat
+                try await chatManager.addchatMessage(chatID: chat.id, message: newAIMessage)
                 chatMessages.append(newAIMessage)
             } catch let error {
                 showAlert = AnyAppAlert(error: error)
             }
+            
+            isGeneratingResponse = false
         }
+    }
+    
+    enum ChatViewError: LocalizedError {
+        case noChat
+    }
+    
+    private func createNewChat(uid: String) async throws -> ChatModel {
+        let newChat = ChatModel.new(userID: uid, avatarID: avatarID)
+        try await chatManager.createNewChat(chat: newChat)
+        return newChat
     }
     
     private func onChatSettingsPressed() {
@@ -198,10 +230,25 @@ struct ChatView: View {
     }
 }
 
-#Preview {
+#Preview("Working Chat") {
     NavigationStack {
         ChatView()
-            .environment(AvatarManager(service: MockAvatarService()))
+            .previewEnvironment()
+    }
+}
+
+#Preview("Slow AI Generation") {
+    NavigationStack {
+        ChatView()
+            .environment(AIManager(service: MockAIService(delay: 10)))
+            .previewEnvironment()
+    }
+}
+
+#Preview("Failed AI Generation") {
+    NavigationStack {
+        ChatView()
+            .environment(AIManager(service: MockAIService(delay: 2, showError: true)))
             .previewEnvironment()
     }
 }

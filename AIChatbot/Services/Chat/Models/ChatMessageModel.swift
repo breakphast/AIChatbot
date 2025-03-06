@@ -6,14 +6,24 @@
 //
 
 import Foundation
+import IdentifiableByString
 
-struct ChatMessageModel: Identifiable {
+struct ChatMessageModel: Identifiable, Codable, StringIdentifiable {
     let id: String
     let chatID: String
     let authorID: String?
     let content: AIChatModel?
     let seenByIDs: [String]?
     let dateCreated: Date?
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case chatID = "chat_id"
+        case authorID = "author_id"
+        case content
+        case seenByIDs = "seen_by_ids"
+        case dateCreated = "date_created"
+    }
     
     init(
         id: String,
@@ -69,7 +79,7 @@ struct ChatMessageModel: Identifiable {
             ChatMessageModel(
                 id: "msg1",
                 chatID: "1",
-                authorID: "user1",
+                authorID: UserAuthInfo.mock().uid,
                 content: AIChatModel(role: .user, content: "Hello how are you?"),
                 seenByIDs: ["user2", "user3"],
                 dateCreated: now.adding(minutes: -30)
@@ -77,7 +87,7 @@ struct ChatMessageModel: Identifiable {
             ChatMessageModel(
                 id: "msg2",
                 chatID: "2",
-                authorID: "user2",
+                authorID: AvatarModel.mock.avatarID,
                 content: AIChatModel(role: .assistant, content: "I'm doing well, thanks for asking!"),
                 seenByIDs: ["user1"],
                 dateCreated: now.adding(hours: -2)
@@ -85,7 +95,7 @@ struct ChatMessageModel: Identifiable {
             ChatMessageModel(
                 id: "msg3",
                 chatID: "3",
-                authorID: "user3",
+                authorID: UserAuthInfo.mock().uid,
                 content: AIChatModel(role: .user, content: "Anyone up for a game tonight?"),
                 seenByIDs: ["user1", "user2", "user4"],
                 dateCreated: now.adding(hours: -4, days: -1)
@@ -93,7 +103,7 @@ struct ChatMessageModel: Identifiable {
             ChatMessageModel(
                 id: "msg4",
                 chatID: "1",
-                authorID: "user1",
+                authorID: AvatarModel.mock.avatarID,
                 content: AIChatModel(role: .assistant, content: "Sure, count me in!"),
                 seenByIDs: nil,
                 dateCreated: now.adding(weeks: -1)

@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
-
 import OpenAI
+import IdentifiableByString
+
 struct OpenAIService: AIService {
     var openAI: OpenAI {
         OpenAI(apiToken: Keys.openAIKey)
@@ -57,7 +58,7 @@ struct OpenAIService: AIService {
 typealias ChatContent = ChatQuery.ChatCompletionMessageParam.UserMessageParam.Content.VisionContent
 typealias ChatText = ChatQuery.ChatCompletionMessageParam.UserMessageParam.Content.VisionContent.ChatCompletionContentPartTextParam
 
-struct AIChatModel {
+struct AIChatModel: Codable {
     let role: AIChatRole
     let message: String
     
@@ -85,7 +86,7 @@ struct AIChatModel {
     }
 }
 
-enum AIChatRole {
+enum AIChatRole: String, Codable {
     case system, user, assistant, tool
     
     init(role: ChatQuery.ChatCompletionMessageParam.Role) {
