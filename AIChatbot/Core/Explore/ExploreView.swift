@@ -92,9 +92,11 @@ struct ExploreView: View {
     
     private func loadFeaturedAvatars() async {
         guard featuredAvatars.isEmpty else { return }
+        isLoadingFeatured = true
         
         do {
             featuredAvatars = try await avatarManager.getFeaturedAvatars()
+            isLoadingFeatured = false
         } catch {
             print("Error loading featured avatars: \(error)")
         }
@@ -102,9 +104,11 @@ struct ExploreView: View {
     
     private func loadPopularAvatars() async {
         guard popularAvatars.isEmpty else { return }
+        isLoadingPopular = true
         
         do {
             popularAvatars = try await avatarManager.getPopularAvatars()
+            isLoadingPopular = false
         } catch {
             print("Error loading popular avatars: \(error)")
         }

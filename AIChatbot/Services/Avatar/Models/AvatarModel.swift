@@ -65,6 +65,20 @@ struct AvatarModel: Hashable, Codable, StringIdentifiable {
         case clickCount = "click_count"
     }
     
+    static func newAvatar(name: String, option: CharacterOption, action: CharacterAction, location: CharacterLocation, authorID: String) -> Self {
+        AvatarModel(
+            avatarID: UUID().uuidString,
+            name: name,
+            characterOption: option,
+            characterAction: action,
+            characterLocation: location,
+            profileImageName: nil,
+            authorID: authorID,
+            dateCreated: .now,
+            clickCount: 0
+        )
+    }
+    
     static var mock: AvatarModel {
         mocks[0]
     }

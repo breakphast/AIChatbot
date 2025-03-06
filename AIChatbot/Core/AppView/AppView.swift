@@ -44,7 +44,6 @@ struct AppView: View {
                 try await userManager.login(auth: user, isNewUser: false)
             } catch {
                 print("Failed to login to auth for existing user \(error)")
-                try? await Task.sleep(for: .seconds(5))
                 await checkUserStatus()
             }
         } else {
@@ -55,7 +54,6 @@ struct AppView: View {
                 try await userManager.login(auth: result.user, isNewUser: result.isNewUser)
             } catch {
                 print("Failed to sign in anonymously and login: \(error)")
-                try? await Task.sleep(for: .seconds(5))
                 await checkUserStatus()
             }
         }

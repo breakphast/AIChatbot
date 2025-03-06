@@ -6,13 +6,32 @@
 //
 
 import Foundation
+import IdentifiableByString
 
-struct ChatModel: Identifiable {
+struct ChatModel: Identifiable, Codable, StringIdentifiable {
     let id: String
     let userID: String
     let avatarID: String
     let dateCreated: Date
     let dateModified: Date
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case userID = "user_id"
+        case avatarID = "avatar_id"
+        case dateCreated = "date_created"
+        case dateModified = "date_modified"
+    }
+    
+    static func new(userID: String, avatarID: String) -> Self {
+        ChatModel(
+            id: "\(userID)_\(avatarID)",
+            userID: userID,
+            avatarID: avatarID,
+            dateCreated: .now,
+            dateModified: .now
+        )
+    }
 }
 
 extension ChatModel {
