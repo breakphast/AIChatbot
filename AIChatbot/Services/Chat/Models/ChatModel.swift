@@ -23,6 +23,10 @@ struct ChatModel: Identifiable, Codable, StringIdentifiable {
         case dateModified = "date_modified"
     }
     
+    static func chatID(userID: String, avatarID: String) -> String {
+        "\(userID)_\(avatarID)"
+    }
+    
     static func new(userID: String, avatarID: String) -> Self {
         ChatModel(
             id: "\(userID)_\(avatarID)",

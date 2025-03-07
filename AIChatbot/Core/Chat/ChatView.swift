@@ -14,7 +14,7 @@ struct ChatView: View {
     @Environment(AuthManager.self) private var authManager
     @Environment(ChatManager.self) private var chatManager
     
-    @State private var chatMessages: [ChatMessageModel] = ChatMessageModel.mocks
+    @State private var chatMessages: [ChatMessageModel] = []
     @State private var avatar: AvatarModel?
     @State private var currentUser: UserModel?
     @State private var chat: ChatModel?
@@ -62,6 +62,10 @@ struct ChatView: View {
         .task {
             await loadAvatar()
         }
+        .task {
+            await loadChat()
+            await listenForChatMessages()
+        }
         .onAppear {
             loadCurrentUser()
         }
@@ -80,6 +84,35 @@ struct ChatView: View {
         } catch {
             print("Error loading avatar: \(error)")
         }
+    }
+    
+    private func loadChat() async {
+        do {
+            let uid = try authManager.getAuthID()
+            chat = try await chatManager.getChat(userID: uid, avatarID: avatarID)
+        } catch {
+            print("Error loading chat: \(error)")
+        }
+    }
+    
+    private func listenForChatMessages() async {
+        do {
+            let chatID = try getChatID()
+            
+            for try await value in chatManager.streamChatMessages(chatID: chatID) {
+                chatMessages = value.sorted(by: { $0.dateCreatedCalculated < $1.dateCreatedCalculated  })
+                scrollPosition = chatMessages.last?.id
+            }
+        } catch {
+            
+        }
+    }
+    
+    private func getChatID() throws -> String {
+        guard let chat else {
+            throw ChatViewError.noChat
+        }
+        return chat.id
     }
     
     private var scrollViewSection: some View {
@@ -175,15 +208,20 @@ struct ChatView: View {
                 
                 // Upload user chat
                 try await chatManager.addchatMessage(chatID: chat.id, message: message)
-                chatMessages.append(message)
                 
                 // Clear text field & scroll to bottom
-                scrollPosition = message.id
                 textFieldText = ""
                 
                 // Generate AI response
                 isGeneratingResponse = true
-                let aiChats = chatMessages.compactMap({ $0.content })
+                var aiChats = chatMessages.compactMap({ $0.content })
+                if let avatarDescription = avatar?.characterDescription {
+                    let systemMessage = AIChatModel(
+                        role: .system,
+                        content: "You are a \(avatarDescription) with the intelligence of an AI. We are having a VERY casual conversation. You are my friend."
+                    )
+                    aiChats.insert(systemMessage, at: 0)
+                }
                 let response = try await aiManager.generateText(chats: aiChats)
 
                 // Create AI chat
@@ -191,7 +229,6 @@ struct ChatView: View {
                 
                 // Upload AI chat
                 try await chatManager.addchatMessage(chatID: chat.id, message: newAIMessage)
-                chatMessages.append(newAIMessage)
             } catch let error {
                 showAlert = AnyAppAlert(error: error)
             }
@@ -207,6 +244,13 @@ struct ChatView: View {
     private func createNewChat(uid: String) async throws -> ChatModel {
         let newChat = ChatModel.new(userID: uid, avatarID: avatarID)
         try await chatManager.createNewChat(chat: newChat)
+        
+        defer {
+            Task {
+                await listenForChatMessages()
+            }
+        }
+        
         return newChat
     }
     
