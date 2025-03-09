@@ -17,8 +17,17 @@ struct ExploreView: View {
     @State private var popularAvatars = [AvatarModel]()
     @State private var isLoadingFeatured: Bool = false
     @State private var isLoadingPopular: Bool = false
+    @State private var showDevSettings: Bool = false
     
     @State private var path: [NavigationPathOption] = []
+    
+    private var showDevSettingsButton: Bool {
+        #if DEV || MOCK
+        true
+        #else
+        false
+        #endif
+    }
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -42,8 +51,18 @@ struct ExploreView: View {
                     popularSection
                 }
             }
+            .sheet(isPresented: $showDevSettings, content: {
+                DevSettingsView()
+            })
             .navigationDestinationForCoreModule(path: $path)
             .navigationTitle("Explore")
+            .toolbar(content: {
+                ToolbarItem(placement: .topBarLeading) {
+                    if showDevSettingsButton {
+                        devSettingsButton
+                    }
+                }
+            })
             .task {
                 await loadFeaturedAvatars()
             }
@@ -51,6 +70,18 @@ struct ExploreView: View {
                 await loadPopularAvatars()
             }
         }
+    }
+    
+    private var devSettingsButton: some View {
+        Text("DEV 🤫")
+            .badgeButton()
+            .anyButton(.press) {
+                onDevSettingsPressed()
+            }
+    }
+    
+    private func onDevSettingsPressed() {
+        showDevSettings = true
     }
     
     private func onTryAgainPressed() {

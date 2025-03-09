@@ -47,7 +47,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 }
 
 enum BuildConfiguration {
-    case mock(isSignedIn: Bool), dev, prod
+    case mock(isSignedIn: Bool = true), dev, prod
     
     func configure() {
         switch self {
