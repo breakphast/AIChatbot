@@ -13,8 +13,8 @@ extension View {
         self
             .navigationDestination(for: NavigationPathOption.self, destination: { newValue in
                 switch newValue {
-                case .chat(avatarID: let avatarID):
-                    ChatView(avatarID: avatarID)
+                case .chat(avatarID: let avatarID, chat: let chat):
+                    ChatView(chat: chat, avatarID: avatarID)
                 case .category(category: let category, imageName: let imageName):
                     CategoryListView(path: path, category: category, imageName: imageName)
                 }
@@ -23,6 +23,6 @@ extension View {
 }
 
 enum NavigationPathOption: Hashable {
-    case chat(avatarID: String)
+    case chat(avatarID: String, chat: ChatModel?)
     case category(category: CharacterOption, imageName: String)
 }

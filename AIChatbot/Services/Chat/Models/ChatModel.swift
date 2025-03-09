@@ -8,7 +8,7 @@
 import Foundation
 import IdentifiableByString
 
-struct ChatModel: Identifiable, Codable, StringIdentifiable {
+struct ChatModel: Identifiable, Codable, Hashable, StringIdentifiable {
     let id: String
     let userID: String
     let avatarID: String
@@ -48,29 +48,29 @@ extension ChatModel {
         return [
             ChatModel(
                 id: "mock_chat_1",
-                userID: "user1",
-                avatarID: "avatar1",
+                userID: UserAuthInfo.mock().uid,
+                avatarID: AvatarModel.mock.avatarID,
                 dateCreated: now,
                 dateModified: now
             ),
             ChatModel(
                 id: "mock_chat_2",
-                userID: "user2",
-                avatarID: "avatar2",
+                userID: UserAuthInfo.mock().uid,
+                avatarID: AvatarModel.mock.avatarID,
                 dateCreated: now.adding(days: -3),
                 dateModified: now.adding(hours: -12)
             ),
             ChatModel(
                 id: "mock_chat_3",
-                userID: "user3",
-                avatarID: "avatar3",
+                userID: UserAuthInfo.mock().uid,
+                avatarID: AvatarModel.mock.avatarID,
                 dateCreated: now.adding(weeks: -2),
                 dateModified: now.adding(days: -5)
             ),
             ChatModel(
                 id: "mock_chat_4",
-                userID: "user4",
-                avatarID: "avatar4",
+                userID: UserAuthInfo.mock().uid,
+                avatarID: AvatarModel.mocks.randomElement()!.avatarID,
                 dateCreated: now.adding(months: -1),
                 dateModified: now.adding(weeks: -1)
             )
