@@ -10,6 +10,7 @@ import SwiftUI
 protocol ChatService: Sendable {
     func createNewChat(chat: ChatModel) async throws
     func addChatMessage(chatID: String, message: ChatMessageModel) async throws
+    func markChatMessageAsSeen(chatID: String, messageID: String, userID: String) async throws
     func getChat(userID: String, avatarID: String) async throws -> ChatModel?
     func getAllChats(userID: String) async throws -> [ChatModel]
     @MainActor func streamChatMessages(chatID: String) -> AsyncThrowingStream<[ChatMessageModel], Error>

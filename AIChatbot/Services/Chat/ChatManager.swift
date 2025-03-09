@@ -24,6 +24,10 @@ class ChatManager: ObservableObject {
         try await service.addChatMessage(chatID: chatID, message: message)
     }
     
+    func markChatMessageAsSeen(chatID: String, messageID: String, userID: String) async throws {
+        try await service.markChatMessageAsSeen(chatID: chatID, messageID: messageID, userID: userID)
+    }
+    
     func getChat(userID: String, avatarID: String) async throws -> ChatModel? {
         try await service.getChat(userID: userID, avatarID: avatarID)
     }

@@ -81,4 +81,8 @@ class MockChatService: ChatService {
     func reportChat(report: ChatReportModel) async throws {
         
     }
+    
+    func markChatMessageAsSeen(chatID: String, messageID: String, userID: String) async throws {
+        
+    }
 }

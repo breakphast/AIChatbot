@@ -42,6 +42,12 @@ struct FirebaseChatService: ChatService {
         try await collection.updateDocument(id: chatID, dict: [ChatModel.CodingKeys.dateModified.rawValue: Date.now])
     }
     
+    func markChatMessageAsSeen(chatID: String, messageID: String, userID: String) async throws {
+        try await messagesCollection(for: chatID).document(messageID).updateData([
+            ChatMessageModel.CodingKeys.seenByIDs.rawValue: FieldValue.arrayUnion([userID])
+        ])
+    }
+    
     func getLastChatMesssage(chatID: String) async throws -> ChatMessageModel? {
         let messages: [ChatMessageModel] = try await messagesCollection(for: chatID)
             .order(by: ChatMessageModel.CodingKeys.dateCreated.rawValue, descending: true)
