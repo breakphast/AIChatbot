@@ -29,22 +29,40 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        FirebaseApp.configure()
+        
+        let config: BuildConfiguration
         
         #if MOCK
-        dependencies = Dependencies(config: .mock(isSignedIn: true))
+        config = .mock(isSignedIn: true)
         #elseif DEV
-        dependencies = Dependencies(config: .dev)
+        config = .dev
         #else
-        dependencies = Dependencies(config: .prod)
+        config = .prod
         #endif
-        
+         
+        config.configure()
+        dependencies = Dependencies(config: config)
         return true
     }
 }
 
 enum BuildConfiguration {
     case mock(isSignedIn: Bool), dev, prod
+    
+    func configure() {
+        switch self {
+        case .mock(let isSignedIn):
+            break
+        case .dev:
+            let plist = Bundle.main.path(forResource: "GoogleService-Info-Dev", ofType: "plist")!
+            let options = FirebaseOptions(contentsOfFile: plist)!
+            FirebaseApp.configure(options: options)
+        case .prod:
+            let plist = Bundle.main.path(forResource: "GoogleService-Info-Prod", ofType: "plist")!
+            let options = FirebaseOptions(contentsOfFile: plist)!
+            FirebaseApp.configure(options: options)
+        }
+    }
 }
 
 @MainActor
