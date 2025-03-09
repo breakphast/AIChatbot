@@ -16,12 +16,23 @@ struct ProfileModalView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            if let imageName {
-                ImageLoaderView(
-                    urlString: imageName,
-                    forceTransitionAnimation: true
-                )
-                .aspectRatio(1, contentMode: .fit)
+            ZStack(alignment: .topTrailing) {
+                if let imageName {
+                    ImageLoaderView(
+                        urlString: imageName,
+                        forceTransitionAnimation: true
+                    )
+                    .aspectRatio(1, contentMode: .fit)
+                }
+                
+                Image(systemName: "xmark.circle.fill")
+                    .font(.title)
+                    .foregroundStyle(Color.black.opacity(0.7))
+                    .anyButton {
+                        onXMarkPressed()
+                    }
+                    .padding(12)
+                    .tappableBackground()
             }
             
             VStack(alignment: .leading, spacing: 4) {
@@ -48,16 +59,6 @@ struct ProfileModalView: View {
         }
         .background(.thinMaterial)
         .cornerRadius(16)
-        .overlay(alignment: .topTrailing) {
-            Image(systemName: "xmark.circle.fill")
-                .font(.title)
-                .foregroundStyle(Color.black.opacity(0.7))
-                .anyButton {
-                    onXMarkPressed()
-                }
-                .padding(12)
-                .tappableBackground()
-        }
     }
 }
 
