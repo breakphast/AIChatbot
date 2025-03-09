@@ -12,6 +12,7 @@ struct SettingsView: View {
     @Environment(AuthManager.self) private var authManager
     @Environment(UserManager.self) private var userManager
     @Environment(AvatarManager.self) private var avatarManager
+    @Environment(ChatManager.self) private var chatManager
     @Environment(AppState.self) private var appState
     @State private var isPremium = false
     @State private var isAnonymousUser = false
@@ -179,8 +180,9 @@ struct SettingsView: View {
                 async let deleteAuth: () = authManager.deleteAccount()
                 async let deleteUser: () = userManager.deleteCurrentUser()
                 async let deleteAvatars: () = avatarManager.removeAuthorIDFromAllAvatars(userID: uid)
+                async let deleteChats: () = chatManager.deleteAllChatsForUser(userID: uid)
                 
-                let (_, _, _) = await (try deleteAuth, try deleteUser, try deleteAvatars)
+                let (_, _, _, _) = await (try deleteAuth, try deleteUser, try deleteAvatars, try deleteChats)
                 
                 await dismissScreen()
             } catch {
@@ -205,6 +207,7 @@ fileprivate extension View {
         .environment(AuthManager(service: MockAuthService(user: UserAuthInfo.mock(isAnonymous: true))))
         .environment(UserManager(services: MockUserServices(user: .mock)))
         .environment(AppState())
+        .previewEnvironment()
 }
 
 #Preview("Anonymous") {
@@ -212,6 +215,7 @@ fileprivate extension View {
         .environment(AuthManager(service: MockAuthService(user: UserAuthInfo.mock(isAnonymous: false))))
         .environment(UserManager(services: MockUserServices(user: .mock)))
         .environment(AppState())
+        .previewEnvironment()
 }
 
 #Preview("No auth") {
@@ -219,4 +223,5 @@ fileprivate extension View {
         .environment(AuthManager(service: MockAuthService(user: nil)))
         .environment(UserManager(services: MockUserServices(user: nil)))
         .environment(AppState())
+        .previewEnvironment()
 }
