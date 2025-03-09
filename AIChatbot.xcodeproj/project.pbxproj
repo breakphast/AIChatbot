@@ -40,9 +40,22 @@
 		3EEE7B752D5AF00100FD40F3 /* AIChatbotUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AIChatbotUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		3E0D997B2D7E614100984A0F /* Exceptions for "AIChatbot" folder in "AIChatbot" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 3EEE7B5A2D5AF00000FD40F3 /* AIChatbot */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		3EEE7B5D2D5AF00000FD40F3 /* AIChatbot */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3E0D997B2D7E614100984A0F /* Exceptions for "AIChatbot" folder in "AIChatbot" target */,
+			);
 			path = AIChatbot;
 			sourceTree = "<group>";
 		};
@@ -406,13 +419,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AIChatbot/AIChatbot.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"AIChatbot/Preview Content\"";
 				DEVELOPMENT_TEAM = G9RPYMS2PA;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "AI Chat - Mock";
+				INFOPLIST_FILE = AIChatbot/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "AI Chat - Dev";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Need calendar permissions.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -428,7 +443,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.devsmond.AIChat.mock;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -600,13 +615,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AIChatbot/AIChatbot.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"AIChatbot/Preview Content\"";
 				DEVELOPMENT_TEAM = G9RPYMS2PA;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AIChatbot/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "AI Chat - Dev";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Need calendar permissions.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -622,7 +639,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.devsmond.AIChat.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -638,13 +655,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AIChatbot/AIChatbot.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"AIChatbot/Preview Content\"";
 				DEVELOPMENT_TEAM = G9RPYMS2PA;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "AI Chat";
+				INFOPLIST_FILE = AIChatbot/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "AI Chat - Dev";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Need calendar permissions.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -660,7 +679,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.devsmond.AIChat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
