@@ -28,6 +28,10 @@ struct AppView: View {
         .onAppear {
             logManager.identifyUser(userID: "abc123", name: "desmond", email: "des@des.com")
             logManager.addUserProperties(dict: UserModel.mock.eventParameters)
+            logManager.trackEvent(event: Event.alpha)
+            logManager.trackEvent(event: Event.beta)
+            logManager.trackEvent(event: Event.gamma)
+            logManager.trackEvent(event: Event.delta)
         }
         .task {
             await checkUserStatus()
@@ -37,6 +41,48 @@ struct AppView: View {
                 Task {
                     await checkUserStatus()
                 }
+            }
+        }
+    }
+    
+    enum Event: LoggableEvent {
+        case alpha, beta, gamma, delta
+        
+        var eventName: String {
+            switch self {
+            case .alpha:
+                "event_alpha"
+            case .beta:
+                "event_beta"
+            case .gamma:
+                "event_gamma"
+            case .delta:
+                "event_delta"
+            }
+        }
+        
+        var parameters: [String: Any]? {
+            switch self {
+            case .alpha, .beta:
+                return [
+                    "aaa": true,
+                    "bbb": 123
+                ]
+            default:
+                return nil
+            }
+        }
+        
+        var type: LogType {
+            switch self {
+            case .alpha:
+                .info
+            case .beta:
+                .analytic
+            case .gamma:
+                .warning
+            case .delta:
+                .severe
             }
         }
     }

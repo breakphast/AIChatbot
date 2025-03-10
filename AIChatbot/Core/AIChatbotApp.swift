@@ -84,7 +84,7 @@ struct Dependencies {
             userManager = UserManager(services: MockUserServices(user: isSignedIn ? .mock : nil))
             chatManager = ChatManager(service: MockChatService())
             logManager = LogManager(services: [
-                ConsoleService()
+                ConsoleService(printParameters: false)
             ])
         case .dev:
             aiManager = AIManager(service: OpenAIService())
