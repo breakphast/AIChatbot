@@ -10,6 +10,7 @@ import SwiftUI
 struct AppView: View {
     @Environment(AuthManager.self) private var authManager
     @Environment(UserManager.self) private var userManager
+    @Environment(LogManager.self) private var logManager
     @State var appState = AppState()
     
     var body: some View {
@@ -24,6 +25,10 @@ struct AppView: View {
         )
         .environment(appState)
         .environment(userManager)
+        .onAppear {
+            logManager.identifyUser(userID: "abc123", name: "desmond", email: "des@des.com")
+            logManager.addUserProperties(dict: UserModel.mock.eventParameters)
+        }
         .task {
             await checkUserStatus()
         }
