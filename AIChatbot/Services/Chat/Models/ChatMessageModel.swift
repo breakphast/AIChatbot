@@ -41,6 +41,18 @@ struct ChatMessageModel: Identifiable, Codable, StringIdentifiable {
         self.dateCreated = dateCreated
     }
     
+    var eventParameters: [String: Any] {
+        var dict: [String: Any?] = [
+            "message_\(CodingKeys.id.rawValue)": id,
+            "message_\(CodingKeys.chatID.rawValue)": chatID,
+            "message_\(CodingKeys.authorID.rawValue)": authorID,
+            "message_\(CodingKeys.seenByIDs.rawValue)": seenByIDs?.sorted().joined(separator: ", "),
+            "message_\(CodingKeys.dateCreated.rawValue)": dateCreated
+        ]
+        dict.merge(content?.eventParameters)
+        return dict.compactMapValues { $0 }
+    }
+    
     var dateCreatedCalculated: Date {
         dateCreated ?? .distantPast 
     }

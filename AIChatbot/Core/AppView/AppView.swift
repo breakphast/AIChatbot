@@ -66,7 +66,7 @@ struct AppView: View {
         
         var type: LogType {
             switch self {
-            case .existingAuthFail(error: let error), .anonAuthFail(error: let error):
+            case .existingAuthFail, .anonAuthFail:
                 return .severe
             default:
                 return .analytic

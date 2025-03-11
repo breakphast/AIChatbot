@@ -25,3 +25,13 @@ extension Dictionary where Key == String {
         }
     }
 }
+
+extension Dictionary {
+    mutating func merge(_ other: Dictionary?, conflictTakeExisting: Bool = true) {
+        if let other {
+            self.merge(other, uniquingKeysWith: { (existing, new) in
+                return conflictTakeExisting ? existing : new
+            })
+        }
+    }
+}

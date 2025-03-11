@@ -20,7 +20,7 @@ class ChatManager: ObservableObject {
         try await service.createNewChat(chat: chat)
     }
     
-    func addchatMessage(chatID: String, message: ChatMessageModel) async throws {
+    func addChatMessage(chatID: String, message: ChatMessageModel) async throws {
         try await service.addChatMessage(chatID: chatID, message: message)
     }
     
