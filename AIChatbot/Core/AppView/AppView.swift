@@ -28,6 +28,7 @@ struct AppView: View {
         .onAppear {
             logManager.identifyUser(userID: "abc123", name: "desmond", email: "des@des.com")
             logManager.addUserProperties(dict: UserModel.mock.eventParameters, isHighPriority: false)
+            
             logManager.trackEvent(event: Event.alpha)
             logManager.trackEvent(event: Event.beta)
             logManager.trackEvent(event: Event.gamma)
