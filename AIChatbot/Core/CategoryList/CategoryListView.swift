@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CategoryListView: View {
     @Environment(AvatarManager.self) private var avatarManager
+    @Environment(LogManager.self) private var logManager
     @Binding var path: [NavigationPathOption]
     var category: CharacterOption = .alien
     var imageName: String = Constants.randomImage
@@ -54,24 +55,66 @@ struct CategoryListView: View {
             }
         }
         .showCustomAlert(alert: $showAlert)
+        .screenAppearAnalytics(name: "CategoryList")
         .ignoresSafeArea()
         .listStyle(.plain)
         .task {
             await loadAvatars()
-            isLoading = false
+        }
+    }
+    
+    enum Event: LoggableEvent {
+        case loadAvatarsStart
+        case loadAvatarsSuccess
+        case loadAvatarsFailure(error: Error)
+        case avatarPressed(avatar: AvatarModel)
+        
+        var eventName: String {
+            switch self {
+            case .loadAvatarsStart:     return "CategoryList_LoadAvatar_Start"
+            case .loadAvatarsSuccess:   return "CategoryList_LoadAvatar_Success"
+            case .loadAvatarsFailure:   return "CategoryList_LoadAvatar_Failure"
+            case .avatarPressed:        return "CategoryList_Avatar_Pressed"
+            }
+        }
+        
+        var parameters: [String: Any]? {
+            switch self {
+            case .loadAvatarsFailure(let error):
+                return error.eventParameters
+            case .avatarPressed(avatar: let avatar):
+                return avatar.eventParameters
+            default:
+                return nil
+            }
+        }
+        
+        var type: LogType {
+            switch self {
+            case .loadAvatarsFailure:
+                return .severe
+            default:
+                return .analytic
+            }
         }
     }
     
     private func loadAvatars() async {
+        logManager.trackEvent(event: Event.loadAvatarsStart)
         do {
             avatars = try await avatarManager.getAvatarsForCategory(category: category)
+            logManager.trackEvent(event: Event.loadAvatarsSuccess)
         } catch {
             showAlert = AnyAppAlert(error: error)
+            logManager.trackEvent(event: Event.loadAvatarsFailure(error: error))
         }
+        
+        isLoading = false
     }
     
     private func onAvatarPressed(avatar: AvatarModel) {
         path.append(.chat(avatarID: avatar.avatarID, chat: nil))
+        logManager.trackEvent(event: Event.avatarPressed(avatar: avatar))
     }
 }
 
