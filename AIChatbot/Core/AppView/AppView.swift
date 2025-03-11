@@ -27,11 +27,20 @@ struct AppView: View {
         .environment(userManager)
         .onAppear {
             logManager.identifyUser(userID: "abc123", name: "desmond", email: "des@des.com")
-            logManager.addUserProperties(dict: UserModel.mock.eventParameters)
+            logManager.addUserProperties(dict: UserModel.mock.eventParameters, isHighPriority: false)
             logManager.trackEvent(event: Event.alpha)
             logManager.trackEvent(event: Event.beta)
             logManager.trackEvent(event: Event.gamma)
             logManager.trackEvent(event: Event.delta)
+            
+            let event = AnyLoggableEvent(
+                eventName: "MyNewEvent",
+                parameters: UserModel.mock.eventParameters,
+                type: .analytic
+            )
+            
+            logManager.trackEvent(event: event)
+            logManager.trackEvent(eventName: "AnotherEventIsHere")
         }
         .task {
             await checkUserStatus()
