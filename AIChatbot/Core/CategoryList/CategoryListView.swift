@@ -66,21 +66,21 @@ struct CategoryListView: View {
     enum Event: LoggableEvent {
         case loadAvatarsStart
         case loadAvatarsSuccess
-        case loadAvatarsFailure(error: Error)
+        case loadAvatarsFail(error: Error)
         case avatarPressed(avatar: AvatarModel)
         
         var eventName: String {
             switch self {
             case .loadAvatarsStart:     return "CategoryList_LoadAvatar_Start"
             case .loadAvatarsSuccess:   return "CategoryList_LoadAvatar_Success"
-            case .loadAvatarsFailure:   return "CategoryList_LoadAvatar_Failure"
+            case .loadAvatarsFail:   return "CategoryList_LoadAvatar_Fail"
             case .avatarPressed:        return "CategoryList_Avatar_Pressed"
             }
         }
         
         var parameters: [String: Any]? {
             switch self {
-            case .loadAvatarsFailure(let error):
+            case .loadAvatarsFail(let error):
                 return error.eventParameters
             case .avatarPressed(avatar: let avatar):
                 return avatar.eventParameters
@@ -91,7 +91,7 @@ struct CategoryListView: View {
         
         var type: LogType {
             switch self {
-            case .loadAvatarsFailure:
+            case .loadAvatarsFail:
                 return .severe
             default:
                 return .analytic
@@ -106,7 +106,7 @@ struct CategoryListView: View {
             logManager.trackEvent(event: Event.loadAvatarsSuccess)
         } catch {
             showAlert = AnyAppAlert(error: error)
-            logManager.trackEvent(event: Event.loadAvatarsFailure(error: error))
+            logManager.trackEvent(event: Event.loadAvatarsFail(error: error))
         }
         
         isLoading = false

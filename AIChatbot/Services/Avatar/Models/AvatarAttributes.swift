@@ -53,7 +53,7 @@ enum CharacterLocation: String, CaseIterable, Hashable, Codable {
     }
 }
 
-struct AvatarDescriptionBuilder {
+struct AvatarDescriptionBuilder: Codable {
     let characterOption: CharacterOption
     let characterAction: CharacterAction
     let characterLocation: CharacterLocation
@@ -73,5 +73,20 @@ struct AvatarDescriptionBuilder {
     var characterDescription: String {
         let prefix = characterOption.startsWithVowel ? "An" : "A"
         return "\(prefix) \(characterOption.rawValue) that is \(characterAction.rawValue) in the \(characterLocation.rawValue)."
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case characterOption = "character_option"
+        case characterAction = "character_action"
+        case characterLocation = "character_location"
+    }
+    
+    var eventParameters: [String: Any] {
+        [
+            CodingKeys.characterOption.rawValue: characterOption.rawValue,
+            CodingKeys.characterAction.rawValue: characterAction.rawValue,
+            CodingKeys.characterLocation.rawValue: characterLocation.rawValue,
+            "character_description": characterDescription
+        ]
     }
 }
