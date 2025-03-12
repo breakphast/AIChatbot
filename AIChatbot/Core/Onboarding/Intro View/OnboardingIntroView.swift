@@ -33,6 +33,7 @@ struct OnboardingIntroView: View {
         }
         .font(.title3)
         .toolbar(.hidden, for: .navigationBar)
+        .screenAppearAnalytics(name: "OnboardingIntroView")
     }
     
     private var ctaButton: some View {

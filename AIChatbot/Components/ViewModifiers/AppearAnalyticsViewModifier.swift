@@ -17,18 +17,18 @@ struct AppearAnalyticsViewModifier: ViewModifier {
                 logManager.trackScreenEvent(event: Event.appear(name: name))
             }
             .onDisappear {
-                logManager.trackEvent(event: Event.dissapear(name: name))
+                logManager.trackEvent(event: Event.disappear(name: name))
             }
     }
     
     enum Event: LoggableEvent {
         case appear(name: String)
-        case dissapear(name: String)
+        case disappear(name: String)
         
         var eventName: String {
             switch self {
             case .appear(name: let name):       return "\(name)_Appear"
-            case .dissapear(name: let name):    return "\(name)_Disappear"
+            case .disappear(name: let name):    return "\(name)_Disappear"
             }
         }
         
