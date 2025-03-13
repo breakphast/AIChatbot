@@ -79,16 +79,49 @@ struct FirebaseAuthService: AuthService {
             throw AuthError.userNotFound
         }
         
-        try await user.delete()
+        do {
+            try await user.delete()
+        } catch let error as NSError {
+            let authError = AuthErrorCode(rawValue: error.code)
+            switch authError {
+            case .requiresRecentLogin:
+                try await reauthenticateUser(error: error)
+                return try await user.delete()
+            default:
+                throw error
+            }
+        }
+    }
+    
+    private func reauthenticateUser(error: Error) async throws {
+        guard let user = Auth.auth().currentUser, let providerID = user.providerData.first?.providerID else {
+            throw AuthError.userNotFound
+        }
+        
+        let uid = user.uid
+        
+        switch providerID {
+        case "apple.com":
+            let result = try await signInApple()
+            
+            guard user.uid == result.user.uid else {
+                throw AuthError.reauthAccountChanged
+            }
+        default:
+            throw error
+        }
     }
     
     enum AuthError: LocalizedError {
         case userNotFound
+        case reauthAccountChanged
         
         var errorDescription: String? {
             switch self {
             case .userNotFound:
                 return "User not found."
+            case .reauthAccountChanged:
+                return "Reauthentication switched accounts. Please check your account."
             }
         }
     }
