@@ -15,6 +15,7 @@ struct AIChatCourseApp: App {
     var body: some Scene {
         WindowGroup {
             AppView()
+                .environment(delegate.dependencies.pushManager)
                 .environment(delegate.dependencies.aiManager)
                 .environment(delegate.dependencies.avatarManager)
                 .environment(delegate.dependencies.userManager)
@@ -74,6 +75,7 @@ struct Dependencies {
     let userManager: UserManager
     let chatManager: ChatManager
     let logManager: LogManager
+    let pushManager: PushManager
     
     init(config: BuildConfiguration) {
         switch config {
@@ -114,12 +116,15 @@ struct Dependencies {
             userManager = UserManager(services: ProductionUserServices(), logManager: logManager)
             chatManager = ChatManager(service: FirebaseChatService())
         }
+        
+        pushManager = PushManager(logManager: logManager)
     }
 }
 
 extension View {
     func previewEnvironment(isSignedIn: Bool = true) -> some View {
         self
+            .environment(PushManager())
             .environment(AppState())
             .environment(UserManager(services: MockUserServices(user: isSignedIn ? .mock : nil)))
             .environment(AvatarManager(service: MockAvatarService()))
