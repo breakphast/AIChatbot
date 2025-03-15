@@ -238,6 +238,8 @@ struct ChatView: View {
         }
         .font(.callout)
         .foregroundStyle(.secondary)
+        .lineLimit(1)
+        .minimumScaleFactor(0.3)
     }
     
     private func onSendMessagePressed() {

@@ -24,7 +24,11 @@ struct CreateAccountView: View {
                 Text(title)
                     .font(.largeTitle)
                     .fontWeight(.semibold)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
                 Text(subtitle)
+                    .lineLimit(4)
+                    .minimumScaleFactor(0.5)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
@@ -34,9 +38,11 @@ struct CreateAccountView: View {
                 cornerRadius: 10
             )
             .frame(height: 55)
+            .frame(maxWidth: 400)
             .anyButton(.press) {
                 onSignInApplePressed()
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             
             Spacer()
         }
@@ -104,4 +110,7 @@ struct CreateAccountView: View {
 
 #Preview {
     CreateAccountView()
+        .previewEnvironment()
+        .frame(maxHeight: 400)
+        .frame(maxHeight: .infinity, alignment: .bottom)
 }

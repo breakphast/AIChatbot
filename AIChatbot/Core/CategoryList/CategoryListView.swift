@@ -121,19 +121,23 @@ struct CategoryListView: View {
 #Preview("Has data") {
     CategoryListView(path: .constant([]))
         .environment(AvatarManager(service: MockAvatarService()))
+        .previewEnvironment()
 }
 
 #Preview("No data") {
     CategoryListView(path: .constant([]))
         .environment(AvatarManager(service: MockAvatarService(avatars: [])))
+        .previewEnvironment()
 }
 
 #Preview("Slow loading") {
     CategoryListView(path: .constant([]))
         .environment(AvatarManager(service: MockAvatarService(delay: 4)))
+        .previewEnvironment()
 }
 
 #Preview("Error loading") {
     CategoryListView(path: .constant([]))
         .environment(AvatarManager(service: MockAvatarService(delay: 4, showError: true)))
+        .previewEnvironment()
 }

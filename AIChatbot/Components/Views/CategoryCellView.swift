@@ -27,6 +27,8 @@ struct CategoryCellView: View {
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .cellGradientForText()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.3)
             }
         })
         .cornerRadius(cornerRadius)

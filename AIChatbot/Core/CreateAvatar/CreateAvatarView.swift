@@ -56,6 +56,8 @@ struct CreateAvatarView: View {
             TextField("Player 1", text: $avatarName)
         } header: {
             Text("Name your avatar*")
+                .lineLimit(1)
+                .minimumScaleFactor(0.3)
         }
     }
     
@@ -66,6 +68,8 @@ struct CreateAvatarView: View {
                     Text("Generate Image")
                         .underline()
                         .foregroundStyle(.accent)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.2)
                         .anyButton(.plain) {
                             onGenerateImagePressed()
                         }
@@ -94,6 +98,8 @@ struct CreateAvatarView: View {
                 .padding(.top, 24)
                 .disabled(generatedImage == nil || isSaving)
                 .opacity(generatedImage == nil ? 0.5 : 1.0)
+                .frame(maxWidth: 500)
+                .frame(maxWidth: .infinity)
         }
     }
     
@@ -127,6 +133,8 @@ struct CreateAvatarView: View {
             }
         } header: {
             Text("Attributes")
+                .lineLimit(1)
+                .minimumScaleFactor(0.3)
         }
     }
     
@@ -139,10 +147,12 @@ struct CreateAvatarView: View {
                         Image(uiImage: generatedImage)
                             .resizable()
                             .scaledToFill()
-                            .clipShape(Circle())
                     }
                 }
             }
+            .clipShape(Circle())
+            .frame(maxHeight: 400)
+            .frame(maxWidth: .infinity)
     }
     
     enum Event: LoggableEvent {
@@ -257,4 +267,5 @@ struct CreateAvatarView: View {
         .environment(AIManager(service: MockAIService()))
         .environment(AuthManager(service: MockAuthService(user: .mock())))
         .environment(AvatarManager(service: MockAvatarService()))
+        .previewEnvironment()
 }
