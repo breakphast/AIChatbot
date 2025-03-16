@@ -288,19 +288,19 @@ struct SettingsView: View {
     
     private func onDeleteAccountConfirmed() {
         logManager.trackEvent(event: Event.deleteAccountStartConfirm)
+
         Task {
             do {
                 let uid = try authManager.getAuthID()
                 
-                async let deleteAuth: () = authManager.deleteAccount()
-                async let deleteUser: () = userManager.deleteCurrentUser()
-                async let deleteAvatars: () = avatarManager.removeAuthorIDFromAllAvatars(userID: uid)
-                async let deleteChats: () = chatManager.deleteAllChatsForUser(userID: uid)
-                
-                let (_, _, _, _) = await (try deleteAuth, try deleteUser, try deleteAvatars, try deleteChats)
+                try await chatManager.deleteAllChatsForUser(userID: uid)
+                try await avatarManager.removeAuthorIDFromAllAvatars(userID: uid)
+                try await userManager.deleteCurrentUser()
+                try await authManager.deleteAccount()
+
                 logManager.deleteUserProfile()
                 logManager.trackEvent(event: Event.deleteAccountSuccess)
-                
+
                 await dismissScreen()
             } catch {
                 showAlert = AnyAppAlert(error: error)
@@ -318,7 +318,7 @@ private struct RowFormattingViewModifier: ViewModifier {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.vertical, 12)
             .padding(.horizontal, 16)
-            .background(Color(uiColor: .systemBackground))
+            .background(colorScheme.backgroundPrimary)
     }
 }
 

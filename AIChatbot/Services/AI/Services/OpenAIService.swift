@@ -17,7 +17,7 @@ private typealias AssistantMessage = ChatQuery.ChatCompletionMessageParam.Assist
 
 struct OpenAIService: AIService {
     var openAI: OpenAI {
-        OpenAI(apiToken: Keys.openAIKey)
+        OpenAI(apiToken: Keys.openAI)
     }
     func generateImage(input: String) async throws -> UIImage {
         let query = ImagesQuery(
