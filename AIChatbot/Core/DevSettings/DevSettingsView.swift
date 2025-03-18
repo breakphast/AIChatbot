@@ -14,6 +14,7 @@ struct DevSettingsView: View {
     @Environment(UserManager.self) private var userManager
     @Environment(ABTestManager.self) private var abTestManager
     @State private var createAccountTest: Bool = false
+    @State private var onboardingCommunityTest: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -39,6 +40,7 @@ struct DevSettingsView: View {
     
     private func loadABTests() {
         createAccountTest = abTestManager.activeTests.createAccountTest
+        onboardingCommunityTest = abTestManager.activeTests.onboardingCommunityTest
     }
     
     private var backButtonView: some View {
@@ -55,13 +57,40 @@ struct DevSettingsView: View {
     }
     
     private func handleCreateAccountChange(oldValue: Bool, newValue: Bool) {
-        if newValue != abTestManager.activeTests.createAccountTest {
+        updateTest(
+            property: &createAccountTest,
+            newValue: newValue,
+            savedValue: abTestManager.activeTests.createAccountTest,
+            updateAction: { tests in
+                tests.update(createAccountTest: newValue)
+            }
+        )
+    }
+    
+    private func handleOnbCommunityTestChange(oldValue: Bool, newValue: Bool) {
+        updateTest(
+            property: &onboardingCommunityTest,
+            newValue: newValue,
+            savedValue: abTestManager.activeTests.onboardingCommunityTest,
+            updateAction: { tests in
+                tests.update(onboardingCommunityTest: newValue)
+            }
+        )
+    }
+    
+    private func updateTest(
+        property: inout Bool,
+        newValue: Bool,
+        savedValue: Bool,
+        updateAction: (inout ActiveABTests) -> Void
+    ) {
+        if newValue != savedValue {
             do {
                 var tests = abTestManager.activeTests
-                tests.update(createAccountTest: newValue)
+                updateAction(&tests)
                 try abTestManager.override(updatedTests: tests)
             } catch {
-                createAccountTest = abTestManager.activeTests.createAccountTest
+                property = savedValue
             }
         }
     }
@@ -70,6 +99,9 @@ struct DevSettingsView: View {
         Section {
             Toggle("Create Account Test", isOn: $createAccountTest)
                 .onChange(of: createAccountTest, handleCreateAccountChange)
+            
+            Toggle("Onb Community Test", isOn: $onboardingCommunityTest)
+                .onChange(of: onboardingCommunityTest, handleOnbCommunityTestChange)
         } header: {
             Text("AB Tests")
         }
