@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3E3A6A912D8A3588009E07B4 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 3E3A6A902D8A3588009E07B4 /* FirebaseRemoteConfig */; };
 		3E4C86E72D5BF3E400440703 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3E4C86E62D5BF3E400440703 /* SDWebImageSwiftUI */; };
 		3E4D30B22D7509F40086239E /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 3E4D30B12D7509F40086239E /* FirebaseAuth */; };
 		3E4D30BD2D7516690086239E /* SignInAppleAsync in Frameworks */ = {isa = PBXBuildFile; productRef = 3E4D30BC2D7516690086239E /* SignInAppleAsync */; };
@@ -82,6 +83,7 @@
 				3E4D30BD2D7516690086239E /* SignInAppleAsync in Frameworks */,
 				3E4C86E72D5BF3E400440703 /* SDWebImageSwiftUI in Frameworks */,
 				3E8AF2F32D769096002B1609 /* SwiftfulFirestore in Frameworks */,
+				3E3A6A912D8A3588009E07B4 /* FirebaseRemoteConfig in Frameworks */,
 				3E7BD2822D8649A40091F2C3 /* FirebaseFunctions in Frameworks */,
 				3E4D30B22D7509F40086239E /* FirebaseAuth in Frameworks */,
 				3EEF79D42D7FC1930038970D /* FirebaseCrashlytics in Frameworks */,
@@ -171,6 +173,7 @@
 				3EEF79CF2D7FB8DB0038970D /* Mixpanel */,
 				3EEF79D32D7FC1930038970D /* FirebaseCrashlytics */,
 				3E7BD2812D8649A40091F2C3 /* FirebaseFunctions */,
+				3E3A6A902D8A3588009E07B4 /* FirebaseRemoteConfig */,
 			);
 			productName = AIChatbot;
 			productReference = 3EEE7B5B2D5AF00000FD40F3 /* AIChatbot.app */;
@@ -903,6 +906,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		3E3A6A902D8A3588009E07B4 /* FirebaseRemoteConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3E4D30B02D7509F40086239E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseRemoteConfig;
+		};
 		3E4C86E62D5BF3E400440703 /* SDWebImageSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3E4C86E52D5BF3E400440703 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;

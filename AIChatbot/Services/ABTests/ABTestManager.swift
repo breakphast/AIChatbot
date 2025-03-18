@@ -15,9 +15,11 @@ enum CategoryRowTestOption: String, Codable, CaseIterable {
     }
 }
 
-protocol ABTestService {
+@MainActor
+protocol ABTestService: Sendable {
     var activeTests: ActiveABTests { get }
     func saveUpdatedConfig(updatedTests: ActiveABTests) throws
+    func fetchUpdatedConfig() async throws -> ActiveABTests
 }
 
 struct ActiveABTests: Codable {
@@ -25,7 +27,11 @@ struct ActiveABTests: Codable {
     private(set) var onboardingCommunityTest: Bool
     private(set) var categoryRowTest: CategoryRowTestOption
     
-    init(createAccountTest: Bool, onboardingCommunityTest: Bool, categoryRowTest: CategoryRowTestOption) {
+    init(
+        createAccountTest: Bool,
+        onboardingCommunityTest: Bool,
+        categoryRowTest: CategoryRowTestOption
+    ) {
         self.createAccountTest = createAccountTest
         self.onboardingCommunityTest = onboardingCommunityTest
         self.categoryRowTest = categoryRowTest
@@ -60,6 +66,34 @@ struct ActiveABTests: Codable {
     }
 }
 
+extension ActiveABTests {
+    init(config: RemoteConfig) {
+        let createAccountTest = config.configValue(forKey: ActiveABTests.CodingKeys.createAccountTest.rawValue).boolValue
+        print("FOUND CREATE ACCOUNT DATA: \(createAccountTest)")
+        self.createAccountTest = createAccountTest
+        
+        let onboardingCommunityTest = config.configValue(forKey: ActiveABTests.CodingKeys.onboardingCommunityTest.rawValue).boolValue
+        self.onboardingCommunityTest = onboardingCommunityTest
+        
+        let categoryRowTestStringValue = config.configValue(forKey: ActiveABTests.CodingKeys.categoryRowTest.rawValue).stringValue
+        if let option = CategoryRowTestOption(rawValue: categoryRowTestStringValue) {
+            self.categoryRowTest = option
+        } else {
+            self.categoryRowTest = .default
+        }
+    }
+    
+    // Converted to a NSObject dictionary to setDefaults within FIrebaseABTestService
+    var asNSObjectDictionary: [String: NSObject]? {
+        [
+            CodingKeys.createAccountTest.rawValue: createAccountTest as NSObject,
+            CodingKeys.onboardingCommunityTest.rawValue: onboardingCommunityTest as NSObject,
+            CodingKeys.categoryRowTest.rawValue: categoryRowTest.rawValue as NSObject
+        ]
+    }
+}
+
+@MainActor
 class MockABTestService: ABTestService {
     var activeTests: ActiveABTests
     
@@ -74,8 +108,13 @@ class MockABTestService: ABTestService {
     func saveUpdatedConfig(updatedTests: ActiveABTests) throws {
         activeTests = updatedTests
     }
+    
+    func fetchUpdatedConfig() async throws -> ActiveABTests {
+        activeTests
+    }
 }
 
+@MainActor
 class LocalABTestService: ABTestService {
     @UserDefault(key: ActiveABTests.CodingKeys.createAccountTest.rawValue, startingValue: .random())
     private var createAccountTest: Bool
@@ -98,6 +137,10 @@ class LocalABTestService: ABTestService {
         createAccountTest = updatedTests.createAccountTest
         onboardingCommunityTest = updatedTests.onboardingCommunityTest
         categoryRowTest = updatedTests.categoryRowTest
+    }
+    
+    func fetchUpdatedConfig() async throws -> ActiveABTests {
+        activeTests
     }
 }
 
@@ -126,6 +169,49 @@ struct UserDefaultEnum<T: RawRepresentable> where T.RawValue == String {
     }
 }
 
+import FirebaseRemoteConfig
+
+@MainActor
+class FirebaseABTestService: ABTestService {
+    var activeTests: ActiveABTests {
+        ActiveABTests(config: RemoteConfig.remoteConfig())
+    }
+    
+    init() {
+        let settings = RemoteConfigSettings()
+        settings.minimumFetchInterval = 0
+        RemoteConfig.remoteConfig().configSettings = settings
+        let defaultValues = ActiveABTests(
+            createAccountTest: false,
+            onboardingCommunityTest: false,
+            categoryRowTest: .default
+        )
+        RemoteConfig.remoteConfig().setDefaults(defaultValues.asNSObjectDictionary)
+        RemoteConfig.remoteConfig().activate()
+    }
+    
+    func saveUpdatedConfig(updatedTests: ActiveABTests) throws {
+        assertionFailure("Error: Firebase AB Tests are not configurable from the client.")
+    }
+    
+    func fetchUpdatedConfig() async throws -> ActiveABTests {
+        let status = try await RemoteConfig.remoteConfig().fetchAndActivate()
+        
+        switch status {
+        case .successFetchedFromRemote, .successUsingPreFetchedData:
+            return activeTests
+        case .error:
+            throw RemoteConfigError.failedToFetch
+        default:
+            throw RemoteConfigError.failedToFetch
+        }
+    }
+    
+    enum RemoteConfigError: LocalizedError {
+        case failedToFetch
+    }
+}
+
 @MainActor
 @Observable
 class ABTestManager {
@@ -142,12 +228,49 @@ class ABTestManager {
     }
     
     private func configure() {
-        activeTests = service.activeTests
-        logManager?.addUserProperties(dict: activeTests.eventParameters, isHighPriority: false)
+        Task {
+            do {
+                activeTests = try await service.fetchUpdatedConfig()
+                logManager?.trackEvent(event: Event.fetchRemoteConfigSuccess)
+                logManager?.addUserProperties(dict: activeTests.eventParameters, isHighPriority: false)
+            } catch {
+                logManager?.trackEvent(event: Event.fetchRemoteConfigFail(error: error))
+            }
+        }
     }
     
     func override(updatedTests: ActiveABTests) throws {
         try service.saveUpdatedConfig(updatedTests: updatedTests)
         configure()
+    }
+    
+    enum Event: LoggableEvent {
+        case fetchRemoteConfigSuccess
+        case fetchRemoteConfigFail(error: Error)
+        
+        var eventName: String {
+            switch self {
+            case .fetchRemoteConfigSuccess:      return "ABMan_FetchRemote_Success"
+            case .fetchRemoteConfigFail:         return "ABMan_FetchRemote_Fail"
+            }
+        }
+        
+        var parameters: [String: Any]? {
+            switch self {
+            case .fetchRemoteConfigFail(error: let error):
+                return error.eventParameters
+            default:
+                return nil
+            }
+        }
+        
+        var type: LogType {
+            switch self {
+            case .fetchRemoteConfigFail:
+                return .severe
+            default:
+                return .analytic
+            }
+        }
     }
 }
