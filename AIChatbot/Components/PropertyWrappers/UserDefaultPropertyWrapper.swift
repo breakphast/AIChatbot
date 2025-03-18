@@ -32,6 +32,31 @@ struct UserDefault {
     }
 }
 
+@propertyWrapper
+struct UserDefaultEnum<T: RawRepresentable> where T.RawValue == String {
+    let key: String
+    let startingValue: T
+    
+    init(key: String, startingValue: T) {
+        self.key = key
+        self.startingValue = startingValue
+    }
+    
+    var wrappedValue: T {
+        get {
+            if let savedString = UserDefaults.standard.string(forKey: key), let savedValue = T(rawValue: savedString) {
+                return savedValue
+            } else {
+                UserDefaults.standard.set(startingValue.rawValue, forKey: key)
+                return startingValue
+            }
+        }
+        set {
+            UserDefaults.standard.set(newValue.rawValue, forKey: key)
+        }
+    }
+}
+
 protocol UserDefaultsCompatible { }
 extension Bool: UserDefaultsCompatible { }
 extension Int: UserDefaultsCompatible { }
