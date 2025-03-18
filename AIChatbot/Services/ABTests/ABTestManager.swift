@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ActiveABTests: Codable {
-    let createAccountTest: Bool
+    private(set) var createAccountTest: Bool
     
     init(createAccountTest: Bool) {
         self.createAccountTest = createAccountTest
@@ -25,17 +25,66 @@ struct ActiveABTests: Codable {
         
         return dict.compactMapValues({ $0 })
     }
+    
+    mutating func update(createAccountTest newValue: Bool) {
+        createAccountTest = newValue
+    }
 }
 
 protocol ABTestService {
     var activeTests: ActiveABTests { get }
+    func saveUpdatedConfig(updatedTests: ActiveABTests) throws
 }
 
-struct MockABTestService: ABTestService {
-    let activeTests: ActiveABTests
+class MockABTestService: ABTestService {
+    var activeTests: ActiveABTests
     
     init(createAccountTest: Bool? = nil) {
         self.activeTests = ActiveABTests(createAccountTest: createAccountTest ?? false)
+    }
+    
+    func saveUpdatedConfig(updatedTests: ActiveABTests) throws {
+        activeTests = updatedTests
+    }
+}
+
+class LocalABTestService: ABTestService {
+    @UserDefault(key: ActiveABTests.CodingKeys.createAccountTest.rawValue, startingValue: .random())
+    private var createAccountTest: Bool
+    
+    var activeTests: ActiveABTests {
+        ActiveABTests(
+            createAccountTest: createAccountTest
+        )
+    }
+    
+    func saveUpdatedConfig(updatedTests: ActiveABTests) throws {
+        createAccountTest = updatedTests.createAccountTest
+    }
+}
+
+@propertyWrapper
+struct GenericWrapper<Value: UserDefaultsCompatible> {
+    let key: String
+    let startingValue: Value
+    
+    init(key: String, startingValue: Value) {
+        self.key = key
+        self.startingValue = startingValue
+    }
+    
+    var wrappedValue: Value {
+        get {
+            if let savedValue = UserDefaults.standard.value(forKey: key) as? Value {
+                return savedValue
+            } else {
+                UserDefaults.standard.set(startingValue, forKey: key)
+                return startingValue
+            }
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: key)
+        }
     }
 }
 
@@ -55,6 +104,12 @@ class ABTestManager {
     }
     
     private func configure() {
+        activeTests = service.activeTests
         logManager?.addUserProperties(dict: activeTests.eventParameters, isHighPriority: false)
+    }
+    
+    func override(updatedTests: ActiveABTests) throws {
+        try service.saveUpdatedConfig(updatedTests: updatedTests)
+        configure()
     }
 }
