@@ -10,17 +10,19 @@ import Firebase
 
 @main
 struct AIChatCourseApp: App {
+    
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     var body: some Scene {
         WindowGroup {
             AppView()
+                .environment(delegate.dependencies.abTestManager)
                 .environment(delegate.dependencies.pushManager)
+                .environment(delegate.dependencies.chatManager)
                 .environment(delegate.dependencies.aiManager)
                 .environment(delegate.dependencies.avatarManager)
                 .environment(delegate.dependencies.userManager)
                 .environment(delegate.dependencies.authManager)
-                .environment(delegate.dependencies.chatManager)
                 .environment(delegate.dependencies.logManager)
         }
     }
@@ -28,9 +30,8 @@ struct AIChatCourseApp: App {
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     var dependencies: Dependencies!
-    
-    func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         
         let config: BuildConfiguration
         
@@ -41,7 +42,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         #else
         config = .prod
         #endif
-         
+        
         config.configure()
         dependencies = Dependencies(config: config)
         return true
@@ -49,11 +50,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 }
 
 enum BuildConfiguration {
-    case mock(isSignedIn: Bool = true), dev, prod
+    case mock(isSignedIn: Bool), dev, prod
     
     func configure() {
         switch self {
         case .mock:
+            // Mock build does NOT run Firebase
             break
         case .dev:
             let plist = Bundle.main.path(forResource: "GoogleService-Info-Dev", ofType: "plist")!
@@ -69,52 +71,52 @@ enum BuildConfiguration {
 
 @MainActor
 struct Dependencies {
-    let aiManager: AIManager
-    let avatarManager: AvatarManager
     let authManager: AuthManager
     let userManager: UserManager
+    let aiManager: AIManager
+    let avatarManager: AvatarManager
     let chatManager: ChatManager
     let logManager: LogManager
     let pushManager: PushManager
-    
+    let abTestManager: ABTestManager
+
     init(config: BuildConfiguration) {
         switch config {
         case .mock(isSignedIn: let isSignedIn):
             logManager = LogManager(services: [
-                ConsoleService(printParameters: false)
+                ConsoleService(printParameters: true)
             ])
-            aiManager = AIManager(service: MockAIService())
-            avatarManager = AvatarManager(service: MockAvatarService(), local: MockLocalAvatarPersistence())
             authManager = AuthManager(service: MockAuthService(user: isSignedIn ? .mock() : nil), logManager: logManager)
             userManager = UserManager(services: MockUserServices(user: isSignedIn ? .mock : nil), logManager: logManager)
+            aiManager = AIManager(service: MockAIService())
+            avatarManager = AvatarManager(service: MockAvatarService(), local: MockLocalAvatarPersistence())
             chatManager = ChatManager(service: MockChatService())
+            abTestManager = ABTestManager(service: MockABTestService(), logManager: logManager)
         case .dev:
-            logManager = LogManager(
-                services: [
-                    ConsoleService(printParameters: false),
-                    FirebaseAnalyticsService(),
-                    MixpanelService(token: Keys.mixpanelToken),
-                    FirebaseCrashlyticsService()
-                ]
-            ) 
-            aiManager = AIManager(service: OpenAIService())
-            avatarManager = AvatarManager(service: FirebaseAvatarService(), local: SwiftDataLocalAvatarPersistence())
+            logManager = LogManager(services: [
+                ConsoleService(printParameters: true),
+                FirebaseAnalyticsService(),
+                MixpanelService(token: Keys.mixpanelToken),
+                FirebaseCrashlyticsService()
+            ])
             authManager = AuthManager(service: FirebaseAuthService(), logManager: logManager)
             userManager = UserManager(services: ProductionUserServices(), logManager: logManager)
+            aiManager = AIManager(service: OpenAIService())
+            avatarManager = AvatarManager(service: FirebaseAvatarService(), local: SwiftDataLocalAvatarPersistence())
             chatManager = ChatManager(service: FirebaseChatService())
+            abTestManager = ABTestManager(service: MockABTestService(), logManager: logManager)
         case .prod:
-            logManager = LogManager(
-                services: [
-                    FirebaseAnalyticsService(),
-                    MixpanelService(token: Keys.mixpanelToken),
-                    FirebaseCrashlyticsService()
-                ]
-            )
-            aiManager = AIManager(service: OpenAIService())
-            avatarManager = AvatarManager(service: FirebaseAvatarService(), local: SwiftDataLocalAvatarPersistence())
+            logManager = LogManager(services: [
+                FirebaseAnalyticsService(),
+                MixpanelService(token: Keys.mixpanelToken),
+                FirebaseCrashlyticsService()
+            ])
             authManager = AuthManager(service: FirebaseAuthService(), logManager: logManager)
             userManager = UserManager(services: ProductionUserServices(), logManager: logManager)
+            aiManager = AIManager(service: OpenAIService())
+            avatarManager = AvatarManager(service: FirebaseAvatarService(), local: SwiftDataLocalAvatarPersistence())
             chatManager = ChatManager(service: FirebaseChatService())
+            abTestManager = ABTestManager(service: MockABTestService(), logManager: logManager)
         }
         
         pushManager = PushManager(logManager: logManager)
@@ -124,13 +126,14 @@ struct Dependencies {
 extension View {
     func previewEnvironment(isSignedIn: Bool = true) -> some View {
         self
+            .environment(ABTestManager(service: MockABTestService()))
             .environment(PushManager())
-            .environment(AppState())
-            .environment(UserManager(services: MockUserServices(user: isSignedIn ? .mock : nil)))
-            .environment(AvatarManager(service: MockAvatarService()))
-            .environment(AuthManager(service: MockAuthService(user: isSignedIn ? .mock() : nil)))
-            .environment(AIManager(service: MockAIService()))
             .environment(ChatManager(service: MockChatService()))
+            .environment(AIManager(service: MockAIService()))
+            .environment(AvatarManager(service: MockAvatarService()))
+            .environment(UserManager(services: MockUserServices(user: isSignedIn ? .mock : nil)))
+            .environment(AuthManager(service: MockAuthService(user: isSignedIn ? .mock() : nil)))
+            .environment(AppState())
             .environment(LogManager(services: []))
     }
 }

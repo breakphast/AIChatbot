@@ -39,8 +39,6 @@ struct OpenAIService: AIService {
             "messages": messages
         ])
         
-        let dict = response.data as? [String: Any]
-        
         guard
             let dict = response.data as? [String: Any],
             let roleString = dict["role"] as? String,
