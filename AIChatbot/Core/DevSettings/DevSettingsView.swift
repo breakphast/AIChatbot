@@ -15,6 +15,7 @@ struct DevSettingsView: View {
     @Environment(ABTestManager.self) private var abTestManager
     @State private var createAccountTest: Bool = false
     @State private var onboardingCommunityTest: Bool = false
+    @State private var categoryRowTest: CategoryRowTestOption = .original
     
     var body: some View {
         NavigationStack {
@@ -41,6 +42,7 @@ struct DevSettingsView: View {
     private func loadABTests() {
         createAccountTest = abTestManager.activeTests.createAccountTest
         onboardingCommunityTest = abTestManager.activeTests.onboardingCommunityTest
+        categoryRowTest = abTestManager.activeTests.categoryRowTest
     }
     
     private var backButtonView: some View {
@@ -78,10 +80,21 @@ struct DevSettingsView: View {
         )
     }
     
-    private func updateTest(
-        property: inout Bool,
-        newValue: Bool,
-        savedValue: Bool,
+    private func onCategoryRowOptionChanged(oldValue: CategoryRowTestOption, newValue: CategoryRowTestOption) {
+        updateTest(
+            property: &categoryRowTest,
+            newValue: newValue,
+            savedValue: abTestManager.activeTests.categoryRowTest,
+            updateAction: { tests in
+                tests.update(categoryRowTest: newValue)
+            }
+        )
+    }
+    
+    private func updateTest<Value: Equatable>(
+        property: inout Value,
+        newValue: Value,
+        savedValue: Value,
         updateAction: (inout ActiveABTests) -> Void
     ) {
         if newValue != savedValue {
@@ -102,6 +115,14 @@ struct DevSettingsView: View {
             
             Toggle("Onb Community Test", isOn: $onboardingCommunityTest)
                 .onChange(of: onboardingCommunityTest, handleOnbCommunityTestChange)
+            
+            Picker("Category Row Test", selection: $categoryRowTest) {
+                ForEach(CategoryRowTestOption.allCases, id: \.self) { option in
+                    Text(option.rawValue)
+                        .id(option)
+                }
+            }
+            .onChange(of: categoryRowTest, onCategoryRowOptionChanged)
         } header: {
             Text("AB Tests")
         }

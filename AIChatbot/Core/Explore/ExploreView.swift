@@ -49,11 +49,19 @@ struct ExploreView: View {
                     .removeListRowFormatting()
                 }
                 
+                if !popularAvatars.isEmpty {
+                    if abTestManager.activeTests.categoryRowTest == .top {
+                        categorySection
+                    }
+                }
+                
                 if !featuredAvatars.isEmpty {
                     featuredSection
                 }
                 if !popularAvatars.isEmpty {
-                    categorySection
+                    if abTestManager.activeTests.categoryRowTest == .original {
+                        categorySection
+                    }
                     popularSection
                 }
             }
@@ -107,7 +115,6 @@ struct ExploreView: View {
         logManager.trackEvent(event: Event.deepLinkStart)
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
               let queryItems = components.queryItems else {
-            print("NO QUERY ITEMS!")
             logManager.trackEvent(event: Event.deepLinkNoQueryItems)
             return
         }
@@ -430,6 +437,27 @@ struct ExploreView: View {
 #Preview("Has Data") {
     ExploreView()
         .environment(AvatarManager(service: MockAvatarService()))
+        .previewEnvironment()
+}
+
+#Preview("CategoryRowTest: Original") {
+    ExploreView()
+        .environment(AvatarManager(service: MockAvatarService()))
+        .environment(ABTestManager(service: MockABTestService(categoryRowTest: .original)))
+        .previewEnvironment()
+}
+
+#Preview("CategoryRowTest: Top") {
+    ExploreView()
+        .environment(AvatarManager(service: MockAvatarService()))
+        .environment(ABTestManager(service: MockABTestService(categoryRowTest: .top)))
+        .previewEnvironment()
+}
+
+#Preview("CategoryRowTest: Hidden") {
+    ExploreView()
+        .environment(AvatarManager(service: MockAvatarService()))
+        .environment(ABTestManager(service: MockABTestService(categoryRowTest: .hidden)))
         .previewEnvironment()
 }
 
