@@ -12,6 +12,7 @@
 		3E4D30B22D7509F40086239E /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 3E4D30B12D7509F40086239E /* FirebaseAuth */; };
 		3E4D30BD2D7516690086239E /* SignInAppleAsync in Frameworks */ = {isa = PBXBuildFile; productRef = 3E4D30BC2D7516690086239E /* SignInAppleAsync */; };
 		3E50DCAD2D77D53100BC15B3 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 3E50DCAC2D77D53100BC15B3 /* FirebaseStorage */; };
+		3E70F03C2D8B0557004BC604 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E70F03B2D8B0557004BC604 /* StoreKit.framework */; };
 		3E7BD2822D8649A40091F2C3 /* FirebaseFunctions in Frameworks */ = {isa = PBXBuildFile; productRef = 3E7BD2812D8649A40091F2C3 /* FirebaseFunctions */; };
 		3E8AF2F02D768A8A002B1609 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 3E8AF2EF2D768A8A002B1609 /* FirebaseFirestore */; };
 		3E8AF2F32D769096002B1609 /* SwiftfulFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 3E8AF2F22D769096002B1609 /* SwiftfulFirestore */; };
@@ -39,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3E70F03B2D8B0557004BC604 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		3EEE7B5B2D5AF00000FD40F3 /* AIChatbot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AIChatbot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3EEE7B6B2D5AF00100FD40F3 /* AIChatbotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AIChatbotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3EEE7B752D5AF00100FD40F3 /* AIChatbotUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AIChatbotUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -91,6 +93,7 @@
 				3EEF79D02D7FB8DB0038970D /* Mixpanel in Frameworks */,
 				3E8AF2F02D768A8A002B1609 /* FirebaseFirestore in Frameworks */,
 				3E99E7C92D6C074900BEB5B4 /* SwiftfulUtilities in Frameworks */,
+				3E70F03C2D8B0557004BC604 /* StoreKit.framework in Frameworks */,
 				3EEF79CB2D7FAE550038970D /* FirebaseAnalytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -115,6 +118,7 @@
 		3E8AF2EE2D768A8A002B1609 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3E70F03B2D8B0557004BC604 /* StoreKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

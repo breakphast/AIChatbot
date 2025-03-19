@@ -50,6 +50,9 @@
             ReferencedContainer = "container:AIChatbot.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <StoreKitConfigurationFileReference
+         identifier = "../../AIChatbot/Services/Purchases/AIChatPurchaseConfiguration.storekit">
+      </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
