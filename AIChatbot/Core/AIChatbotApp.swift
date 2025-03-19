@@ -16,6 +16,7 @@ struct AIChatCourseApp: App {
     var body: some Scene {
         WindowGroup {
             AppView()
+                .environment(delegate.dependencies.purchaseManager)
                 .environment(delegate.dependencies.abTestManager)
                 .environment(delegate.dependencies.pushManager)
                 .environment(delegate.dependencies.chatManager)
@@ -130,6 +131,7 @@ struct Dependencies {
 extension View {
     func previewEnvironment(isSignedIn: Bool = true) -> some View {
         self
+            .environment(PurchaseManager(service: MockPurchaseService()))
             .environment(ABTestManager(service: MockABTestService()))
             .environment(PushManager())
             .environment(ChatManager(service: MockChatService()))

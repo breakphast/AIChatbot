@@ -14,6 +14,7 @@ struct ChatView: View {
     @Environment(AuthManager.self) private var authManager
     @Environment(ChatManager.self) private var chatManager
     @Environment(LogManager.self) private var logManager
+    @Environment(PurchaseManager.self) private var purchaseManager
     @Environment(\.dismiss) var dismiss
     
     @State private var chatMessages: [ChatMessageModel] = []
@@ -27,6 +28,7 @@ struct ChatView: View {
     @State private var showAlert: AnyAppAlert?
     @State private var showChatSettings: AnyAppAlert?
     @State private var showProfileModal = false
+    @State private var showPaywall = false
     @State private var isGeneratingResponse = false
     
     var avatarID: String = AvatarModel.mock.avatarID
@@ -62,6 +64,9 @@ struct ChatView: View {
                 profileModal(avatar: avatar)
             }
         }
+        .sheet(isPresented: $showPaywall, content: {
+            PaywallView()
+        })
         .task {
             await loadAvatar()
         }
@@ -248,6 +253,11 @@ struct ChatView: View {
         
         Task {
             do {
+                let isPremium = purchaseManager.entitlements.hasActiveEntitlement
+                if !isPremium && chatMessages.count >= 3 {
+                    showPaywall = true
+                    return
+                }
                 // Get userID
                 let uid = try authManager.getAuthID()
                 // Validate textField text
@@ -390,6 +400,7 @@ struct ChatView: View {
         case loadMessagesFail(error: Error)
         case messageSeenFail(error: Error)
         case sendMessageStart(chat: ChatModel?, avatar: AvatarModel?)
+        case sendMessagePaywall(chat: ChatModel?, avatar: AvatarModel?)
         case sendMessageFail(error: Error)
         case sendMessageSent(chat: ChatModel?, avatar: AvatarModel?, message: ChatMessageModel)
         case sendMessageResponse(chat: ChatModel?, avatar: AvatarModel?, message: ChatMessageModel)
@@ -416,6 +427,7 @@ struct ChatView: View {
             case .loadMessagesFail:             return "ChatView_LoadMessages_Fail"
             case .messageSeenFail:              return "ChatView_MessageSeen_Fail"
             case .sendMessageStart:             return "ChatView_SendMessage_Start"
+            case .sendMessagePaywall:           return "ChatView_SendMessage_Paywall"
             case .sendMessageFail:              return "ChatView_SendMessage_Fail"
             case .sendMessageSent:              return "ChatView_SendMessage_Sent"
             case .sendMessageResponse:          return "ChatView_SendMessage_Response"
@@ -440,7 +452,7 @@ struct ChatView: View {
                 return avatar?.eventParameters
             case .loadChatSuccess(chat: let chat):
                 return chat?.eventParameters
-            case .sendMessageStart(chat: let chat, avatar: let avatar):
+            case .sendMessageStart(chat: let chat, avatar: let avatar), .sendMessagePaywall(chat: let chat, avatar: let avatar):
                 var dict = chat?.eventParameters ?? [:]
                 dict.merge(avatar?.eventParameters)
                 return dict
@@ -472,6 +484,21 @@ struct ChatView: View {
 #Preview("Working Chat") {
     NavigationStack {
         ChatView()
+            .previewEnvironment()
+    }
+}
+
+#Preview("Working Chat - Not Premium") {
+    NavigationStack {
+        ChatView()
+            .previewEnvironment()
+    }
+}
+
+#Preview("Working Chat - Premium") {
+    NavigationStack {
+        ChatView()
+            .environment(PurchaseManager(service: MockPurchaseService(activeEntitlements: [.mock])))
             .previewEnvironment()
     }
 }
