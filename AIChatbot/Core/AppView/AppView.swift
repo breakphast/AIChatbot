@@ -13,6 +13,7 @@ struct AppView: View {
     @Environment(AuthManager.self) private var authManager
     @Environment(UserManager.self) private var userManager
     @Environment(LogManager.self) private var logManager
+    @Environment(PurchaseManager.self) private var purchaseManager
     @Environment(\.scenePhase) private var scenePhase
     @State var appState = AppState()
     
@@ -111,6 +112,10 @@ struct AppView: View {
             
             do {
                 try await userManager.login(auth: user, isNewUser: false)
+                try await purchaseManager.login(
+                    userID: user.uid,
+                    attributes: PurchaseProfileAttributes(email: user.email)
+                )
             } catch {
                 logManager.trackEvent(event: Event.existingAuthFail(error: error))
                 await checkUserStatus()
@@ -122,6 +127,7 @@ struct AppView: View {
                 logManager.trackEvent(event: Event.anonAuthSuccess)
                 
                 try await userManager.login(auth: result.user, isNewUser: result.isNewUser)
+                try await purchaseManager.login(userID: result.user.uid)
             } catch {
                 logManager.trackEvent(event: Event.anonAuthFail(error: error))
                 await checkUserStatus()

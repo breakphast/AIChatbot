@@ -16,6 +16,7 @@ struct SettingsView: View {
     @Environment(ChatManager.self) private var chatManager
     @Environment(AppState.self) private var appState
     @Environment(LogManager.self) private var logManager
+    @Environment(PurchaseManager.self) private var purchaseManager
     @State private var isPremium = false
     @State private var isAnonymousUser = false
     @State private var showCreateAccountView = false
@@ -246,6 +247,7 @@ struct SettingsView: View {
         Task {
             do {
                 try authManager.signOut()
+                try await purchaseManager.logOut()
                 userManager.signOut()
                 logManager.trackEvent(event: Event.signOutSuccess)
                 await dismissScreen()
@@ -297,6 +299,7 @@ struct SettingsView: View {
                 try await avatarManager.removeAuthorIDFromAllAvatars(userID: uid)
                 try await userManager.deleteCurrentUser()
                 try await authManager.deleteAccount()
+                try await purchaseManager.logOut()
 
                 logManager.deleteUserProfile()
                 logManager.trackEvent(event: Event.deleteAccountSuccess)
