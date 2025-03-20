@@ -12,6 +12,8 @@
 		3E4D30B22D7509F40086239E /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 3E4D30B12D7509F40086239E /* FirebaseAuth */; };
 		3E4D30BD2D7516690086239E /* SignInAppleAsync in Frameworks */ = {isa = PBXBuildFile; productRef = 3E4D30BC2D7516690086239E /* SignInAppleAsync */; };
 		3E50DCAD2D77D53100BC15B3 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 3E50DCAC2D77D53100BC15B3 /* FirebaseStorage */; };
+		3E6BC5EB2D8C634E00268F31 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 3E6BC5EA2D8C634E00268F31 /* RevenueCat */; };
+		3E6BC5ED2D8C634E00268F31 /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3E6BC5EC2D8C634E00268F31 /* RevenueCatUI */; };
 		3E70F03C2D8B0557004BC604 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E70F03B2D8B0557004BC604 /* StoreKit.framework */; };
 		3E7BD2822D8649A40091F2C3 /* FirebaseFunctions in Frameworks */ = {isa = PBXBuildFile; productRef = 3E7BD2812D8649A40091F2C3 /* FirebaseFunctions */; };
 		3E8AF2F02D768A8A002B1609 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 3E8AF2EF2D768A8A002B1609 /* FirebaseFirestore */; };
@@ -84,11 +86,13 @@
 			files = (
 				3E4D30BD2D7516690086239E /* SignInAppleAsync in Frameworks */,
 				3E4C86E72D5BF3E400440703 /* SDWebImageSwiftUI in Frameworks */,
+				3E6BC5EB2D8C634E00268F31 /* RevenueCat in Frameworks */,
 				3E8AF2F32D769096002B1609 /* SwiftfulFirestore in Frameworks */,
 				3E3A6A912D8A3588009E07B4 /* FirebaseRemoteConfig in Frameworks */,
 				3E7BD2822D8649A40091F2C3 /* FirebaseFunctions in Frameworks */,
 				3E4D30B22D7509F40086239E /* FirebaseAuth in Frameworks */,
 				3EEF79D42D7FC1930038970D /* FirebaseCrashlytics in Frameworks */,
+				3E6BC5ED2D8C634E00268F31 /* RevenueCatUI in Frameworks */,
 				3E50DCAD2D77D53100BC15B3 /* FirebaseStorage in Frameworks */,
 				3EEF79D02D7FB8DB0038970D /* Mixpanel in Frameworks */,
 				3E8AF2F02D768A8A002B1609 /* FirebaseFirestore in Frameworks */,
@@ -178,6 +182,8 @@
 				3EEF79D32D7FC1930038970D /* FirebaseCrashlytics */,
 				3E7BD2812D8649A40091F2C3 /* FirebaseFunctions */,
 				3E3A6A902D8A3588009E07B4 /* FirebaseRemoteConfig */,
+				3E6BC5EA2D8C634E00268F31 /* RevenueCat */,
+				3E6BC5EC2D8C634E00268F31 /* RevenueCatUI */,
 			);
 			productName = AIChatbot;
 			productReference = 3EEE7B5B2D5AF00000FD40F3 /* AIChatbot.app */;
@@ -268,6 +274,7 @@
 				3E4D30BB2D7516690086239E /* XCRemoteSwiftPackageReference "SignInAppleAsync" */,
 				3E8AF2F12D769096002B1609 /* XCRemoteSwiftPackageReference "SwiftfulFirestore" */,
 				3EEF79CE2D7FB8DB0038970D /* XCRemoteSwiftPackageReference "mixpanel-swift" */,
+				3E6BC5E92D8C634E00268F31 /* XCRemoteSwiftPackageReference "purchases-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3EEE7B5C2D5AF00000FD40F3 /* Products */;
@@ -883,6 +890,14 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		3E6BC5E92D8C634E00268F31 /* XCRemoteSwiftPackageReference "purchases-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.20.0;
+			};
+		};
 		3E8AF2F12D769096002B1609 /* XCRemoteSwiftPackageReference "SwiftfulFirestore" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulFirestore";
@@ -934,6 +949,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3E4D30B02D7509F40086239E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		3E6BC5EA2D8C634E00268F31 /* RevenueCat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3E6BC5E92D8C634E00268F31 /* XCRemoteSwiftPackageReference "purchases-ios" */;
+			productName = RevenueCat;
+		};
+		3E6BC5EC2D8C634E00268F31 /* RevenueCatUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3E6BC5E92D8C634E00268F31 /* XCRemoteSwiftPackageReference "purchases-ios" */;
+			productName = RevenueCatUI;
 		};
 		3E7BD2812D8649A40091F2C3 /* FirebaseFunctions */ = {
 			isa = XCSwiftPackageProductDependency;

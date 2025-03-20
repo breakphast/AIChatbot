@@ -9,4 +9,5 @@ import Foundation
 
 struct Keys {
     static let mixpanelToken = "6b1c37ebd6c9493060031d0625b002de"
+    static let revenueCatApiKey = "appl_gfEgmVzzBucsyPKHNvCezanbump"
 }

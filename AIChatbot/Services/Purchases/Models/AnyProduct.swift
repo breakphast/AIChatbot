@@ -60,14 +60,14 @@ public struct AnyProduct: Identifiable, Codable, Sendable {
         id: EntitlementOption.yearly.productID,
         title: "Yearly subscription",
         subtitle: "This is a yearly subscription description.",
-        priceString: "$99/year",
+        priceString: "$99",
         productDuration: .year
     )
     public static let mockMonthly: AnyProduct = AnyProduct(
         id: "mock.monthly.id",
         title: "Monthly subscription",
         subtitle: "This is a monthly subscription description.",
-        priceString: "$10/month",
+        priceString: "$10",
         productDuration: .month
     )
 
