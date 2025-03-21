@@ -22,12 +22,13 @@ struct PaywallView: View {
             if products.isEmpty {
                 ProgressView()
             } else {
-                CustomPaywallView(
-                    products: products,
-                    backButtonPressed: onBackButtonPressed,
-                    restorePurchasePressed: onRestorePurchasePressed,
-                    purchaseProductPressed: onPurchaseProductPressed
-                )
+                RevenueCatPaywallView()
+//                CustomPaywallView(
+//                    products: products,
+//                    backButtonPressed: onBackButtonPressed,
+//                    restorePurchasePressed: onRestorePurchasePressed,
+//                    purchaseProductPressed: onPurchaseProductPressed
+//                )
             }
         }
         .screenAppearAnalytics(name: "Paywall")
