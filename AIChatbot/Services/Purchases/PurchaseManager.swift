@@ -390,20 +390,26 @@ struct RevenueCatPurchaseService: PurchaseService {
         if let email = attributes.email {
             Purchases.shared.attribution.setEmail(email)
         }
+        if let firebaseAppInstanceID = attributes.firebaseAppInstanceID {
+            Purchases.shared.attribution.setFirebaseAppInstanceID(firebaseAppInstanceID)
+        }
         
-        Purchases.shared.attribution.setFirebaseAppInstanceID(attributes.firebaseAppInstanceID)
+        if let mixpanelDistinctID = attributes.mixpanelDistinctID {
+            Purchases.shared.attribution.setMixpanelDistinctID(mixpanelDistinctID)
+        }
     }
-    
 }
 
 struct PurchaseProfileAttributes {
-    init(email: String? = nil, firebaseAppInstanceID: String? = nil) {
+    init(email: String? = nil, firebaseAppInstanceID: String? = nil, mixpanelDistinctID: String? = nil) {
         self.email = email
         self.firebaseAppInstanceID = firebaseAppInstanceID
+        self.mixpanelDistinctID = mixpanelDistinctID
     }
     
     let email: String?
     let firebaseAppInstanceID: String?
+    let mixpanelDistinctID: String?
 }
 
 enum PurchaseError: LocalizedError {

@@ -102,7 +102,8 @@ struct CreateAccountView: View {
                     userID: result.user.uid,
                     attributes: PurchaseProfileAttributes(
                         email: result.user.email,
-                        firebaseAppInstanceID: FirebaseAnalyticsService.appInstanceID
+                        firebaseAppInstanceID: FirebaseAnalyticsService.appInstanceID,
+                        mixpanelDistinctID: MixpanelService.distinctID
                     )
                 )
                 

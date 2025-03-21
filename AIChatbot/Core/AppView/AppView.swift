@@ -116,7 +116,8 @@ struct AppView: View {
                     userID: user.uid,
                     attributes: PurchaseProfileAttributes(
                         email: user.email,
-                        firebaseAppInstanceID: FirebaseAnalyticsService.appInstanceID
+                        firebaseAppInstanceID: FirebaseAnalyticsService.appInstanceID,
+                        mixpanelDistinctID: MixpanelService.distinctID
                     )
                 )
             } catch {
@@ -133,7 +134,8 @@ struct AppView: View {
                 try await purchaseManager.login(
                     userID: result.user.uid,
                     attributes: PurchaseProfileAttributes(
-                        firebaseAppInstanceID: FirebaseAnalyticsService.appInstanceID
+                        firebaseAppInstanceID: FirebaseAnalyticsService.appInstanceID,
+                        mixpanelDistinctID: MixpanelService.distinctID
                     )
                 )
             } catch {
