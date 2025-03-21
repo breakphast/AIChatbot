@@ -114,7 +114,10 @@ struct AppView: View {
                 try await userManager.login(auth: user, isNewUser: false)
                 try await purchaseManager.login(
                     userID: user.uid,
-                    attributes: PurchaseProfileAttributes(email: user.email)
+                    attributes: PurchaseProfileAttributes(
+                        email: user.email,
+                        firebaseAppInstanceID: FirebaseAnalyticsService.appInstanceID
+                    )
                 )
             } catch {
                 logManager.trackEvent(event: Event.existingAuthFail(error: error))
@@ -127,7 +130,12 @@ struct AppView: View {
                 logManager.trackEvent(event: Event.anonAuthSuccess)
                 
                 try await userManager.login(auth: result.user, isNewUser: result.isNewUser)
-                try await purchaseManager.login(userID: result.user.uid)
+                try await purchaseManager.login(
+                    userID: result.user.uid,
+                    attributes: PurchaseProfileAttributes(
+                        firebaseAppInstanceID: FirebaseAnalyticsService.appInstanceID
+                    )
+                )
             } catch {
                 logManager.trackEvent(event: Event.anonAuthFail(error: error))
                 await checkUserStatus()

@@ -17,6 +17,14 @@ fileprivate extension String {
 }
 
 struct FirebaseAnalyticsService: LogService {
+    static var appInstanceID: String? {
+        #if MOCK
+        return nil
+        #else
+        Analytics.appInstanceID()
+        #endif
+    }
+    
     func identifyUser(userID: String, name: String?, email: String?) {
         Analytics.setUserID(userID)
         

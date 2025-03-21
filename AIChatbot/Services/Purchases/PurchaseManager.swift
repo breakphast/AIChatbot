@@ -17,7 +17,6 @@ protocol PurchaseService: Sendable {
     func purchaseProduct(productID: String) async throws -> [PurchasedEntitlement]
     
     func login(userID: String) async throws -> [PurchasedEntitlement]
-    
     func logOut() async throws
     
     func updateProfileAttributes(attributes: PurchaseProfileAttributes) async throws
@@ -391,12 +390,20 @@ struct RevenueCatPurchaseService: PurchaseService {
         if let email = attributes.email {
             Purchases.shared.attribution.setEmail(email)
         }
+        
+        Purchases.shared.attribution.setFirebaseAppInstanceID(attributes.firebaseAppInstanceID)
     }
     
 }
 
 struct PurchaseProfileAttributes {
+    init(email: String? = nil, firebaseAppInstanceID: String? = nil) {
+        self.email = email
+        self.firebaseAppInstanceID = firebaseAppInstanceID
+    }
+    
     let email: String?
+    let firebaseAppInstanceID: String?
 }
 
 enum PurchaseError: LocalizedError {
