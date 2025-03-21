@@ -11,11 +11,17 @@ import SwiftUI
 class MockABTestService: ABTestService {
     var activeTests: ActiveABTests
     
-    init(createAccountTest: Bool? = nil, onboardingCommunityTest: Bool? = nil, categoryRowTest: CategoryRowTestOption? = nil) {
+    init(
+        createAccountTest: Bool? = nil,
+        onboardingCommunityTest: Bool? = nil,
+        categoryRowTest: CategoryRowTestOption? = nil,
+        paywallTest: PaywallTestOption? = nil
+    ) {
         self.activeTests = ActiveABTests(
             createAccountTest: createAccountTest ?? false,
             onboardingCommunityTest: onboardingCommunityTest ?? false,
-            categoryRowTest: categoryRowTest ?? .default
+            categoryRowTest: categoryRowTest ?? .default,
+            paywallTest: paywallTest ?? .default
         )
     }
     

@@ -11,6 +11,7 @@ import StoreKit
 struct PaywallView: View {
     @Environment(PurchaseManager.self) private var purchaseManager
     @Environment(LogManager.self) private var logManager
+    @Environment(ABTestManager.self) private var abTestManager
     @Environment(\.dismiss) private var dismiss
     
     @State private var products: [AnyProduct] = []
@@ -19,16 +20,25 @@ struct PaywallView: View {
     
     var body: some View {
         ZStack {
-            if products.isEmpty {
-                ProgressView()
-            } else {
+            switch abTestManager.activeTests.paywallTest {
+            case .custom:
+                if products.isEmpty {
+                    ProgressView()
+                } else {
+                    CustomPaywallView(
+                        products: products,
+                        backButtonPressed: onBackButtonPressed,
+                        restorePurchasePressed: onRestorePurchasePressed,
+                        purchaseProductPressed: onPurchaseProductPressed
+                    )
+                }
+            case .revenueCat:
                 RevenueCatPaywallView()
-//                CustomPaywallView(
-//                    products: products,
-//                    backButtonPressed: onBackButtonPressed,
-//                    restorePurchasePressed: onRestorePurchasePressed,
-//                    purchaseProductPressed: onPurchaseProductPressed
-//                )
+            case .storeKit:
+                StoreKitPaywallView(
+                    inAppPurchaseStart: onPurchaseStart,
+                    onInAppPurchaseCompletion: onPurchaseComplete
+                )
             }
         }
         .screenAppearAnalytics(name: "Paywall")
@@ -37,7 +47,7 @@ struct PaywallView: View {
             await onLoadProducts()
         }
     }
-    
+        
     private func onLoadProducts() async {
         do {
             products = try await purchaseManager.getProducts(productIDs: productIDs)
@@ -154,7 +164,19 @@ struct PaywallView: View {
     }
 }
 
-#Preview {
+#Preview("Custom") {
     PaywallView()
+        .environment(ABTestManager(service: MockABTestService(paywallTest: .custom)))
+        .previewEnvironment()
+}
+
+#Preview("RevenueCat") {
+    PaywallView()
+        .environment(ABTestManager(service: MockABTestService(paywallTest: .revenueCat)))
+        .previewEnvironment()
+}
+#Preview("StoreKit") {
+    PaywallView()
+        .environment(ABTestManager(service: MockABTestService(paywallTest: .storeKit)))
         .previewEnvironment()
 }

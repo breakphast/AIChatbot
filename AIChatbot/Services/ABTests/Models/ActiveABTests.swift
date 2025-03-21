@@ -12,28 +12,33 @@ struct ActiveABTests: Codable {
     private(set) var createAccountTest: Bool
     private(set) var onboardingCommunityTest: Bool
     private(set) var categoryRowTest: CategoryRowTestOption
+    private(set) var paywallTest: PaywallTestOption
     
     init(
         createAccountTest: Bool,
         onboardingCommunityTest: Bool,
-        categoryRowTest: CategoryRowTestOption
+        categoryRowTest: CategoryRowTestOption,
+        paywallTest: PaywallTestOption
     ) {
         self.createAccountTest = createAccountTest
         self.onboardingCommunityTest = onboardingCommunityTest
         self.categoryRowTest = categoryRowTest
+        self.paywallTest = paywallTest
     }
     
     enum CodingKeys: String, CodingKey {
         case createAccountTest = "_202503_CreateAccTest"
         case onboardingCommunityTest = "_202503_OnbCommunityTest"
         case categoryRowTest = "_202503_categoryRowTest"
+        case paywallTest = "_202503_paywallTest"
     }
     
     var eventParameters: [String: Any] {
         let dict: [String: Any?] = [
             "test\(CodingKeys.createAccountTest.rawValue)": createAccountTest,
             "test\(CodingKeys.onboardingCommunityTest.rawValue)": onboardingCommunityTest,
-            "test\(CodingKeys.categoryRowTest.rawValue)": categoryRowTest.rawValue
+            "test\(CodingKeys.categoryRowTest.rawValue)": categoryRowTest.rawValue,
+            "test\(CodingKeys.paywallTest.rawValue)": paywallTest.rawValue
         ]
         
         return dict.compactMapValues({ $0 })
@@ -50,13 +55,16 @@ struct ActiveABTests: Codable {
     mutating func update(categoryRowTest newValue: CategoryRowTestOption) {
         categoryRowTest = newValue
     }
+    
+    mutating func update(paywallTest newValue: PaywallTestOption) {
+        paywallTest = newValue
+    }
 }
 
 // MARK: REMOTE CONFIG
 extension ActiveABTests {
     init(config: RemoteConfig) {
         let createAccountTest = config.configValue(forKey: ActiveABTests.CodingKeys.createAccountTest.rawValue).boolValue
-        print("FOUND CREATE ACCOUNT DATA: \(createAccountTest)")
         self.createAccountTest = createAccountTest
         
         let onboardingCommunityTest = config.configValue(forKey: ActiveABTests.CodingKeys.onboardingCommunityTest.rawValue).boolValue
@@ -68,6 +76,13 @@ extension ActiveABTests {
         } else {
             self.categoryRowTest = .default
         }
+        
+        let paywallTestStringValue = config.configValue(forKey: ActiveABTests.CodingKeys.paywallTest.rawValue).stringValue
+        if let option = PaywallTestOption(rawValue: paywallTestStringValue) {
+            self.paywallTest = option
+        } else {
+            self.paywallTest = .default
+        }
     }
     
     // Converted to a NSObject dictionary to setDefaults within FIrebaseABTestService
@@ -75,7 +90,8 @@ extension ActiveABTests {
         [
             CodingKeys.createAccountTest.rawValue: createAccountTest as NSObject,
             CodingKeys.onboardingCommunityTest.rawValue: onboardingCommunityTest as NSObject,
-            CodingKeys.categoryRowTest.rawValue: categoryRowTest.rawValue as NSObject
+            CodingKeys.categoryRowTest.rawValue: categoryRowTest.rawValue as NSObject,
+            CodingKeys.paywallTest.rawValue: paywallTest.rawValue as NSObject
         ]
     }
 }

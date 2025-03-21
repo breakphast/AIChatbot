@@ -21,7 +21,8 @@ class FirebaseABTestService: ABTestService {
         let defaultValues = ActiveABTests(
             createAccountTest: false,
             onboardingCommunityTest: false,
-            categoryRowTest: .default
+            categoryRowTest: .default,
+            paywallTest: .default
         )
         RemoteConfig.remoteConfig().setDefaults(defaultValues.asNSObjectDictionary)
         RemoteConfig.remoteConfig().activate()

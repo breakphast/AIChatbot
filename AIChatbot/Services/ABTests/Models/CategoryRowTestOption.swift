@@ -14,3 +14,11 @@ enum CategoryRowTestOption: String, Codable, CaseIterable {
         .original
     }
 }
+
+enum PaywallTestOption: String, Codable, CaseIterable {
+    case custom, storeKit, revenueCat
+    
+    static var `default`: Self {
+        .storeKit
+    }
+}
