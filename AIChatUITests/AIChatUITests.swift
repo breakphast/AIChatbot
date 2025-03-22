@@ -103,4 +103,34 @@ final class AIChatUITests: XCTestCase {
         alphaNavigationBar.firstMatch.tap()
         XCTAssertTrue(profileExists)
     }
+    
+    func testSignOutFlow() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["UI_TESTING", "SIGNED_IN"]
+        app.launch()
+        
+        var exploreExists = app.navigationBars["Explore"].waitForExistence(timeout: 2)
+        XCTAssertTrue(exploreExists)
+        
+        let tabBar = app.tabBars["Tab Bar"]
+        
+        tabBar.buttons["Profile"].tap()
+        let profileExists = app.navigationBars["Profile"].exists
+        XCTAssertTrue(profileExists)
+        
+        app.navigationBars["Profile"]/*@START_MENU_TOKEN@*/.buttons["gear"]/*[[".otherElements[\"Settings\"]",".buttons[\"Settings\"]",".buttons[\"gear\"]",".otherElements[\"gear\"]"],[[[-1,2],[-1,1],[-1,3,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/.tap()
+        app.collectionViews/*@START_MENU_TOKEN@*/.buttons["Sign Out"]/*[[".cells.buttons[\"Sign Out\"]",".buttons[\"Sign Out\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        
+        let startButtonExists = app.buttons["StartButton"].waitForExistence(timeout: 2)
+        XCTAssertTrue(startButtonExists)
+    }
+    
+    func testCreateAvatarScreen() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["UI_TESTING", "SIGNED_IN", "STARTSCREEN_CREATEAVATAR"]
+        app.launch()
+        
+        let screenExists = app.navigationBars["Create Avatar"].exists
+        XCTAssertTrue(screenExists)
+    }
 }
