@@ -66,7 +66,7 @@ struct OnboardingColorView: View {
             Text("Continue")
                 .callToActionButton()
         }
-        .accessibilityIdentifier("ContinueButton")
+        .accessibilityIdentifier("ColorContinueButton")
     }
 }
 

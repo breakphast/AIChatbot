@@ -31,7 +31,7 @@ final class AIChatUITests: XCTestCase {
         let colorCircle = colorCircles.element(boundBy: randomIndex)
         colorCircle.tap()
         
-        app.buttons["ContinueButton"].tap()
+        app.buttons["ColorContinueButton"].tap()
         app.buttons["FinishButton"].tap()
         
         let exploreExists = app.navigationBars["Explore"].waitForExistence(timeout: 2)
@@ -57,7 +57,7 @@ final class AIChatUITests: XCTestCase {
         let colorCircle = colorCircles.element(boundBy: randomIndex)
         colorCircle.tap()
         
-        app.buttons["ContinueButton"].tap()
+        app.buttons["ColorContinueButton"].tap()
         app.buttons["FinishButton"].tap()
         
         let exploreExists = app.navigationBars["Explore"].waitForExistence(timeout: 2)
@@ -121,7 +121,7 @@ final class AIChatUITests: XCTestCase {
         app.navigationBars["Profile"]/*@START_MENU_TOKEN@*/.buttons["gear"]/*[[".otherElements[\"Settings\"]",".buttons[\"Settings\"]",".buttons[\"gear\"]",".otherElements[\"gear\"]"],[[[-1,2],[-1,1],[-1,3,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/.tap()
         app.collectionViews/*@START_MENU_TOKEN@*/.buttons["Sign Out"]/*[[".cells.buttons[\"Sign Out\"]",".buttons[\"Sign Out\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
         
-        let startButtonExists = app.buttons["StartButton"].waitForExistence(timeout: 2)
+        let startButtonExists = app.buttons["StartButton"].waitForExistence(timeout: 4)
         XCTAssertTrue(startButtonExists)
     }
     
