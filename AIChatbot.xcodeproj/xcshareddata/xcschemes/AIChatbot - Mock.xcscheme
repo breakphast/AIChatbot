@@ -29,6 +29,30 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       shouldAutocreateTestPlan = "YES">
+      <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3E3A6AA52D8E4BE6009E07B4"
+               BuildableName = "AIChatBotTests.xctest"
+               BlueprintName = "AIChatBotTests"
+               ReferencedContainer = "container:AIChatbot.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3E3A6AB32D8E4CA8009E07B4"
+               BuildableName = "AIChatTests.xctest"
+               BlueprintName = "AIChatTests"
+               ReferencedContainer = "container:AIChatbot.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Mock"

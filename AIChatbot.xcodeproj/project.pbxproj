@@ -25,14 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		3EEE7B6C2D5AF00100FD40F3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3EEE7B532D5AF00000FD40F3 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 3EEE7B5A2D5AF00000FD40F3;
-			remoteInfo = AIChatbot;
-		};
-		3EEE7B762D5AF00100FD40F3 /* PBXContainerItemProxy */ = {
+		3E3A6AB82D8E4CA8009E07B4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3EEE7B532D5AF00000FD40F3 /* Project object */;
 			proxyType = 1;
@@ -43,9 +36,8 @@
 
 /* Begin PBXFileReference section */
 		3E70F03B2D8B0557004BC604 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		3E3A6AB42D8E4CA8009E07B4 /* AIChatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AIChatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3EEE7B5B2D5AF00000FD40F3 /* AIChatbot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AIChatbot.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		3EEE7B6B2D5AF00100FD40F3 /* AIChatbotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AIChatbotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		3EEE7B752D5AF00100FD40F3 /* AIChatbotUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AIChatbotUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -59,6 +51,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		3E3A6AB52D8E4CA8009E07B4 /* AIChatTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AIChatTests;
+			sourceTree = "<group>";
+		};
 		3EEE7B5D2D5AF00000FD40F3 /* AIChatbot */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -67,19 +64,16 @@
 			path = AIChatbot;
 			sourceTree = "<group>";
 		};
-		3EEE7B6E2D5AF00100FD40F3 /* AIChatbotTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = AIChatbotTests;
-			sourceTree = "<group>";
-		};
-		3EEE7B782D5AF00100FD40F3 /* AIChatbotUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = AIChatbotUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3E3A6AB12D8E4CA8009E07B4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3EEE7B582D5AF00000FD40F3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -102,20 +96,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		3EEE7B682D5AF00100FD40F3 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3EEE7B722D5AF00100FD40F3 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -131,8 +111,7 @@
 			isa = PBXGroup;
 			children = (
 				3EEE7B5D2D5AF00000FD40F3 /* AIChatbot */,
-				3EEE7B6E2D5AF00100FD40F3 /* AIChatbotTests */,
-				3EEE7B782D5AF00100FD40F3 /* AIChatbotUITests */,
+				3E3A6AB52D8E4CA8009E07B4 /* AIChatTests */,
 				3E8AF2EE2D768A8A002B1609 /* Frameworks */,
 				3EEE7B5C2D5AF00000FD40F3 /* Products */,
 			);
@@ -142,8 +121,7 @@
 			isa = PBXGroup;
 			children = (
 				3EEE7B5B2D5AF00000FD40F3 /* AIChatbot.app */,
-				3EEE7B6B2D5AF00100FD40F3 /* AIChatbotTests.xctest */,
-				3EEE7B752D5AF00100FD40F3 /* AIChatbotUITests.xctest */,
+				3E3A6AB42D8E4CA8009E07B4 /* AIChatTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -151,6 +129,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		3E3A6AB32D8E4CA8009E07B4 /* AIChatTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3E3A6ABA2D8E4CA8009E07B4 /* Build configuration list for PBXNativeTarget "AIChatTests" */;
+			buildPhases = (
+				3E3A6AB02D8E4CA8009E07B4 /* Sources */,
+				3E3A6AB12D8E4CA8009E07B4 /* Frameworks */,
+				3E3A6AB22D8E4CA8009E07B4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3E3A6AB92D8E4CA8009E07B4 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				3E3A6AB52D8E4CA8009E07B4 /* AIChatTests */,
+			);
+			name = AIChatTests;
+			packageProductDependencies = (
+			);
+			productName = AIChatTests;
+			productReference = 3E3A6AB42D8E4CA8009E07B4 /* AIChatTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		3EEE7B5A2D5AF00000FD40F3 /* AIChatbot */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3EEE7B7F2D5AF00100FD40F3 /* Build configuration list for PBXNativeTarget "AIChatbot" */;
@@ -189,52 +190,6 @@
 			productReference = 3EEE7B5B2D5AF00000FD40F3 /* AIChatbot.app */;
 			productType = "com.apple.product-type.application";
 		};
-		3EEE7B6A2D5AF00100FD40F3 /* AIChatbotTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 3EEE7B822D5AF00100FD40F3 /* Build configuration list for PBXNativeTarget "AIChatbotTests" */;
-			buildPhases = (
-				3EEE7B672D5AF00100FD40F3 /* Sources */,
-				3EEE7B682D5AF00100FD40F3 /* Frameworks */,
-				3EEE7B692D5AF00100FD40F3 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				3EEE7B6D2D5AF00100FD40F3 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				3EEE7B6E2D5AF00100FD40F3 /* AIChatbotTests */,
-			);
-			name = AIChatbotTests;
-			packageProductDependencies = (
-			);
-			productName = AIChatbotTests;
-			productReference = 3EEE7B6B2D5AF00100FD40F3 /* AIChatbotTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		3EEE7B742D5AF00100FD40F3 /* AIChatbotUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 3EEE7B852D5AF00100FD40F3 /* Build configuration list for PBXNativeTarget "AIChatbotUITests" */;
-			buildPhases = (
-				3EEE7B712D5AF00100FD40F3 /* Sources */,
-				3EEE7B722D5AF00100FD40F3 /* Frameworks */,
-				3EEE7B732D5AF00100FD40F3 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				3EEE7B772D5AF00100FD40F3 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				3EEE7B782D5AF00100FD40F3 /* AIChatbotUITests */,
-			);
-			name = AIChatbotUITests;
-			packageProductDependencies = (
-			);
-			productName = AIChatbotUITests;
-			productReference = 3EEE7B752D5AF00100FD40F3 /* AIChatbotUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -242,19 +197,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1610;
+				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1610;
 				TargetAttributes = {
+					3E3A6AB32D8E4CA8009E07B4 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 3EEE7B5A2D5AF00000FD40F3;
+					};
 					3EEE7B5A2D5AF00000FD40F3 = {
 						CreatedOnToolsVersion = 16.1;
-					};
-					3EEE7B6A2D5AF00100FD40F3 = {
-						CreatedOnToolsVersion = 16.1;
-						TestTargetID = 3EEE7B5A2D5AF00000FD40F3;
-					};
-					3EEE7B742D5AF00100FD40F3 = {
-						CreatedOnToolsVersion = 16.1;
-						TestTargetID = 3EEE7B5A2D5AF00000FD40F3;
 					};
 				};
 			};
@@ -282,28 +233,20 @@
 			projectRoot = "";
 			targets = (
 				3EEE7B5A2D5AF00000FD40F3 /* AIChatbot */,
-				3EEE7B6A2D5AF00100FD40F3 /* AIChatbotTests */,
-				3EEE7B742D5AF00100FD40F3 /* AIChatbotUITests */,
+				3E3A6AB32D8E4CA8009E07B4 /* AIChatTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		3E3A6AB22D8E4CA8009E07B4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3EEE7B592D5AF00000FD40F3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3EEE7B692D5AF00100FD40F3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3EEE7B732D5AF00100FD40F3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -359,21 +302,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3E3A6AB02D8E4CA8009E07B4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3EEE7B572D5AF00000FD40F3 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3EEE7B672D5AF00100FD40F3 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3EEE7B712D5AF00100FD40F3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -383,19 +319,83 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		3EEE7B6D2D5AF00100FD40F3 /* PBXTargetDependency */ = {
+		3E3A6AB92D8E4CA8009E07B4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 3EEE7B5A2D5AF00000FD40F3 /* AIChatbot */;
-			targetProxy = 3EEE7B6C2D5AF00100FD40F3 /* PBXContainerItemProxy */;
-		};
-		3EEE7B772D5AF00100FD40F3 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 3EEE7B5A2D5AF00000FD40F3 /* AIChatbot */;
-			targetProxy = 3EEE7B762D5AF00100FD40F3 /* PBXContainerItemProxy */;
+			targetProxy = 3E3A6AB82D8E4CA8009E07B4 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		3E3A6ABB2D8E4CA8009E07B4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G9RPYMS2PA;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.devsmond.AIChatTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AIChatbot.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AIChatbot";
+			};
+			name = Debug;
+		};
+		3E3A6ABC2D8E4CA8009E07B4 /* Mock */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G9RPYMS2PA;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.devsmond.AIChatTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AIChatbot.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AIChatbot";
+			};
+			name = Mock;
+		};
+		3E3A6ABD2D8E4CA8009E07B4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G9RPYMS2PA;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.devsmond.AIChatTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AIChatbot.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AIChatbot";
+			};
+			name = Release;
+		};
 		3E4A95A72D7E02B400BFF944 /* Mock */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -501,42 +501,6 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Mock;
-		};
-		3E4A95A92D7E02B400BFF944 /* Mock */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G9RPYMS2PA;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.devsmond.AIChatbotTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AIChatbot.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AIChatbot";
-			};
-			name = Mock;
-		};
-		3E4A95AA2D7E02B400BFF944 /* Mock */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G9RPYMS2PA;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.devsmond.AIChatbotUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = AIChatbot;
 			};
 			name = Mock;
 		};
@@ -748,81 +712,19 @@
 			};
 			name = Release;
 		};
-		3EEE7B832D5AF00100FD40F3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G9RPYMS2PA;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.devsmond.AIChatbotTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AIChatbot.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AIChatbot";
-			};
-			name = Debug;
-		};
-		3EEE7B842D5AF00100FD40F3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G9RPYMS2PA;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.devsmond.AIChatbotTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AIChatbot.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AIChatbot";
-			};
-			name = Release;
-		};
-		3EEE7B862D5AF00100FD40F3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G9RPYMS2PA;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.devsmond.AIChatbotUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = AIChatbot;
-			};
-			name = Debug;
-		};
-		3EEE7B872D5AF00100FD40F3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G9RPYMS2PA;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.devsmond.AIChatbotUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = AIChatbot;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3E3A6ABA2D8E4CA8009E07B4 /* Build configuration list for PBXNativeTarget "AIChatTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3E3A6ABB2D8E4CA8009E07B4 /* Debug */,
+				3E3A6ABC2D8E4CA8009E07B4 /* Mock */,
+				3E3A6ABD2D8E4CA8009E07B4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		3EEE7B562D5AF00000FD40F3 /* Build configuration list for PBXProject "AIChatbot" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -839,26 +741,6 @@
 				3EEE7B802D5AF00100FD40F3 /* Debug */,
 				3E4A95A82D7E02B400BFF944 /* Mock */,
 				3EEE7B812D5AF00100FD40F3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		3EEE7B822D5AF00100FD40F3 /* Build configuration list for PBXNativeTarget "AIChatbotTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				3EEE7B832D5AF00100FD40F3 /* Debug */,
-				3E4A95A92D7E02B400BFF944 /* Mock */,
-				3EEE7B842D5AF00100FD40F3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		3EEE7B852D5AF00100FD40F3 /* Build configuration list for PBXNativeTarget "AIChatbotUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				3EEE7B862D5AF00100FD40F3 /* Debug */,
-				3E4A95AA2D7E02B400BFF944 /* Mock */,
-				3EEE7B872D5AF00100FD40F3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
