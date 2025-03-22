@@ -45,6 +45,7 @@ struct OnboardingCommunityView: View {
                 .callToActionButton()
         }
         .font(.title3)
+        .accessibilityIdentifier("OnboardingCommunityContinueButton")
     }
 }
 

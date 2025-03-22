@@ -10,11 +10,13 @@ struct ProductionUserServices: UserServices {
     let local: LocalUserPersistence = FileManagerUserPersistence()
 }
 
+@MainActor
 protocol UserServices {
     var remote: RemoteUserService { get }
     var local: LocalUserPersistence { get }
 }
 
+@MainActor
 struct MockUserServices: UserServices {
     let remote: RemoteUserService
     let local: LocalUserPersistence

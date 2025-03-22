@@ -52,6 +52,17 @@
                ReferencedContainer = "container:AIChatbot.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3E7177262D8EFFA9005499E9"
+               BuildableName = "AIChatUITests.xctest"
+               BlueprintName = "AIChatUITests"
+               ReferencedContainer = "container:AIChatbot.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

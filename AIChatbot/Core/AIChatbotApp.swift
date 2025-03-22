@@ -53,7 +53,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         
-        let config: BuildConfiguration
+        var config: BuildConfiguration
         
         #if MOCK
         config = .mock(isSignedIn: true)
@@ -62,6 +62,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         #else
         config = .prod
         #endif
+        
+        if Utilities.isUITesting {
+            let isSignedIn = ProcessInfo.processInfo.arguments.contains("SIGNED_IN")
+            UserDefaults.showTabBarView = isSignedIn
+            config = .mock(isSignedIn: isSignedIn)
+        }
         
         config.configure()
         dependencies = Dependencies(config: config)
@@ -112,7 +118,13 @@ struct Dependencies {
             aiManager = AIManager(service: MockAIService())
             avatarManager = AvatarManager(service: MockAvatarService(), local: MockLocalAvatarPersistence())
             chatManager = ChatManager(service: MockChatService())
-            abTestManager = ABTestManager(service: MockABTestService(), logManager: logManager)
+            
+            let isInOnboardingCommunityTest = ProcessInfo.processInfo.arguments.contains("ONBCMMTEST")
+            let abTestService = MockABTestService(
+                onboardingCommunityTest: isInOnboardingCommunityTest
+            )
+            
+            abTestManager = ABTestManager(service: abTestService, logManager: logManager)
             purchaseManager = PurchaseManager(service: MockPurchaseService(), logManager: logManager)
         case .dev:
             logManager = LogManager(services: [

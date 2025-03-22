@@ -148,6 +148,7 @@ class UserManager {
     }
 }
 
+@MainActor
 protocol RemoteUserService: Sendable {
     func saveUser(user: UserModel) async throws
     func markOnboardingCompleted(userID: String, profileColorHex: String) async throws

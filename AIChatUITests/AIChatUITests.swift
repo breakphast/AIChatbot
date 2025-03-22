@@ -7,37 +7,100 @@
 
 import XCTest
 
+@MainActor
 final class AIChatUITests: XCTestCase {
 
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-
-        // In UI tests it is usually best to stop immediately when a failure occurs.
         continueAfterFailure = false
-
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        
     }
 
-    @MainActor
-    func testExample() throws {
-        // UI tests must launch the application that they test.
+    func testOnboardingFlow() throws {
         let app = XCUIApplication()
+        app.launchArguments = ["UI_TESTING"]
         app.launch()
-
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        
+        app.buttons["StartButton"].tap()
+        app.buttons["ContinueButton"].tap()
+        
+        let colorCircles = app.otherElements.matching(identifier: "ColorCircle")
+        let randomIndex = Int.random(in: 0 ..< colorCircles.count)
+        let colorCircle = colorCircles.element(boundBy: randomIndex)
+        colorCircle.tap()
+        
+        app.buttons["ContinueButton"].tap()
+        app.buttons["FinishButton"].tap()
+        
+        let exploreExists = app.navigationBars["Explore"].waitForExistence(timeout: 2)
+        XCTAssertTrue(exploreExists)
     }
-
-    @MainActor
-    func testLaunchPerformance() throws {
-        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
-            // This measures how long it takes to launch your application.
-            measure(metrics: [XCTApplicationLaunchMetric()]) {
-                XCUIApplication().launch()
-            }
-        }
+    
+    func testOnboardingFlowWithCommunityScreen() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["UI_TESTING", "ONBCMMTEST"]
+        app.launch()
+        
+        // Welcome View
+        app.buttons["StartButton"].tap()
+        
+        // Onboarding Intro View
+        app.buttons["ContinueButton"].tap()
+        
+        // Onboarding Community View
+        app.buttons["OnboardingCommunityContinueButton"].tap()
+        
+        let colorCircles = app.otherElements.matching(identifier: "ColorCircle")
+        let randomIndex = Int.random(in: 0 ..< colorCircles.count)
+        let colorCircle = colorCircles.element(boundBy: randomIndex)
+        colorCircle.tap()
+        
+        app.buttons["ContinueButton"].tap()
+        app.buttons["FinishButton"].tap()
+        
+        let exploreExists = app.navigationBars["Explore"].waitForExistence(timeout: 2)
+        XCTAssertTrue(exploreExists)
+    }
+    
+    func testTabBarFlow() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["UI_TESTING", "SIGNED_IN"]
+        app.launch()
+        
+        var exploreExists = app.navigationBars["Explore"].waitForExistence(timeout: 2)
+        XCTAssertTrue(exploreExists)
+        
+        let tabBar = app.tabBars["Tab Bar"]
+        
+        tabBar.buttons["Chats"].tap()
+        let chatsExists = app.navigationBars["Chats"].exists
+        XCTAssertTrue(chatsExists)
+        
+        tabBar.buttons["Profile"].tap()
+        let profileExists = app.navigationBars["Profile"].exists
+        XCTAssertTrue(profileExists)
+        
+        tabBar.buttons["Explore"].tap()
+        exploreExists = app.navigationBars["Explore"].exists
+        XCTAssertTrue(exploreExists)
+        
+        app.collectionViews/*@START_MENU_TOKEN@*/.scrollViews/*[[".cells.scrollViews",".scrollViews"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.otherElements.buttons.firstMatch.tap()
+        let chatTextFieldExists = app.textFields["ChatTextField"].exists
+        XCTAssertTrue(chatTextFieldExists)
+        
+        let alphaNavigationBar = app.navigationBars["Alpha"]
+        alphaNavigationBar.buttons["Explore"].tap()
+        
+        tabBar.buttons["Chats"].tap()
+        app.collectionViews.children(matching: .cell).element(boundBy: 3).firstMatch.tap()
+        alphaNavigationBar.buttons["Chats"].tap()
+        XCTAssertTrue(chatsExists)
+        
+        tabBar.buttons["Profile"].tap()
+        app.collectionViews/*@START_MENU_TOKEN@*/.staticTexts["Alpha"]/*[[".cells",".buttons[\"Alpha\"].staticTexts[\"Alpha\"]",".staticTexts[\"Alpha\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/.tap()
+        alphaNavigationBar.firstMatch.tap()
+        XCTAssertTrue(profileExists)
     }
 }

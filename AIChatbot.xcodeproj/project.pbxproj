@@ -32,11 +32,19 @@
 			remoteGlobalIDString = 3EEE7B5A2D5AF00000FD40F3;
 			remoteInfo = AIChatbot;
 		};
+		3E71772D2D8EFFA9005499E9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3EEE7B532D5AF00000FD40F3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3EEE7B5A2D5AF00000FD40F3;
+			remoteInfo = AIChatbot;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		3E3A6AB42D8E4CA8009E07B4 /* AIChatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AIChatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E70F03B2D8B0557004BC604 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		3E7177272D8EFFA9005499E9 /* AIChatUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AIChatUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3EEE7B5B2D5AF00000FD40F3 /* AIChatbot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AIChatbot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -56,6 +64,11 @@
 			path = AIChatTests;
 			sourceTree = "<group>";
 		};
+		3E7177282D8EFFA9005499E9 /* AIChatUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AIChatUITests;
+			sourceTree = "<group>";
+		};
 		3EEE7B5D2D5AF00000FD40F3 /* AIChatbot */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -68,6 +81,13 @@
 
 /* Begin PBXFrameworksBuildPhase section */
 		3E3A6AB12D8E4CA8009E07B4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3E7177242D8EFFA9005499E9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -112,6 +132,7 @@
 			children = (
 				3EEE7B5D2D5AF00000FD40F3 /* AIChatbot */,
 				3E3A6AB52D8E4CA8009E07B4 /* AIChatTests */,
+				3E7177282D8EFFA9005499E9 /* AIChatUITests */,
 				3E8AF2EE2D768A8A002B1609 /* Frameworks */,
 				3EEE7B5C2D5AF00000FD40F3 /* Products */,
 			);
@@ -122,6 +143,7 @@
 			children = (
 				3EEE7B5B2D5AF00000FD40F3 /* AIChatbot.app */,
 				3E3A6AB42D8E4CA8009E07B4 /* AIChatTests.xctest */,
+				3E7177272D8EFFA9005499E9 /* AIChatUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -151,6 +173,29 @@
 			productName = AIChatTests;
 			productReference = 3E3A6AB42D8E4CA8009E07B4 /* AIChatTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		3E7177262D8EFFA9005499E9 /* AIChatUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3E71772F2D8EFFA9005499E9 /* Build configuration list for PBXNativeTarget "AIChatUITests" */;
+			buildPhases = (
+				3E7177232D8EFFA9005499E9 /* Sources */,
+				3E7177242D8EFFA9005499E9 /* Frameworks */,
+				3E7177252D8EFFA9005499E9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3E71772E2D8EFFA9005499E9 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				3E7177282D8EFFA9005499E9 /* AIChatUITests */,
+			);
+			name = AIChatUITests;
+			packageProductDependencies = (
+			);
+			productName = AIChatUITests;
+			productReference = 3E7177272D8EFFA9005499E9 /* AIChatUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 		3EEE7B5A2D5AF00000FD40F3 /* AIChatbot */ = {
 			isa = PBXNativeTarget;
@@ -204,6 +249,10 @@
 						CreatedOnToolsVersion = 16.2;
 						TestTargetID = 3EEE7B5A2D5AF00000FD40F3;
 					};
+					3E7177262D8EFFA9005499E9 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 3EEE7B5A2D5AF00000FD40F3;
+					};
 					3EEE7B5A2D5AF00000FD40F3 = {
 						CreatedOnToolsVersion = 16.1;
 					};
@@ -234,12 +283,20 @@
 			targets = (
 				3EEE7B5A2D5AF00000FD40F3 /* AIChatbot */,
 				3E3A6AB32D8E4CA8009E07B4 /* AIChatTests */,
+				3E7177262D8EFFA9005499E9 /* AIChatUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		3E3A6AB22D8E4CA8009E07B4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3E7177252D8EFFA9005499E9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -309,6 +366,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3E7177232D8EFFA9005499E9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3EEE7B572D5AF00000FD40F3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -323,6 +387,11 @@
 			isa = PBXTargetDependency;
 			target = 3EEE7B5A2D5AF00000FD40F3 /* AIChatbot */;
 			targetProxy = 3E3A6AB82D8E4CA8009E07B4 /* PBXContainerItemProxy */;
+		};
+		3E71772E2D8EFFA9005499E9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3EEE7B5A2D5AF00000FD40F3 /* AIChatbot */;
+			targetProxy = 3E71772D2D8EFFA9005499E9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -503,6 +572,72 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Mock;
+		};
+		3E7177302D8EFFA9005499E9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G9RPYMS2PA;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.devsmond.AIChatUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = AIChatbot;
+			};
+			name = Debug;
+		};
+		3E7177312D8EFFA9005499E9 /* Mock */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G9RPYMS2PA;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.devsmond.AIChatUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = AIChatbot;
+			};
+			name = Mock;
+		};
+		3E7177322D8EFFA9005499E9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G9RPYMS2PA;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.devsmond.AIChatUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = AIChatbot;
+			};
+			name = Release;
 		};
 		3EEE7B7D2D5AF00100FD40F3 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -721,6 +856,16 @@
 				3E3A6ABB2D8E4CA8009E07B4 /* Debug */,
 				3E3A6ABC2D8E4CA8009E07B4 /* Mock */,
 				3E3A6ABD2D8E4CA8009E07B4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3E71772F2D8EFFA9005499E9 /* Build configuration list for PBXNativeTarget "AIChatUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3E7177302D8EFFA9005499E9 /* Debug */,
+				3E7177312D8EFFA9005499E9 /* Mock */,
+				3E7177322D8EFFA9005499E9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
