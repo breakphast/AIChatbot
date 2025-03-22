@@ -109,7 +109,7 @@ final class AIChatUITests: XCTestCase {
         app.launchArguments = ["UI_TESTING", "SIGNED_IN"]
         app.launch()
         
-        var exploreExists = app.navigationBars["Explore"].waitForExistence(timeout: 2)
+        let exploreExists = app.navigationBars["Explore"].waitForExistence(timeout: 2)
         XCTAssertTrue(exploreExists)
         
         let tabBar = app.tabBars["Tab Bar"]
