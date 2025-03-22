@@ -8,6 +8,7 @@
 import SwiftUI
 import Firebase
 
+@MainActor
 protocol AuthService: Sendable {
     func getAuthenticatedUser() -> UserAuthInfo?
     func signInAnonymously() async throws -> (user: UserAuthInfo, isNewUser: Bool)

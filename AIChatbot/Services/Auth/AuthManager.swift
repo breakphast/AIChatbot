@@ -22,42 +22,6 @@ class AuthManager {
         self.addAuthListener()
     }
     
-    enum Event: LoggableEvent {
-        case authListenerStart
-        case authListenerSuccess(user: UserAuthInfo?)
-        case signOutStart
-        case signOutSuccess
-        case deleteAccountStart
-        case deleteAccountSuccess
-        
-        var eventName: String {
-            switch self {
-            case .authListenerStart:        return "AuthMan_AuthListener_Start"
-            case .authListenerSuccess:      return "AuthMan_AuthListener_Success"
-            case .signOutStart:             return "AuthMan_SignOut_Start"
-            case .signOutSuccess:           return "AuthMan_SignOut_Success"
-            case .deleteAccountStart:       return "AuthMan_DeleteAccount_Start"
-            case .deleteAccountSuccess:     return "AuthMan_DeleteAccount_Success"
-            }
-        }
-        
-        var parameters: [String: Any]? {
-            switch self {
-            case .authListenerSuccess(user: let user):
-                return user?.eventParameters
-            default:
-                return nil
-            }
-        }
-        
-        var type: LogType {
-            switch self {
-            default:
-                return .analytic
-            }
-        }
-    }
-    
     private func addAuthListener() {
         logManager?.trackEvent(event: Event.authListenerStart)
         Task {
@@ -108,5 +72,41 @@ class AuthManager {
     
     enum AuthError: LocalizedError {
         case notSignedIn
+    }
+    
+    enum Event: LoggableEvent {
+        case authListenerStart
+        case authListenerSuccess(user: UserAuthInfo?)
+        case signOutStart
+        case signOutSuccess
+        case deleteAccountStart
+        case deleteAccountSuccess
+        
+        var eventName: String {
+            switch self {
+            case .authListenerStart:        return "AuthMan_AuthListener_Start"
+            case .authListenerSuccess:      return "AuthMan_AuthListener_Success"
+            case .signOutStart:             return "AuthMan_SignOut_Start"
+            case .signOutSuccess:           return "AuthMan_SignOut_Success"
+            case .deleteAccountStart:       return "AuthMan_DeleteAccount_Start"
+            case .deleteAccountSuccess:     return "AuthMan_DeleteAccount_Success"
+            }
+        }
+        
+        var parameters: [String: Any]? {
+            switch self {
+            case .authListenerSuccess(user: let user):
+                return user?.eventParameters
+            default:
+                return nil
+            }
+        }
+        
+        var type: LogType {
+            switch self {
+            default:
+                return .analytic
+            }
+        }
     }
 }

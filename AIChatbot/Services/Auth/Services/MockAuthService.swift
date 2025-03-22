@@ -7,8 +7,9 @@
 
 import Foundation
 
-struct MockAuthService: AuthService {
-    let currentUser: UserAuthInfo?
+@MainActor
+class MockAuthService: AuthService {
+    var currentUser: UserAuthInfo?
     
     init(user: UserAuthInfo? = nil) {
         self.currentUser = user

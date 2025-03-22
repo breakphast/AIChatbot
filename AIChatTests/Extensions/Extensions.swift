@@ -6,6 +6,7 @@
 //
 
 import Foundation
+@testable import AIChatbot
 
 extension String {
     static var random: String {

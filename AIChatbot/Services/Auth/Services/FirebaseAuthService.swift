@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import FirebaseAuth
+@preconcurrency import FirebaseAuth
 import SignInAppleAsync
 
 struct FirebaseAuthService: AuthService {
@@ -39,7 +39,7 @@ struct FirebaseAuthService: AuthService {
     }
     
     func signInApple() async throws -> (user: UserAuthInfo, isNewUser: Bool) {
-        let helper = await SignInWithAppleHelper()
+        let helper = SignInWithAppleHelper()
         let response = try await helper.signIn()
         
         let credential = OAuthProvider.credential(

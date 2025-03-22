@@ -7,8 +7,27 @@
 
 import SwiftUI
 import Firebase
+import SwiftfulUtilities
 
 @main
+struct AppEntryPoint {
+    static func main() {
+        if Utilities.isUnitTesting {
+            TestingApp.main()
+        } else {
+            AIChatCourseApp.main()
+        }
+    }
+}
+
+struct TestingApp: App {
+    var body: some Scene {
+        WindowGroup {
+            Text("Testing")
+        }
+    }
+}
+
 struct AIChatCourseApp: App {
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
