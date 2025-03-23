@@ -25,11 +25,11 @@ class CreateAvatarAvatarViewModel {
     var avatarName: String = ""
     var showAlert: AnyAppAlert?
     
-    init(authManager: AuthManager, aiManager: AIManager, avatarManager: AvatarManager, logManager: LogManager) {
-        self.authManager = authManager
-        self.aiManager = aiManager
-        self.avatarManager = avatarManager
-        self.logManager = logManager
+    init(container: DependencyContainer) {
+        self.authManager = container.resolve(AuthManager.self)!
+        self.aiManager = container.resolve(AIManager.self)!
+        self.avatarManager = container.resolve(AvatarManager.self)!
+        self.logManager = container.resolve(LogManager.self)!
     }
     
     func onGenerateImagePressed() {
@@ -286,12 +286,7 @@ struct CreateAvatarView: View {
 
 #Preview {
     CreateAvatarView(
-        viewModel: CreateAvatarAvatarViewModel(
-            authManager: DevPreview.shared.authManager,
-            aiManager: DevPreview.shared.aiManager,
-            avatarManager: DevPreview.shared.avatarManager,
-            logManager: DevPreview.shared.logManager
-        )
+        viewModel: CreateAvatarAvatarViewModel(container: DevPreview.shared.container)
     )
     .previewEnvironment()
 }
