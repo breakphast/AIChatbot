@@ -12,7 +12,7 @@ struct TabBarView: View {
     
     var body: some View {
         TabView {
-            ExploreView()
+            ExploreView(viewModel: ExploreViewModel(container: container))
                 .tabItem {
                     Label("Explore", systemImage: "eyes")
                 }
