@@ -306,7 +306,7 @@ struct ExploreView: View {
                         .presentationDetents([.medium])
                 }
             )
-            .navigationDestinationForCoreModule(path: $viewModel.path, container: viewModel.container)
+            .navigationDestinationForCoreModule(path: $viewModel.path)
             .showModal(showModal: $viewModel.showPushNotificationModal, content: {
                 pushNotificationModal
             })

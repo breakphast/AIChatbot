@@ -11,11 +11,13 @@ struct MockAvatarService: RemoteAvatarService {
     let avatars: [AvatarModel]
     let delay: Double
     let showError: Bool
+    let showErrorForRemoveAuthorIDFromAvatar: Bool
     
-    init(avatars: [AvatarModel] = AvatarModel.mocks, delay: Double = 0, showError: Bool = false) {
+    init(avatars: [AvatarModel] = AvatarModel.mocks, delay: Double = 0, showError: Bool = false, showErrorForRemoveAuthorIDFromAvatar: Bool = false) {
         self.avatars = avatars
         self.delay = delay
         self.showError = showError
+        self.showErrorForRemoveAuthorIDFromAvatar = showErrorForRemoveAuthorIDFromAvatar
     }
     
     private func tryShowError() throws {
@@ -68,7 +70,12 @@ struct MockAvatarService: RemoteAvatarService {
     }
     
     func removeAuthorIDFromAvatar(avatarID: String) async throws {
+        try await Task.sleep(for: .seconds(delay))
+        try tryShowError()
         
+        if showErrorForRemoveAuthorIDFromAvatar {
+            throw URLError(.badServerResponse)
+        }
     }
     
     func removeAuthorIDFromAllAvatars(userID: String) async throws {
