@@ -10,7 +10,7 @@ import SwiftUI
 @MainActor
 @Observable
 class ExploreViewModel {
-    private let container: DependencyContainer
+    let container: DependencyContainer
     private let authManager: AuthManager
     private let avatarManager: AvatarManager
     private let aiManager: AIManager
@@ -306,7 +306,7 @@ struct ExploreView: View {
                         .presentationDetents([.medium])
                 }
             )
-            .navigationDestinationForCoreModule(path: $viewModel.path)
+            .navigationDestinationForCoreModule(path: $viewModel.path, container: viewModel.container)
             .showModal(showModal: $viewModel.showPushNotificationModal, content: {
                 pushNotificationModal
             })

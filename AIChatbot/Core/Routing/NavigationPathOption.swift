@@ -8,17 +8,26 @@
 import SwiftUI
 import Foundation
 
-extension View {
-    func navigationDestinationForCoreModule(path: Binding<[NavigationPathOption]>) -> some View {
-        self
+struct NavigationDestinationForCoreModule: ViewModifier {
+    @Environment(DependencyContainer.self) private var container
+    let path: Binding<[NavigationPathOption]>
+    
+    func body(content: Content) -> some View {
+        content
             .navigationDestination(for: NavigationPathOption.self, destination: { newValue in
                 switch newValue {
                 case .chat(avatarID: let avatarID, chat: let chat):
                     ChatView(chat: chat, avatarID: avatarID)
                 case .category(category: let category, imageName: let imageName):
-                    CategoryListView(path: path, category: category, imageName: imageName)
+                    CategoryListView(viewModel: CategoryListViewModel(container: container), path: path, category: category, imageName: imageName)
                 }
             })
+    }
+}
+
+extension View {
+    func navigationDestinationForCoreModule(path: Binding<[NavigationPathOption]>) -> some View {
+        modifier(NavigationDestinationForCoreModule(path: path))
     }
 }
 

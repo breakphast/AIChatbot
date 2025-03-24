@@ -212,6 +212,7 @@ struct Dependencies {
         container.register(AvatarManager.self, service: avatarManager)
         container.register(ChatManager.self, service: chatManager)
         container.register(LogManager.self, service: logManager)
+        container.register(PushManager.self, service: pushManager)
         container.register(ABTestManager.self, service: abTestManager)
         container.register(PurchaseManager.self, service: purchaseManager)
         self.container = container
@@ -221,6 +222,7 @@ struct Dependencies {
 extension View {
     func previewEnvironment(isSignedIn: Bool = true) -> some View {
         self
+            .environment(DevPreview.shared.container)
             .environment(PurchaseManager(service: MockPurchaseService()))
             .environment(ABTestManager(service: MockABTestService()))
             .environment(PushManager())
