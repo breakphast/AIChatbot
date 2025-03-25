@@ -233,6 +233,19 @@ struct CoreInteractor {
         try await purchaseManager.updateProfileAttributes(attributes: attributes)
     }
     
+    // MARK: ExploreView
+    var categoryRowTestType: CategoryRowTestOption {
+        abTestManager.activeTests.categoryRowTest
+    }
+    
+    func schedulePushNotifications() {
+        pushManager.schedulePushNotificationsForTheNextWeek()
+    }
+    
+    var createAccountTest: Bool {
+        abTestManager.activeTests.createAccountTest
+    }
+        
     // MARK: SHARED
     func signOut() async throws {
         try authManager.signOut()
