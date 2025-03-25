@@ -23,7 +23,7 @@ struct TabBarView: View {
                 }
             
             ProfileView(
-                viewModel: ProfileViewModel(container: container)
+                viewModel: ProfileViewModel(interactor: ProductionProfileInteractor(container: container))
             )
             .tabItem {
                 Label("Profile", systemImage: "person.fill")
