@@ -29,7 +29,7 @@ struct ProfileViewTests {
     @Test("loadData does succeed and user avatars are set")
     func testLoadDataDoesSucceedAndAvatarsAreSet() async {
         var events = [LoggableEvent]()
-        var avatars = AvatarModel.mocks
+        let avatars = AvatarModel.mocks
         let user = UserModel.mock
 
         let interactor = AnyProfileInteractor(
@@ -72,7 +72,7 @@ struct ProfileViewTests {
         container.register(LogManager.self, service: logManager)
         
         // Given
-        let viewModel = ProfileViewModel(interactor: ProductionProfileInteractor(container: container))
+        let viewModel = ProfileViewModel(interactor: CoreInteractor(container: container))
         
         // When
         await viewModel.loadData()
@@ -97,7 +97,7 @@ struct ProfileViewTests {
         container.register(LogManager.self, service: logManager)
         
         // Given
-        let viewModel = ProfileViewModel(interactor: ProductionProfileInteractor(container: container))
+        let viewModel = ProfileViewModel(interactor: CoreInteractor(container: container))
         
         // When
         viewModel.onSettingsButtonPressed()
@@ -122,7 +122,7 @@ struct ProfileViewTests {
         container.register(LogManager.self, service: logManager)
         
         // Given
-        let viewModel = ProfileViewModel(interactor: ProductionProfileInteractor(container: container))
+        let viewModel = ProfileViewModel(interactor: CoreInteractor(container: container))
         
         // When
         viewModel.onNewAvatarButtonPressed()
@@ -147,7 +147,7 @@ struct ProfileViewTests {
         container.register(LogManager.self, service: logManager)
         
         // Given
-        let viewModel = ProfileViewModel(interactor: ProductionProfileInteractor(container: container))
+        let viewModel = ProfileViewModel(interactor: CoreInteractor(container: container))
         
         // When
         let avatar = AvatarModel.mock
@@ -175,7 +175,7 @@ struct ProfileViewTests {
         container.register(LogManager.self, service: logManager)
         
         // Given
-        let viewModel = ProfileViewModel(interactor: ProductionProfileInteractor(container: container))
+        let viewModel = ProfileViewModel(interactor: CoreInteractor(container: container))
         
         // When
         await viewModel.loadData()
@@ -205,7 +205,7 @@ struct ProfileViewTests {
         container.register(LogManager.self, service: logManager)
         
         // Given
-        let viewModel = ProfileViewModel(interactor: ProductionProfileInteractor(container: container))
+        let viewModel = ProfileViewModel(interactor: CoreInteractor(container: container))
         
         // When
         await viewModel.loadData()
@@ -271,15 +271,7 @@ struct ProfileViewTests {
             self.anyRemoveAuthorIDFromAvatar = interactor.removeAuthorIDFromAvatar
             self.anyTrackEvent = interactor.trackEvent
         }
-        
-        init(interactor: ProductionProfileInteractor) {
-            self.anyCurrentUser = interactor.currentUser
-            self.anyGetAuthID = interactor.getAuthID
-            self.anyGetAvatarsForAuthor = interactor.getAvatarsForAuthor
-            self.anyRemoveAuthorIDFromAvatar = interactor.removeAuthorIDFromAvatar
-            self.anyTrackEvent = interactor.trackEvent
-        }
-        
+                
         init(interactor: ProfileInteractor) {
             self.anyCurrentUser = interactor.currentUser
             self.anyGetAuthID = interactor.getAuthID

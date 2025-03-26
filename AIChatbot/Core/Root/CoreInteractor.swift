@@ -132,12 +132,16 @@ struct CoreInteractor {
         try await chatManager.markChatMessageAsSeen(chatID: chatID, messageID: messageID, userID: userID)
     }
     
+    func getLastChatMessage(chatID: String) async throws -> ChatMessageModel? {
+        try await chatManager.getLastChatMessage(chatID: chatID)
+    }
+    
     func getChat(userID: String, avatarID: String) async throws -> ChatModel? {
         try await chatManager.getChat(userID: userID, avatarID: avatarID)
     }
     
     func getLastChatMesssage(chatID: String) async throws -> ChatMessageModel? {
-        try await chatManager.getLastChatMesssage(chatID: chatID)
+        try await chatManager.getLastChatMessage(chatID: chatID)
     }
     
     func streamChatMessages(chatID: String) -> AsyncThrowingStream<[ChatMessageModel], Error> {

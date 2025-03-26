@@ -12,6 +12,7 @@ struct ChatsView: View {
     @Environment(AvatarManager.self) private var avatarManager
     @Environment(ChatManager.self) private var chatManager
     @Environment(LogManager.self) private var logManager
+    @Environment(DependencyContainer.self) private var container
     @State private var chats = [ChatModel]()
     @State private var isLoadingChats = true
     @State private var recentAvatars = [AvatarModel]()
@@ -56,13 +57,10 @@ struct ChatsView: View {
                 } else {
                     ForEach(chats) { chat in
                         ChatRowCellViewBuilder(
-                            chat: chat,
-                            getAvatar: {
-                                try? await avatarManager.getAvatar(id: chat.avatarID)
-                            },
-                            getLastChatMessage: {
-                                try? await chatManager.getLastChatMesssage(chatID: chat.id)
-                            }
+                            viewModel: ChatRowCellViewModel(
+                                interactor: CoreInteractor(container: container)
+                            ),
+                            chat: chat
                         )
                         .anyButton(.highlight, action: {
                             onChatPressed(chat: chat)
