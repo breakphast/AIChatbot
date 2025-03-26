@@ -17,6 +17,7 @@ struct SettingsView: View {
     @Environment(AppState.self) private var appState
     @Environment(LogManager.self) private var logManager
     @Environment(PurchaseManager.self) private var purchaseManager
+    @Environment(DependencyContainer.self) private var container
     @State private var isPremium = false
     @State private var isAnonymousUser = false
     @State private var showCreateAccountView = false
@@ -44,8 +45,10 @@ struct SettingsView: View {
                     setAnonymousAccountStatus()
                 },
                 content: {
-                    CreateAccountView()
-                        .presentationDetents([.medium])
+                    CreateAccountView(
+                        viewModel: CreateAccountViewModel(interactor: CoreInteractor(container: container))
+                    )
+                    .presentationDetents([.medium])
                 }
             )
             .onAppear {

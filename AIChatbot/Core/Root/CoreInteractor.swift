@@ -57,10 +57,6 @@ struct CoreInteractor {
         userManager.currentUser
     }
     
-    func login(auth: UserAuthInfo, isNewUser: Bool) async throws {
-        try await userManager.login(auth: auth, isNewUser: isNewUser)
-    }
-    
     func markOnboardingCompletedForCurrentUser(profileColorHex: String) async throws {
         try await userManager.markOnboardingCompletedForCurrentUser(profileColorHex: profileColorHex)
     }
@@ -224,11 +220,6 @@ struct CoreInteractor {
         try await purchaseManager.purchaseProduct(productID: productID)
     }
     
-    @discardableResult
-    func login(userID: String, attributes: PurchaseProfileAttributes? = nil) async throws -> [PurchasedEntitlement] {
-        try await purchaseManager.login(userID: userID, attributes: attributes)
-    }
-    
     func logOut() async throws {
         try await purchaseManager.logOut()
     }
@@ -255,5 +246,17 @@ struct CoreInteractor {
         try authManager.signOut()
         try await purchaseManager.logOut()
         userManager.signOut()
+    }
+    
+    func login(user: UserAuthInfo, isNewUser: Bool) async throws {
+        try await userManager.login(auth: user, isNewUser: isNewUser)
+        try await purchaseManager.login(
+            userID: user.uid,
+            attributes: PurchaseProfileAttributes(
+                email: user.email,
+                firebaseAppInstanceID: FirebaseAnalyticsService.appInstanceID,
+                mixpanelDistinctID: MixpanelService.distinctID
+            )
+        )
     }
 }

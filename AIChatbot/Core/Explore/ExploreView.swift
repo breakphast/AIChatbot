@@ -58,7 +58,7 @@ struct ExploreView: View {
             })
             .sheet(
                 isPresented: $viewModel.showCreateAccountView, content: {
-                    CreateAccountView()
+                    CreateAccountView(viewModel: CreateAccountViewModel(interactor: CoreInteractor(container: container)))
                         .presentationDetents([.medium])
                 }
             )

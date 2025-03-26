@@ -39,7 +39,7 @@ struct ProfileView: View {
             },
             content: {
                 CreateAvatarView(
-                    viewModel: CreateAvatarAvatarViewModel(container: container)
+                    viewModel: CreateAvatarViewModel(interactor: CoreInteractor(container: container))
                 )
             }
         )
