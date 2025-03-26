@@ -228,6 +228,14 @@ struct CoreInteractor {
         try await purchaseManager.updateProfileAttributes(attributes: attributes)
     }
     
+    var entitlements: [PurchasedEntitlement] {
+        purchaseManager.entitlements
+    }
+    
+    var isPremium: Bool {
+        return purchaseManager.entitlements.hasActiveEntitlement
+    }
+    
     // MARK: ExploreView
     var categoryRowTestType: CategoryRowTestOption {
         abTestManager.activeTests.categoryRowTest

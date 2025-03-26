@@ -17,7 +17,11 @@ struct NavigationDestinationForCoreModule: ViewModifier {
             .navigationDestination(for: NavigationPathOption.self, destination: { newValue in
                 switch newValue {
                 case .chat(avatarID: let avatarID, chat: let chat):
-                    ChatView(chat: chat, avatarID: avatarID)
+                    ChatView(
+                        viewModel: ChatViewModel(interactor: CoreInteractor(container: container)),
+                             chat: chat,
+                             avatarID: avatarID
+                    )
                 case .category(category: let category, imageName: let imageName):
                     CategoryListView(
                         viewModel: CategoryListViewModel(interactor: CoreInteractor(container: container)),
