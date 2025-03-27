@@ -37,7 +37,7 @@ struct AIChatCourseApp: App {
                 if Utilities.isUITesting {
                     AppViewForUITesting()
                 } else {
-                    AppView(viewModel: AppViewViewModel(interactor: CoreInteractor(container: delegate.dependencies.container)))
+                    AppView(viewModel: AppViewModel(interactor: CoreInteractor(container: delegate.dependencies.container)))
                 }
             }
             .environment(delegate.dependencies.container)
@@ -57,7 +57,7 @@ struct AppViewForUITesting: View {
         if startOnAvatarScreen {
             CreateAvatarView(viewModel: CreateAvatarViewModel(interactor: CoreInteractor(container: container)))
         } else {
-            AppView(viewModel: AppViewViewModel(interactor: CoreInteractor(container: container)))
+            AppView(viewModel: AppViewModel(interactor: CoreInteractor(container: container)))
         }
     }
 }

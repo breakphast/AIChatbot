@@ -22,7 +22,7 @@ extension CoreInteractor: AppViewInteractor { }
 
 @MainActor
 @Observable
-class AppViewViewModel {
+class AppViewModel {
     private let interactor: AppViewInteractor
     
     var showTabBar: Bool {
