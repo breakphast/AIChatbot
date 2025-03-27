@@ -166,7 +166,8 @@ struct Dependencies {
             
             let isInOnboardingCommunityTest = ProcessInfo.processInfo.arguments.contains("ONBCMMTEST")
             let abTestService = MockABTestService(
-                onboardingCommunityTest: isInOnboardingCommunityTest
+                onboardingCommunityTest: isInOnboardingCommunityTest,
+                paywallTest: .custom
             )
             
             abTestManager = ABTestManager(service: abTestService, logManager: logManager)

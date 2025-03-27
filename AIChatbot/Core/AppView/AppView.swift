@@ -14,6 +14,7 @@ struct AppView: View {
     @Environment(UserManager.self) private var userManager
     @Environment(LogManager.self) private var logManager
     @Environment(PurchaseManager.self) private var purchaseManager
+    @Environment(DependencyContainer.self) private var container
     @Environment(\.scenePhase) private var scenePhase
     @State var appState = AppState()
     
@@ -38,7 +39,11 @@ struct AppView: View {
                         TabBarView()
                     },
                     onboardingView: {
-                        WelcomeView()
+                        WelcomeView(
+                            viewModel: WelcomeViewModel(
+                                interactor: CoreInteractor(container: container)
+                            )
+                        )
                     }
                 )
                 .environment(appState)

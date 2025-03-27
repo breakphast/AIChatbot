@@ -47,11 +47,7 @@ struct CoreInteractor {
     func signInApple() async throws -> (user: UserAuthInfo, isNewUser: Bool) {
         try await authManager.signInApple()
     }
-    
-    func deleteAccount() async throws {
-        try await authManager.deleteAccount()
-    }
-    
+
     // MARK: UserManager
     var currentUser: UserModel? {
         userManager.currentUser
@@ -59,10 +55,6 @@ struct CoreInteractor {
     
     func markOnboardingCompletedForCurrentUser(profileColorHex: String) async throws {
         try await userManager.markOnboardingCompletedForCurrentUser(profileColorHex: profileColorHex)
-    }
-    
-    func deleteCurrentUser() async throws {
-        try await userManager.deleteCurrentUser()
     }
     
     // MARK: AIManager
@@ -111,10 +103,6 @@ struct CoreInteractor {
         try await avatarManager.removeAuthorIDFromAvatar(avatarID: avatarID)
     }
     
-    func removeAuthorIDFromAllAvatars(userID: String) async throws {
-        try await avatarManager.removeAuthorIDFromAllAvatars(userID: userID)
-    }
-    
     // MARK: ChatManager
     func createNewChat(chat: ChatModel) async throws {
         try await chatManager.createNewChat(chat: chat)
@@ -152,10 +140,6 @@ struct CoreInteractor {
         try await chatManager.deleteChat(chatID: chatID)
     }
 
-    func deleteAllChatsForUser(userID: String) async throws {
-        try await chatManager.deleteAllChatsForUser(userID: userID)
-    }
-    
     func reportChat(chatID: String, userID: String) async throws {
         try await chatManager.reportChat(chatID: chatID, userID: userID)
     }
@@ -207,6 +191,10 @@ struct CoreInteractor {
         try abTestManager.override(updatedTests: updatedTests)
     }
     
+    var activeTests: ActiveABTests {
+        abTestManager.activeTests
+    }
+    
     // MARK: PurchaseManager
     func getProducts(productIDs: [String]) async throws -> [AnyProduct] {
         try await purchaseManager.getProducts(productIDs: productIDs)
@@ -218,10 +206,6 @@ struct CoreInteractor {
     
     func purchaseProduct(productID: String) async throws -> [PurchasedEntitlement] {
         try await purchaseManager.purchaseProduct(productID: productID)
-    }
-    
-    func logOut() async throws {
-        try await purchaseManager.logOut()
     }
     
     func updateProfileAttributes(attributes: PurchaseProfileAttributes) async throws {
@@ -266,5 +250,14 @@ struct CoreInteractor {
                 mixpanelDistinctID: MixpanelService.distinctID
             )
         )
+    }
+    
+    func deleteAccount(userID: String) async throws {
+        try await chatManager.deleteAllChatsForUser(userID: userID)
+        try await avatarManager.removeAuthorIDFromAllAvatars(userID: userID)
+        try await userManager.deleteCurrentUser()
+        try await authManager.deleteAccount()
+        try await purchaseManager.logOut()
+        logManager.deleteUserProfile()
     }
 }
