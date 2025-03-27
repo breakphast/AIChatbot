@@ -30,7 +30,7 @@ class ProfileViewModel {
     var showSettingsView = false
     var showCreateAvatarView = false
     var showAlert: AnyAppAlert?
-    var path: [NavigationPathOption] = []
+    var path: [TabBarPathOption] = []
     
     init(interactor: ProfileInteractor) {
         self.interactor = interactor

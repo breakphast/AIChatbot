@@ -37,7 +37,7 @@ class ExploreViewModel {
     var showNotificationButton: Bool = false
     var showPushNotificationModal: Bool = false
     
-    var path: [NavigationPathOption] = []
+    var path: [TabBarPathOption] = []
     var showDevSettings: Bool = false
     var showCreateAccountView = false
     

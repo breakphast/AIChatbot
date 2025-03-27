@@ -6,69 +6,57 @@
 //
 
 import SwiftUI
-import SwiftfulUtilities
 import AppTrackingTransparency
 
-struct AppView: View {
-    @Environment(AuthManager.self) private var authManager
-    @Environment(UserManager.self) private var userManager
-    @Environment(LogManager.self) private var logManager
-    @Environment(PurchaseManager.self) private var purchaseManager
-    @Environment(DependencyContainer.self) private var container
-    @Environment(\.scenePhase) private var scenePhase
-    @State var appState = AppState()
+@MainActor
+protocol AppViewInteractor {
+    var auth: UserAuthInfo? { get }
     
-    var body: some View {
-        RootView(
-            delegate: RootDelegate(
-                onApplicationDidAppear: nil,
-                onApplicationWillEnterForeground: { _ in
-                    Task {
-                        await checkUserStatus()
-                    }
-                },
-                onApplicationDidBecomeActive: nil,
-                onApplicationWillResignActive: nil,
-                onApplicationDidEnterBackground: nil,
-                onApplicationWillTerminate: nil
-            ),
-            content: {
-                AppViewBuilder(
-                    showTabBar: appState.showTabBar,
-                    tabBarView: {
-                        TabBarView()
-                    },
-                    onboardingView: {
-                        WelcomeView(
-                            viewModel: WelcomeViewModel(
-                                interactor: CoreInteractor(container: container)
-                            )
-                        )
-                    }
-                )
-                .environment(appState)
-                .environment(userManager)
-                .task {
-                    await checkUserStatus()
-                }
-                .onNotificationReceived(name: UIApplication.willEnterForegroundNotification, action: { _ in
-                    Task {
-                        await checkUserStatus()
-                    }
-                })
-                .task {
-                    try? await Task.sleep(for: .seconds(2))
-                    await showATTPromptIfNeeded()
-                }
-                .onChange(of: appState.showTabBar) { _, showTabBar in
-                    if !showTabBar {
-                        Task {
-                            await checkUserStatus()
-                        }
-                    }
-                }
+    func signInAnonymously() async throws -> (user: UserAuthInfo, isNewUser: Bool)
+    func login(user: UserAuthInfo, isNewUser: Bool) async throws
+    func trackEvent(event: LoggableEvent)
+}
+
+extension CoreInteractor: AppViewInteractor { }
+
+@MainActor
+@Observable
+class AppViewViewModel {
+    private let interactor: AppViewInteractor
+    
+    init(interactor: AppViewInteractor) {
+        self.interactor = interactor
+    }
+    
+    func checkUserStatus() async {
+        if let user = interactor.auth {
+            interactor.trackEvent(event: Event.existingAuthStart)
+            
+            do {
+                try await interactor.login(user: user, isNewUser: false)
+            } catch {
+                interactor.trackEvent(event: Event.existingAuthFail(error: error))
+                await checkUserStatus()
             }
-        )
+        } else {
+            interactor.trackEvent(event: Event.anonAuthStart)
+            do {
+                let result = try await interactor.signInAnonymously()
+                interactor.trackEvent(event: Event.anonAuthSuccess)
+                
+                try await interactor.login(user: result.user, isNewUser: result.isNewUser)
+            } catch {
+                interactor.trackEvent(event: Event.anonAuthFail(error: error))
+                await checkUserStatus()
+            }
+        }
+    }
+    
+    func showATTPromptIfNeeded() async {
+        #if !DEBUG
+        let status = await AppTrackingTransparencyHelper.requestTrackingAuthorization()
+        interactor.trackEvent(event: Event.attStatus(dict: status.eventParameters))
+        #endif
     }
     
     enum Event: LoggableEvent {
@@ -110,62 +98,90 @@ struct AppView: View {
             }
         }
     }
+}
+
+struct AppView: View {
+    @Environment(DependencyContainer.self) private var container
+    @Environment(\.scenePhase) private var scenePhase
+    @State var appState = AppState()
     
-    private func checkUserStatus() async {
-        if let user = authManager.auth {
-            logManager.trackEvent(event: Event.existingAuthStart)
-            
-            do {
-                try await userManager.login(auth: user, isNewUser: false)
-                try await purchaseManager.login(
-                    userID: user.uid,
-                    attributes: PurchaseProfileAttributes(
-                        email: user.email,
-                        firebaseAppInstanceID: FirebaseAnalyticsService.appInstanceID,
-                        mixpanelDistinctID: MixpanelService.distinctID
-                    )
-                )
-            } catch {
-                logManager.trackEvent(event: Event.existingAuthFail(error: error))
-                await checkUserStatus()
-            }
-        } else {
-            logManager.trackEvent(event: Event.anonAuthStart)
-            do {
-                let result = try await authManager.signInAnonymously()
-                logManager.trackEvent(event: Event.anonAuthSuccess)
-                
-                try await userManager.login(auth: result.user, isNewUser: result.isNewUser)
-                try await purchaseManager.login(
-                    userID: result.user.uid,
-                    attributes: PurchaseProfileAttributes(
-                        firebaseAppInstanceID: FirebaseAnalyticsService.appInstanceID,
-                        mixpanelDistinctID: MixpanelService.distinctID
-                    )
-                )
-            } catch {
-                logManager.trackEvent(event: Event.anonAuthFail(error: error))
-                await checkUserStatus()
-            }
-        }
-    }
+    @State var viewModel: AppViewViewModel
     
-    private func showATTPromptIfNeeded() async {
-        #if !DEBUG
-        let status = await AppTrackingTransparencyHelper.requestTrackingAuthorization()
-        logManager.trackEvent(event: Event.attStatus(dict: status.eventParameters))
-        #endif
+    var body: some View {
+        RootView(
+            delegate: RootDelegate(
+                onApplicationDidAppear: nil,
+                onApplicationWillEnterForeground: { _ in
+                    Task {
+                        await viewModel.checkUserStatus()
+                    }
+                },
+                onApplicationDidBecomeActive: nil,
+                onApplicationWillResignActive: nil,
+                onApplicationDidEnterBackground: nil,
+                onApplicationWillTerminate: nil
+            ),
+            content: {
+                AppViewBuilder(
+                    showTabBar: appState.showTabBar,
+                    tabBarView: {
+                        TabBarView()
+                    },
+                    onboardingView: {
+                        WelcomeView(
+                            viewModel: WelcomeViewModel(
+                                interactor: CoreInteractor(container: container)
+                            )
+                        )
+                    }
+                )
+                .environment(appState)
+                .task {
+                    await viewModel.checkUserStatus()
+                }
+                .onNotificationReceived(name: UIApplication.willEnterForegroundNotification, action: { _ in
+                    Task {
+                        await viewModel.checkUserStatus()
+                    }
+                })
+                .task {
+                    try? await Task.sleep(for: .seconds(2))
+                    await viewModel.showATTPromptIfNeeded()
+                }
+                .onChange(of: appState.showTabBar) { _, showTabBar in
+                    if !showTabBar {
+                        Task {
+                            await viewModel.checkUserStatus()
+                        }
+                    }
+                }
+            }
+        )
     }
 }
 
 #Preview("AppView - TabBar") {
-    AppView(appState: AppState(showTabBar: true))
-        .environment(AuthManager(service: MockAuthService(user: .mock())))
-        .environment(UserManager(services: MockUserServices(user: .mock)))
+    let container = DevPreview.shared.container
+    
+    return AppView(
+        appState: AppState(showTabBar: true),
+        viewModel: AppViewViewModel(
+            interactor: CoreInteractor(container: container)
+        )
+    )
+    .previewEnvironment()
 }
 
 #Preview("AppView - Onboarding") {
-    AppView(appState: AppState(showTabBar: false))
-        .environment(AuthManager(service: MockAuthService(user: nil)))
-        .environment(UserManager(services: MockUserServices(user: nil)))
+    let container = DevPreview.shared.container
+    container.register(AuthManager.self, service: AuthManager(service: MockAuthService(user: nil)))
+    container.register(UserManager.self, service: UserManager(services: MockUserServices(user: nil)))
+    
+    return AppView(
+        appState: AppState(showTabBar: true),
+        viewModel: AppViewViewModel(
+            interactor: CoreInteractor(container: container)
+        )
+    )
+    .previewEnvironment()
 }

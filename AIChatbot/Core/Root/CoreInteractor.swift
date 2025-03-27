@@ -260,4 +260,8 @@ struct CoreInteractor {
         try await purchaseManager.logOut()
         logManager.deleteUserProfile()
     }
+    
+    var onboardingCommunityTest: Bool {
+        abTestManager.activeTests.onboardingCommunityTest
+    }
 }

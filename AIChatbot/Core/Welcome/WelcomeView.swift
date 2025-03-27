@@ -14,7 +14,7 @@ struct WelcomeView: View {
     @State var viewModel: WelcomeViewModel
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $viewModel.path) {
             VStack {
                 ImageLoaderView(urlString: viewModel.imageName)
                     .ignoresSafeArea()
@@ -41,6 +41,7 @@ struct WelcomeView: View {
                 .presentationDetents([.medium])
             }
             .screenAppearAnalytics(name: "WelcomeView")
+            .navigationDestinationForOnboarding(path: $viewModel.path)
         }
     }
     
@@ -62,15 +63,14 @@ struct WelcomeView: View {
     
     private var ctaButtons: some View {
         VStack(spacing: 8) {
-            NavigationLink {
-                OnboardingIntroView()
-            } label: {
-                Text("Get Started")
-                    .callToActionButton()
-                    .lineLimit(1)
-            }
-            .accessibilityIdentifier("StartButton")
-            .frame(maxWidth: 500)
+            Text("Get Started")
+                .callToActionButton()
+                .lineLimit(1)
+                .accessibilityIdentifier("StartButton")
+                .frame(maxWidth: 500)
+                .anyButton {
+                    viewModel.onGetStartedPressed()
+                }
             
             Text("Already have an account? Sign in.")
                 .underline()

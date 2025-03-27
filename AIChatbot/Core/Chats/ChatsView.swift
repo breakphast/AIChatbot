@@ -16,7 +16,7 @@ struct ChatsView: View {
     @State private var chats = [ChatModel]()
     @State private var isLoadingChats = true
     @State private var recentAvatars = [AvatarModel]()
-    @State private var path: [NavigationPathOption] = []
+    @State private var path: [TabBarPathOption] = []
     
     var body: some View {
         NavigationStack(path: $path) {

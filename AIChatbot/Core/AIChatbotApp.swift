@@ -29,7 +29,6 @@ struct TestingApp: App {
 }
 
 struct AIChatCourseApp: App {
-    
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     var body: some Scene {
@@ -38,7 +37,7 @@ struct AIChatCourseApp: App {
                 if Utilities.isUITesting {
                     AppViewForUITesting()
                 } else {
-                    AppView()
+                    AppView(viewModel: AppViewViewModel(interactor: CoreInteractor(container: delegate.dependencies.container)))
                 }
             }
             .environment(delegate.dependencies.container)
@@ -56,16 +55,17 @@ struct AIChatCourseApp: App {
 }
 
 struct AppViewForUITesting: View {
+    @Environment(DependencyContainer.self) private var container
+    
     private var startOnAvatarScreen: Bool {
         ProcessInfo.processInfo.arguments.contains("STARTSCREEN_CREATEAVATAR")
     }
     
     var body: some View {
         if startOnAvatarScreen {
-//            CreateAvatarView()
-            Text("Fix me!")
+            CreateAvatarView(viewModel: CreateAvatarViewModel(interactor: CoreInteractor(container: container)))
         } else {
-            AppView()
+            AppView(viewModel: AppViewViewModel(interactor: CoreInteractor(container: container)))
         }
     }
 }

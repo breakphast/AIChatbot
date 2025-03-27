@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CategoryListView: View {
     @State var viewModel: CategoryListViewModel
-    @Binding var path: [NavigationPathOption]
+    @Binding var path: [TabBarPathOption]
     var category: CharacterOption = .alien
     var imageName: String = Constants.randomImage
     

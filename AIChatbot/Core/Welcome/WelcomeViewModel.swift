@@ -20,10 +20,17 @@ class WelcomeViewModel {
     private let interactor: WelcomeInteractor
     
     private(set) var imageName: String = Constants.randomImage
+    
+    var path: [OnboardingPathOption] = []
+    
     var showSignInView = false
     
     init(interactor: WelcomeInteractor) {
         self.interactor = interactor
+    }
+    
+    func onGetStartedPressed() {
+        path.append(.intro)
     }
     
     func onSignInPressed() {
