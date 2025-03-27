@@ -8,22 +8,26 @@
 import SwiftUI
 
 struct TabBarView: View {
+    @Environment(DependencyContainer.self) private var container
+    
     var body: some View {
         TabView {
-            ExploreView()
+            ExploreView(viewModel: ExploreViewModel(interactor: CoreInteractor(container: container)))
                 .tabItem {
                     Label("Explore", systemImage: "eyes")
                 }
             
-            ChatsView()
+            ChatsView(viewModel: ChatsViewModel(interactor: CoreInteractor(container: container)))
                 .tabItem {
                     Label("Chats", systemImage: "bubble.left.and.bubble.right.fill")
                 }
             
-            ProfileView()
-                .tabItem {
-                    Label("Profile", systemImage: "person.fill")
-                }
+            ProfileView(
+                viewModel: ProfileViewModel(interactor: CoreInteractor(container: container))
+            )
+            .tabItem {
+                Label("Profile", systemImage: "person.fill")
+            }
         }
     }
 }

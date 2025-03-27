@@ -32,7 +32,7 @@ class ChatManager: ObservableObject {
         try await service.getChat(userID: userID, avatarID: avatarID)
     }
     
-    func getLastChatMesssage(chatID: String) async throws -> ChatMessageModel? {
+    func getLastChatMessage(chatID: String) async throws -> ChatMessageModel? {
         try await service.getLastChatMesssage(chatID: chatID)
     }
     

@@ -6,17 +6,10 @@
 //
 
 import SwiftUI
-import SwiftfulUtilities
 
 struct DevSettingsView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(AuthManager.self) private var authManager
-    @Environment(UserManager.self) private var userManager
-    @Environment(ABTestManager.self) private var abTestManager
-    @State private var createAccountTest: Bool = false
-    @State private var onboardingCommunityTest: Bool = false
-    @State private var categoryRowTest: CategoryRowTestOption = .default
-    @State private var paywallTest: PaywallTestOption = .default
+    @State var viewModel: DevSettingsViewModel
     
     var body: some View {
         NavigationStack {
@@ -35,16 +28,9 @@ struct DevSettingsView: View {
             }
             .screenAppearAnalytics(name: "DevSettings")
             .onFirstAppear {
-                loadABTests()
+                viewModel.loadABTests()
             }
         }
-    }
-    
-    private func loadABTests() {
-        createAccountTest = abTestManager.activeTests.createAccountTest
-        onboardingCommunityTest = abTestManager.activeTests.onboardingCommunityTest
-        categoryRowTest = abTestManager.activeTests.categoryRowTest
-        paywallTest = abTestManager.activeTests.paywallTest
     }
     
     private var backButtonView: some View {
@@ -52,98 +38,35 @@ struct DevSettingsView: View {
             .font(.title2)
             .fontWeight(.black)
             .anyButton {
-                onBackButtonPressed()
+                viewModel.onBackButtonPressed {
+                    dismiss()
+                }
             }
-    }
-    
-    private func onBackButtonPressed() {
-        dismiss()
-    }
-    
-    private func handleCreateAccountChange(oldValue: Bool, newValue: Bool) {
-        updateTest(
-            property: &createAccountTest,
-            newValue: newValue,
-            savedValue: abTestManager.activeTests.createAccountTest,
-            updateAction: { tests in
-                tests.update(createAccountTest: newValue)
-            }
-        )
-    }
-    
-    private func handleOnbCommunityTestChange(oldValue: Bool, newValue: Bool) {
-        updateTest(
-            property: &onboardingCommunityTest,
-            newValue: newValue,
-            savedValue: abTestManager.activeTests.onboardingCommunityTest,
-            updateAction: { tests in
-                tests.update(onboardingCommunityTest: newValue)
-            }
-        )
-    }
-    
-    private func onCategoryRowOptionChanged(oldValue: CategoryRowTestOption, newValue: CategoryRowTestOption) {
-        updateTest(
-            property: &categoryRowTest,
-            newValue: newValue,
-            savedValue: abTestManager.activeTests.categoryRowTest,
-            updateAction: { tests in
-                tests.update(categoryRowTest: newValue)
-            }
-        )
-    }
-    
-    private func onPaywallOptionChanged(oldValue: PaywallTestOption, newValue: PaywallTestOption) {
-        updateTest(
-            property: &paywallTest,
-            newValue: newValue,
-            savedValue: abTestManager.activeTests.paywallTest,
-            updateAction: { tests in
-                tests.update(paywallTest: newValue)
-            }
-        )
-    }
-    
-    private func updateTest<Value: Equatable>(
-        property: inout Value,
-        newValue: Value,
-        savedValue: Value,
-        updateAction: (inout ActiveABTests) -> Void
-    ) {
-        if newValue != savedValue {
-            do {
-                var tests = abTestManager.activeTests
-                updateAction(&tests)
-                try abTestManager.override(updatedTests: tests)
-            } catch {
-                property = savedValue
-            }
-        }
     }
     
     private var abTestSection: some View {
         Section {
-            Toggle("Create Account Test", isOn: $createAccountTest)
-                .onChange(of: createAccountTest, handleCreateAccountChange)
+            Toggle("Create Account Test", isOn: $viewModel.createAccountTest)
+                .onChange(of: viewModel.createAccountTest, viewModel.handleCreateAccountChange)
             
-            Toggle("Onb Community Test", isOn: $onboardingCommunityTest)
-                .onChange(of: onboardingCommunityTest, handleOnbCommunityTestChange)
+            Toggle("Onb Community Test", isOn: $viewModel.onboardingCommunityTest)
+                .onChange(of: viewModel.onboardingCommunityTest, viewModel.handleOnbCommunityTestChange)
             
-            Picker("Category Row Test", selection: $categoryRowTest) {
+            Picker("Category Row Test", selection: $viewModel.categoryRowTest) {
                 ForEach(CategoryRowTestOption.allCases, id: \.self) { option in
                     Text(option.rawValue)
                         .id(option)
                 }
             }
-            .onChange(of: categoryRowTest, onCategoryRowOptionChanged)
+            .onChange(of: viewModel.categoryRowTest, viewModel.onCategoryRowOptionChanged)
             
-            Picker("Paywall Test", selection: $paywallTest) {
+            Picker("Paywall Test", selection: $viewModel.paywallTest) {
                 ForEach(PaywallTestOption.allCases, id: \.self) { option in
                     Text(option.rawValue)
                         .id(option)
                 }
             }
-            .onChange(of: paywallTest, onPaywallOptionChanged)
+            .onChange(of: viewModel.paywallTest, viewModel.onPaywallOptionChanged)
         } header: {
             Text("AB Tests")
         }
@@ -152,9 +75,7 @@ struct DevSettingsView: View {
     
     private var authSection: some View {
         Section {
-            let array = authManager.auth?.eventParameters.asAlphabeticalArray ?? []
-
-            ForEach(array, id: \.key) { item in
+            ForEach(viewModel.authData, id: \.key) { item in
                 itemRow(item: item)
             }
         } header: {
@@ -164,9 +85,7 @@ struct DevSettingsView: View {
     
     private var userSection: some View {
         Section {
-            let array = userManager.currentUser?.eventParameters.asAlphabeticalArray ?? []
-
-            ForEach(array, id: \.key) { item in
+            ForEach(viewModel.userData, id: \.key) { item in
                 itemRow(item: item)
             }
         } header: {
@@ -176,9 +95,7 @@ struct DevSettingsView: View {
     
     private var deviceSection: some View {
         Section {
-            let array = Utilities.eventParameters.asAlphabeticalArray
-
-            ForEach(array, id: \.key) { item in
+            ForEach(viewModel.deviceData, id: \.key) { item in
                 itemRow(item: item)
             }
         } header: {
@@ -204,6 +121,6 @@ struct DevSettingsView: View {
 }
 
 #Preview {
-    DevSettingsView()
+    DevSettingsView(viewModel: DevSettingsViewModel(interactor: CoreInteractor(container: DevPreview.shared.container)))
         .previewEnvironment()
 }

@@ -8,14 +8,10 @@
 import SwiftUI
 
 struct CategoryListView: View {
-    @Environment(AvatarManager.self) private var avatarManager
-    @Environment(LogManager.self) private var logManager
-    @Binding var path: [NavigationPathOption]
+    @State var viewModel: CategoryListViewModel
+    @Binding var path: [TabBarPathOption]
     var category: CharacterOption = .alien
     var imageName: String = Constants.randomImage
-    @State private var avatars = [AvatarModel]()
-    @State private var showAlert: AnyAppAlert?
-    @State private var isLoading = true
     
     var body: some View {
         List {
@@ -27,13 +23,13 @@ struct CategoryListView: View {
             )
             .removeListRowFormatting()
             
-            if isLoading {
+            if viewModel.isLoading {
                 ProgressView()
                     .padding(40)
                     .frame(maxWidth: .infinity)
                     .listRowSeparator(.hidden)
                     .removeListRowFormatting()
-            } else if avatars.isEmpty {
+            } else if viewModel.avatars.isEmpty {
                 Text("No avatars found 😢")
                     .frame(maxWidth: .infinity)
                     .padding(40)
@@ -41,103 +37,69 @@ struct CategoryListView: View {
                     .listRowSeparator(.hidden)
                     .removeListRowFormatting()
             } else {
-                ForEach(avatars, id: \.self) { avatar in
+                ForEach(viewModel.avatars, id: \.self) { avatar in
                     CustomListCellView(
                         imageName: avatar.profileImageName,
                         title: avatar.name,
                         subtitle: avatar.characterDescription
                     )
                     .anyButton(.highlight, action: {
-                        onAvatarPressed(avatar: avatar)
+                        viewModel.onAvatarPressed(avatar: avatar, path: $path)
                     })
                     .removeListRowFormatting()
                 }
             }
         }
-        .showCustomAlert(alert: $showAlert)
+        .showCustomAlert(alert: $viewModel.showAlert)
         .screenAppearAnalytics(name: "CategoryList")
         .ignoresSafeArea()
         .listStyle(.plain)
         .task {
-            await loadAvatars()
+            await viewModel.loadAvatars(category: category)
         }
-    }
-    
-    enum Event: LoggableEvent {
-        case loadAvatarsStart
-        case loadAvatarsSuccess
-        case loadAvatarsFail(error: Error)
-        case avatarPressed(avatar: AvatarModel)
-        
-        var eventName: String {
-            switch self {
-            case .loadAvatarsStart:     return "CategoryList_LoadAvatar_Start"
-            case .loadAvatarsSuccess:   return "CategoryList_LoadAvatar_Success"
-            case .loadAvatarsFail:   return "CategoryList_LoadAvatar_Fail"
-            case .avatarPressed:        return "CategoryList_Avatar_Pressed"
-            }
-        }
-        
-        var parameters: [String: Any]? {
-            switch self {
-            case .loadAvatarsFail(let error):
-                return error.eventParameters
-            case .avatarPressed(avatar: let avatar):
-                return avatar.eventParameters
-            default:
-                return nil
-            }
-        }
-        
-        var type: LogType {
-            switch self {
-            case .loadAvatarsFail:
-                return .severe
-            default:
-                return .analytic
-            }
-        }
-    }
-    
-    private func loadAvatars() async {
-        logManager.trackEvent(event: Event.loadAvatarsStart)
-        do {
-            avatars = try await avatarManager.getAvatarsForCategory(category: category)
-            logManager.trackEvent(event: Event.loadAvatarsSuccess)
-        } catch {
-            showAlert = AnyAppAlert(error: error)
-            logManager.trackEvent(event: Event.loadAvatarsFail(error: error))
-        }
-        
-        isLoading = false
-    }
-    
-    private func onAvatarPressed(avatar: AvatarModel) {
-        path.append(.chat(avatarID: avatar.avatarID, chat: nil))
-        logManager.trackEvent(event: Event.avatarPressed(avatar: avatar))
     }
 }
 
 #Preview("Has data") {
-    CategoryListView(path: .constant([]))
-        .environment(AvatarManager(service: MockAvatarService()))
-        .previewEnvironment()
+    let container = DevPreview.shared.container
+    container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService()))
+    
+    return CategoryListView(
+        viewModel: CategoryListViewModel(interactor: CoreInteractor(container: container)),
+        path: .constant([])
+    )
+    .previewEnvironment()
 }
 
 #Preview("No data") {
-    CategoryListView(path: .constant([]))
-        .environment(AvatarManager(service: MockAvatarService(avatars: [])))
-        .previewEnvironment()
+    let container = DevPreview.shared.container
+    container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService(avatars: [])))
+    
+    return CategoryListView(
+        viewModel: CategoryListViewModel(interactor: CoreInteractor(container: container)),
+        path: .constant([])
+    )
+    .previewEnvironment()
 }
 
 #Preview("Slow loading") {
-    CategoryListView(path: .constant([]))
-        .environment(AvatarManager(service: MockAvatarService(delay: 4)))
-        .previewEnvironment()
+    let container = DevPreview.shared.container
+    container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService(delay: 8)))
+    
+    return CategoryListView(
+        viewModel: CategoryListViewModel(interactor: CoreInteractor(container: container)),
+        path: .constant([])
+    )
+    .previewEnvironment()
 }
 
 #Preview("Error loading") {
-    CategoryListView(path: .constant([]))
-        .environment(AvatarManager(service: MockAvatarService(delay: 4, showError: true)))
-        .previewEnvironment()
+    let container = DevPreview.shared.container
+    container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService(delay: 4, showError: true)))
+    
+    return CategoryListView(
+        viewModel: CategoryListViewModel(interactor: CoreInteractor(container: container)),
+        path: .constant([])
+    )
+    .previewEnvironment()
 }

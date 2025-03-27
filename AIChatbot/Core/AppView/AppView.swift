@@ -6,16 +6,12 @@
 //
 
 import SwiftUI
-import SwiftfulUtilities
-import AppTrackingTransparency
 
 struct AppView: View {
-    @Environment(AuthManager.self) private var authManager
-    @Environment(UserManager.self) private var userManager
-    @Environment(LogManager.self) private var logManager
-    @Environment(PurchaseManager.self) private var purchaseManager
+    @Environment(DependencyContainer.self) private var container
     @Environment(\.scenePhase) private var scenePhase
-    @State var appState = AppState()
+    
+    @State var viewModel: AppViewViewModel
     
     var body: some View {
         RootView(
@@ -23,7 +19,7 @@ struct AppView: View {
                 onApplicationDidAppear: nil,
                 onApplicationWillEnterForeground: { _ in
                     Task {
-                        await checkUserStatus()
+                        await viewModel.checkUserStatus()
                     }
                 },
                 onApplicationDidBecomeActive: nil,
@@ -33,134 +29,64 @@ struct AppView: View {
             ),
             content: {
                 AppViewBuilder(
-                    showTabBar: appState.showTabBar,
+                    showTabBar: viewModel.showTabBar,
                     tabBarView: {
                         TabBarView()
                     },
                     onboardingView: {
-                        WelcomeView()
+                        WelcomeView(
+                            viewModel: WelcomeViewModel(
+                                interactor: CoreInteractor(container: container)
+                            )
+                        )
                     }
                 )
-                .environment(appState)
-                .environment(userManager)
                 .task {
-                    await checkUserStatus()
+                    await viewModel.checkUserStatus()
                 }
                 .onNotificationReceived(name: UIApplication.willEnterForegroundNotification, action: { _ in
                     Task {
-                        await checkUserStatus()
+                        await viewModel.checkUserStatus()
                     }
                 })
                 .task {
                     try? await Task.sleep(for: .seconds(2))
-                    await showATTPromptIfNeeded()
+                    await viewModel.showATTPromptIfNeeded()
                 }
-                .onChange(of: appState.showTabBar) { _, showTabBar in
+                .onChange(of: viewModel.showTabBar) { _, showTabBar in
                     if !showTabBar {
                         Task {
-                            await checkUserStatus()
+                            await viewModel.checkUserStatus()
                         }
                     }
                 }
             }
         )
     }
-    
-    enum Event: LoggableEvent {
-        case existingAuthStart
-        case existingAuthFail(error: Error)
-        case anonAuthStart
-        case anonAuthSuccess
-        case anonAuthFail(error: Error)
-        case attStatus(dict: [String: Any])
-        
-        var eventName: String {
-            switch self {
-            case .existingAuthStart:    return "AppView_ExistingAuth"
-            case .existingAuthFail:     return "AppView_ExistingAuth_Fail"
-            case .anonAuthStart:        return "AppView_AnonAuth_Start"
-            case .anonAuthSuccess:      return "AppView_AnonAuth_Success"
-            case .anonAuthFail:         return "AppView_AnonAuth_Fail"
-            case .attStatus:            return "AppView_ATTStatus"
-            }
-        }
-        
-        var parameters: [String: Any]? {
-            switch self {
-            case .existingAuthFail(error: let error), .anonAuthFail(error: let error):
-                return error.eventParameters
-            case .attStatus(dict: let dict):
-                return dict
-            default:
-                return nil
-            }
-        }
-        
-        var type: LogType {
-            switch self {
-            case .existingAuthFail, .anonAuthFail:
-                return .severe
-            default:
-                return .analytic
-            }
-        }
-    }
-    
-    private func checkUserStatus() async {
-        if let user = authManager.auth {
-            logManager.trackEvent(event: Event.existingAuthStart)
-            
-            do {
-                try await userManager.login(auth: user, isNewUser: false)
-                try await purchaseManager.login(
-                    userID: user.uid,
-                    attributes: PurchaseProfileAttributes(
-                        email: user.email,
-                        firebaseAppInstanceID: FirebaseAnalyticsService.appInstanceID,
-                        mixpanelDistinctID: MixpanelService.distinctID
-                    )
-                )
-            } catch {
-                logManager.trackEvent(event: Event.existingAuthFail(error: error))
-                await checkUserStatus()
-            }
-        } else {
-            logManager.trackEvent(event: Event.anonAuthStart)
-            do {
-                let result = try await authManager.signInAnonymously()
-                logManager.trackEvent(event: Event.anonAuthSuccess)
-                
-                try await userManager.login(auth: result.user, isNewUser: result.isNewUser)
-                try await purchaseManager.login(
-                    userID: result.user.uid,
-                    attributes: PurchaseProfileAttributes(
-                        firebaseAppInstanceID: FirebaseAnalyticsService.appInstanceID,
-                        mixpanelDistinctID: MixpanelService.distinctID
-                    )
-                )
-            } catch {
-                logManager.trackEvent(event: Event.anonAuthFail(error: error))
-                await checkUserStatus()
-            }
-        }
-    }
-    
-    private func showATTPromptIfNeeded() async {
-        #if !DEBUG
-        let status = await AppTrackingTransparencyHelper.requestTrackingAuthorization()
-        logManager.trackEvent(event: Event.attStatus(dict: status.eventParameters))
-        #endif
-    }
 }
 
 #Preview("AppView - TabBar") {
-    AppView(appState: AppState(showTabBar: true))
-        .environment(AuthManager(service: MockAuthService(user: .mock())))
-        .environment(UserManager(services: MockUserServices(user: .mock)))
+    let container = DevPreview.shared.container
+    container.register(AppState.self, service: AppState(showTabBar: true))
+    
+    return AppView(
+        viewModel: AppViewViewModel(
+            interactor: CoreInteractor(container: container)
+        )
+    )
+    .previewEnvironment()
 }
 
 #Preview("AppView - Onboarding") {
-    AppView(appState: AppState(showTabBar: false))
-        .environment(AuthManager(service: MockAuthService(user: nil)))
-        .environment(UserManager(services: MockUserServices(user: nil)))
+    let container = DevPreview.shared.container
+    container.register(AuthManager.self, service: AuthManager(service: MockAuthService(user: nil)))
+    container.register(UserManager.self, service: UserManager(services: MockUserServices(user: nil)))
+    container.register(AppState.self, service: AppState(showTabBar: false))
+    
+    return AppView(
+        viewModel: AppViewViewModel(
+            interactor: CoreInteractor(container: container)
+        )
+    )
+    .previewEnvironment()
 }

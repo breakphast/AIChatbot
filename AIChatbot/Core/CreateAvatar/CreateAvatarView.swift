@@ -9,20 +9,8 @@ import SwiftUI
 
 struct CreateAvatarView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(AIManager.self) private var aiManager
-    @Environment(AuthManager.self) private var authManager
-    @Environment(AvatarManager.self) private var avatarManager
-    @Environment(LogManager.self) private var logManager
-    
-    @State private var avatarName: String = ""
-    @State private var characterOption: CharacterOption = .default
-    @State private var characterAction: CharacterAction = .default
-    @State private var characterLocation: CharacterLocation = .default
-    @State private var isGenerating = false
-    @State private var generatedImage: UIImage?
-    @State private var isSaving = false
-    @State private var showAlert: AnyAppAlert?
-    
+    @State var viewModel: CreateAvatarViewModel
+
     var body: some View {
         NavigationStack {
             List {
@@ -37,7 +25,7 @@ struct CreateAvatarView: View {
                     backButton
                 }
             }
-            .showCustomAlert(alert: $showAlert)
+            .showCustomAlert(alert: $viewModel.showAlert)
             .screenAppearAnalytics(name: "CreateAvatar")
         }
     }
@@ -47,13 +35,15 @@ struct CreateAvatarView: View {
             .font(.title2)
             .fontWeight(.semibold)
             .anyButton(.plain) {
-                onBackButtonPressed()
+                viewModel.onBackButtonPressed {
+                    dismiss()
+                }
             }
     }
     
     private var nameSection: some View {
         Section {
-            TextField("Player 1", text: $avatarName)
+            TextField("Player 1", text: $viewModel.avatarName)
         } header: {
             Text("Name your avatar*")
                 .lineLimit(1)
@@ -71,15 +61,15 @@ struct CreateAvatarView: View {
                         .lineLimit(1)
                         .minimumScaleFactor(0.2)
                         .anyButton(.plain) {
-                            onGenerateImagePressed()
+                            viewModel.onGenerateImagePressed()
                         }
-                        .opacity(isGenerating ? 0 : 1)
+                        .opacity(viewModel.isGenerating ? 0 : 1)
                     
                     ProgressView()
                         .tint(.accent)
-                        .opacity(isGenerating ? 1 : 0)
+                        .opacity(viewModel.isGenerating ? 1 : 0)
                 }
-                .disabled(isGenerating || avatarName.isEmpty)
+                .disabled(viewModel.isGenerating || viewModel.avatarName.isEmpty)
                 
                 avatarIcon
             }
@@ -90,14 +80,19 @@ struct CreateAvatarView: View {
     private var saveSection: some View {
         Section {
             AsyncCallToActionButton(
-                isLoading: isSaving,
+                isLoading: viewModel.isSaving,
                 text: "Save") {
-                    onSavePressed()
+                    viewModel.onSavePressed(onDismiss: {
+                        dismiss()
+                    })
+//                    viewModel.onSavePressed {
+////                        dismiss()
+//                    }
                 }
                 .removeListRowFormatting()
                 .padding(.top, 24)
-                .disabled(generatedImage == nil || isSaving)
-                .opacity(generatedImage == nil ? 0.5 : 1.0)
+                .disabled(viewModel.generatedImage == nil || viewModel.isSaving)
+                .opacity(viewModel.generatedImage == nil ? 0.5 : 1.0)
                 .frame(maxWidth: 500)
                 .frame(maxWidth: .infinity)
         }
@@ -105,7 +100,7 @@ struct CreateAvatarView: View {
     
     private var attributesSection: some View {
         Section {
-            Picker(selection: $characterOption) {
+            Picker(selection: $viewModel.characterOption) {
                 ForEach(CharacterOption.allCases, id: \.self) { option in
                     Text(option.rawValue.capitalized)
                         .tag(option)
@@ -114,7 +109,7 @@ struct CreateAvatarView: View {
                 Text("is a...")
             }
             
-            Picker(selection: $characterAction) {
+            Picker(selection: $viewModel.characterAction) {
                 ForEach(CharacterAction.allCases, id: \.self) { action in
                     Text(action.rawValue.capitalized)
                         .tag(action)
@@ -123,7 +118,7 @@ struct CreateAvatarView: View {
                 Text("that is...")
             }
             
-            Picker(selection: $characterLocation) {
+            Picker(selection: $viewModel.characterLocation) {
                 ForEach(CharacterLocation.allCases, id: \.self) { location in
                     Text(location.rawValue.capitalized)
                         .tag(location)
@@ -143,7 +138,7 @@ struct CreateAvatarView: View {
             .fill(.secondary.opacity(0.3))
             .overlay {
                 ZStack {
-                    if let generatedImage {
+                    if let generatedImage = viewModel.generatedImage {
                         Image(uiImage: generatedImage)
                             .resizable()
                             .scaledToFill()
@@ -154,118 +149,13 @@ struct CreateAvatarView: View {
             .frame(maxHeight: 400)
             .frame(maxWidth: .infinity)
     }
-    
-    enum Event: LoggableEvent {
-        case backButtonPressed
-        case generateImageStart
-        case generateImageSuccess(avatarDescriptionBuilder: AvatarDescriptionBuilder)
-        case generateImageFail(error: Error)
-        case saveAvatarStart
-        case saveAvatarSuccess(avatar: AvatarModel)
-        case saveAvatarFail(error: Error)
-        
-        var eventName: String {
-            switch self {
-            case .backButtonPressed:            return "CreateAvatar_BackButtonPressed"
-            case .generateImageStart:           return "CreateAvatar_GenerateImage_Start"
-            case .generateImageSuccess:         return "CreateAvatar_GenerateImage_Success"
-            case .generateImageFail:            return "CreateAvatar_GenerateImage_Fail"
-            case .saveAvatarStart:              return "CreateAvatar_SaveAvatar_Start"
-            case .saveAvatarSuccess:            return "CreateAvatar_SaveAvatar_Success"
-            case .saveAvatarFail:               return "CreateAvatar_SaveAvatar_Fail"
-            }
-        }
-        
-        var parameters: [String: Any]? {
-            switch self {
-            case .generateImageSuccess(avatarDescriptionBuilder: let avatarDescriptionBuilder):
-                return avatarDescriptionBuilder.eventParameters
-            case .saveAvatarSuccess(avatar: let avatar):
-                return avatar.eventParameters
-            case .generateImageFail(error: let error):
-                return error.eventParameters
-            default:
-                return nil
-            }
-        }
-        
-        var type: LogType {
-            switch self {
-            case .generateImageFail:
-                return .severe
-            case .saveAvatarFail:
-                return .warning
-            default:
-                return .analytic
-            }
-        }
-    }
-    
-    private func onGenerateImagePressed() {
-        logManager.trackEvent(event: Event.generateImageStart)
-        isGenerating = true
-        
-        Task {
-            do {
-                let avatarDescriptionBuilder = AvatarDescriptionBuilder(
-                    characterOption: characterOption,
-                    characterAction: characterAction,
-                    characterLocation: characterLocation
-                )
-                let prompt = avatarDescriptionBuilder.characterDescription
-                
-                generatedImage = try await aiManager.generateImage(input: prompt)
-                logManager.trackEvent(event: Event.generateImageSuccess(avatarDescriptionBuilder: avatarDescriptionBuilder))
-            } catch {
-                print("Error generating image \(error)")
-                logManager.trackEvent(event: Event.generateImageFail(error: error))
-            }
-            
-            isGenerating = false
-        }
-    }
-    
-    private func onSavePressed() {
-        logManager.trackEvent(event: Event.saveAvatarStart)
-        guard let generatedImage else { return }
-        
-        isSaving = true
-        
-        Task {
-            do {
-                try TextValidationHelper.checkIfTextIsValid(text: avatarName)
-                let uid = try authManager.getAuthID()
-                
-                let avatar = AvatarModel.newAvatar(
-                    name: avatarName,
-                    option: characterOption,
-                    action: characterAction,
-                    location: characterLocation,
-                    authorID: uid
-                )
-                
-                try await avatarManager.createAvatar(avatar: avatar, image: generatedImage)
-                logManager.trackEvent(event: Event.saveAvatarSuccess(avatar: avatar))
-                
-                dismiss()
-                isSaving = false
-            } catch {
-                showAlert = AnyAppAlert(error: error)
-                logManager.trackEvent(event: Event.saveAvatarFail(error: error))
-            }
-        }
-    }
-    
-    private func onBackButtonPressed() {
-        logManager.trackEvent(event: Event.backButtonPressed)
-        dismiss()
-    }
 }
 
 #Preview {
-    CreateAvatarView()
-        .environment(AIManager(service: MockAIService()))
-        .environment(AuthManager(service: MockAuthService(user: .mock())))
-        .environment(AvatarManager(service: MockAvatarService()))
-        .previewEnvironment()
+    CreateAvatarView(
+        viewModel: CreateAvatarViewModel(
+            interactor: CoreInteractor(container: DevPreview.shared.container)
+        )
+    )
+    .previewEnvironment()
 }
