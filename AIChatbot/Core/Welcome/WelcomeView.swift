@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct WelcomeView: View {
-    @Environment(AppState.self) var appState
     @Environment(DependencyContainer.self) private var container
     
     @State var viewModel: WelcomeViewModel
@@ -33,9 +32,7 @@ struct WelcomeView: View {
                     title: "Sign in",
                     subtitle: "Connect to an existing account.",
                     onDidSignIn: { isNewUser in
-                        viewModel.handleDidSignIn(isNewUser: isNewUser) {
-                            appState.updateViewState(showTabBarView: true)
-                        }
+                        viewModel.handleDidSignIn(isNewUser: isNewUser)
                     }
                 )
                 .presentationDetents([.medium])

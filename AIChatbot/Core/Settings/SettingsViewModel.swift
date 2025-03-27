@@ -16,6 +16,7 @@ protocol SettingsInteractor {
     func getAuthID() throws -> String
     func trackEvent(event: LoggableEvent)
     func deleteAccount(userID: String) async throws
+    func updateAppState(showTabBar: Bool)
 }
 
 extension CoreInteractor: SettingsInteractor { }
@@ -125,6 +126,7 @@ class SettingsViewModel {
                 try await interactor.signOut()
                 interactor.trackEvent(event: Event.signOutSuccess)
                 await onDismiss()
+                interactor.updateAppState(showTabBar: false)
             } catch {
                 showAlert = AnyAppAlert(error: error)
                 interactor.trackEvent(event: Event.signOutFail(error: error))
@@ -149,9 +151,7 @@ class SettingsViewModel {
             buttons: {
                 AnyView(
                     Button("Delete", role: .destructive, action: {
-                        self.onDeleteAccountConfirmed {
-                            await onDismiss()
-                        }
+                        self.onDeleteAccountPressed(onDismiss: onDismiss)
                     })
                 )
             }
@@ -170,6 +170,7 @@ class SettingsViewModel {
                 interactor.trackEvent(event: Event.deleteAccountSuccess)
 
                 await onDismiss()
+                interactor.updateAppState(showTabBar: false)
             } catch {
                 showAlert = AnyAppAlert(error: error)
                 interactor.trackEvent(event: Event.deleteAccountFail(error: error))

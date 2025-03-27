@@ -10,6 +10,7 @@ import SwiftUI
 @MainActor
 protocol WelcomeInteractor {
     func trackEvent(event: LoggableEvent)
+    func updateAppState(showTabBar: Bool)
 }
 
 extension CoreInteractor: WelcomeInteractor { }
@@ -38,12 +39,12 @@ class WelcomeViewModel {
         showSignInView = true
     }
     
-    func handleDidSignIn(isNewUser: Bool, updateViewState: @escaping () -> Void) {
+    func handleDidSignIn(isNewUser: Bool) {
         interactor.trackEvent(event: Event.didSignIn(isNewUser: isNewUser))
         if isNewUser {
             
         } else {
-            updateViewState()
+            interactor.updateAppState(showTabBar: true)
         }
     }
     
