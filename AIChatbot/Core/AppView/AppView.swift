@@ -11,7 +11,7 @@ struct AppView: View {
     @Environment(DependencyContainer.self) private var container
     @Environment(\.scenePhase) private var scenePhase
     
-    @State var viewModel: AppViewViewModel
+    @State var viewModel: AppViewModel
     
     var body: some View {
         RootView(
@@ -70,7 +70,7 @@ struct AppView: View {
     container.register(AppState.self, service: AppState(showTabBar: true))
     
     return AppView(
-        viewModel: AppViewViewModel(
+        viewModel: AppViewModel(
             interactor: CoreInteractor(container: container)
         )
     )
@@ -84,7 +84,7 @@ struct AppView: View {
     container.register(AppState.self, service: AppState(showTabBar: false))
     
     return AppView(
-        viewModel: AppViewViewModel(
+        viewModel: AppViewModel(
             interactor: CoreInteractor(container: container)
         )
     )
