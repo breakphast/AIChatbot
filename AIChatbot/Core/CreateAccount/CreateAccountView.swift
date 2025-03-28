@@ -19,10 +19,6 @@ struct CreateAccountView: View {
     @State var viewModel: CreateAccountViewModel
     var delegate: CreateAccountDelegate = CreateAccountDelegate()
     
-    var title: String = "Create Account?"
-    var subtitle: String = "Don't lose your data! Connect to an SSO provider to save your account."
-    var onDidSignIn: ((_ isNewUser: Bool) -> Void)?
-    
     var body: some View {
         VStack(spacing: 24) {
             VStack(alignment: .leading, spacing: 8) {
@@ -61,7 +57,8 @@ struct CreateAccountView: View {
 }
 
 #Preview {
-    CreateAccountView(viewModel: CreateAccountViewModel(interactor: CoreInteractor(container: DevPreview.shared.container)))
+    CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+        .createAccountView()
         .previewEnvironment()
         .frame(maxHeight: 400)
         .frame(maxHeight: .infinity, alignment: .bottom)

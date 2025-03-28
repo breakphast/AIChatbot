@@ -7,13 +7,16 @@
 
 import SwiftUI
 
+struct OnboardingIntroDelegate {
+    var path: Binding<[OnboardingPathOption]>
+}
+
 struct OnboardingIntroView: View {
-    @Environment(DependencyContainer.self) private var container
     @State var viewModel: OnboardingIntroViewModel
-    @Binding var path: [OnboardingPathOption]
+    let delegate: OnboardingIntroDelegate
     
     var body: some View {
-        NavigationStack(path: $path) {
+        NavigationStack(path: delegate.path) {
             VStack {
                 Group {
                     Text("Make your own ")
@@ -22,7 +25,7 @@ struct OnboardingIntroView: View {
                         .foregroundStyle(.accent)
                         .fontWeight(.semibold)
                     +
-                    Text("and chat with them!\n\nHave ")
+                    Text("and chat with them!\n\nHave ") 
                     +
                     Text("real conversations")
                         .foregroundStyle(.accent)
@@ -40,7 +43,7 @@ struct OnboardingIntroView: View {
             .font(.title3)
             .toolbar(.hidden, for: .navigationBar)
             .screenAppearAnalytics(name: "OnboardingIntroView")
-            .navigationDestinationForOnboarding(path: $path)
+            .navigationDestinationForOnboarding(path: delegate.path)
         }
     }
     
@@ -51,7 +54,7 @@ struct OnboardingIntroView: View {
                 .padding(24)
                 .font(.title3)
                 .anyButton {
-                    viewModel.onContinueButtonPressed(path: $path)
+                    viewModel.onContinueButtonPressed(path: delegate.path)
                 }
                 .accessibilityIdentifier("ContinueButton")
         }
@@ -59,15 +62,9 @@ struct OnboardingIntroView: View {
 }
 
 #Preview("Original") {
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
     NavigationStack {
-        OnboardingIntroView(
-            viewModel: OnboardingIntroViewModel(
-                interactor: CoreInteractor(
-                    container: DevPreview.shared.container
-                )
-            ),
-            path: .constant([])
-        )
+        builder.onboardingIntroView(delegate: OnboardingIntroDelegate(path: .constant([])))
     }
     .previewEnvironment()
 }
@@ -75,16 +72,10 @@ struct OnboardingIntroView: View {
 #Preview("Onboarding Community Test") {
     let container = DevPreview.shared.container
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(onboardingCommunityTest: true)))
-            
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
+    
     return NavigationStack {
-        OnboardingIntroView(
-            viewModel: OnboardingIntroViewModel(
-                interactor: CoreInteractor(
-                    container: container
-                )
-            ),
-            path: .constant([])
-        )
+        builder.onboardingIntroView(delegate: OnboardingIntroDelegate(path: .constant([])))
     }
     .previewEnvironment()
 }

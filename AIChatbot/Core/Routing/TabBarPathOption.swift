@@ -9,33 +9,26 @@ import SwiftUI
 import Foundation
 
 struct NavigationDestinationForTabBarModule: ViewModifier {
-    @Environment(DependencyContainer.self) private var container
+    @Environment(CoreBuilder.self) private var builder
     let path: Binding<[TabBarPathOption]>
     
     func body(content: Content) -> some View {
         content
-            .navigationDestination(for: TabBarPathOption.self, destination: { newValue in
-                switch newValue {
-                case .chat(avatarID: let avatarID, chat: let chat):
-                    ChatView(
-                        viewModel: ChatViewModel(interactor: CoreInteractor(container: container)),
-                             chat: chat,
-                             avatarID: avatarID
-                    )
-                case .category(category: let category, imageName: let imageName):
-                    CategoryListView(
-                        viewModel: CategoryListViewModel(interactor: CoreInteractor(container: container)),
-                        path: path,
-                        category: category,
-                        imageName: imageName
-                    )
-                }
+            .navigationDestination(
+                for: TabBarPathOption.self,
+                destination: { newValue in
+                    switch newValue {
+                    case .chat(avatarID: let avatarID, chat: let chat):
+                        builder.chatView(delegate: ChatViewDelegate(chat: chat, avatarID: avatarID))
+                    case .category(category: let category, imageName: let imageName):
+                        builder.categoryListView(delegate: CategoryListDelegate(path: path, category: category, imageName: imageName))
+                    }
             })
     }
 }
 
 struct NavigationDestinationForOnboarding: ViewModifier {
-    @Environment(DependencyContainer.self) private var container
+    @Environment(CoreBuilder.self) private var builder
     let path: Binding<[OnboardingPathOption]>
     
     func body(content: Content) -> some View {
@@ -43,30 +36,13 @@ struct NavigationDestinationForOnboarding: ViewModifier {
             .navigationDestination(for: OnboardingPathOption.self, destination: { newValue in
                 switch newValue {
                 case .intro:
-                    OnboardingIntroView(
-                        viewModel: OnboardingIntroViewModel(
-                            interactor: CoreInteractor(container: container)
-                        ), path: path
-                    )
+                    builder.onboardingCommunityView(delegate: OnboardingCommunityDelegate(path: path))
                 case .community:
-                    OnboardingCommunityView(
-                        viewModel: OnboardingCommunityViewModel(
-                            interactor: CoreInteractor(container: container)
-                        ), path: path
-                    )
+                    builder.onboardingCommunityView(delegate: OnboardingCommunityDelegate(path: path))
                 case .color:
-                    OnboardingColorView(
-                        viewModel: OnboardingColorViewModel(
-                            interactor: CoreInteractor(container: container), selectedColor: .orange
-                        ), path: path
-                    )
+                    builder.onboardingColorView(delegate: OnboardingColorDelegate(path: path))
                 case .completed(selectedColor: let color):
-                    OnboardingCompletedView(
-                        viewModel: OnboardingCompletedViewModel(
-                            interactor: CoreInteractor(container: container)
-                        ),
-                        selectedColor: color
-                    )
+                    builder.onboardingCompletedView(delegate: OnboardingCompletedDelegate(selectedColor: color))
                 }
             })
     }

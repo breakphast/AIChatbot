@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @Environment(DependencyContainer.self) private var container
+    @Environment(CoreBuilder.self) private var builder
     @State var viewModel: ProfileViewModel
     
     var body: some View {
@@ -28,7 +28,7 @@ struct ProfileView: View {
             }
         }
         .sheet(isPresented: $viewModel.showSettingsView) {
-            SettingsView(viewModel: SettingsViewModel(interactor: CoreInteractor(container: container)))
+            builder.settingsView()
         }
         .fullScreenCover(
             isPresented: $viewModel.showCreateAvatarView,
@@ -38,9 +38,7 @@ struct ProfileView: View {
                 }
             },
             content: {
-                CreateAvatarView(
-                    viewModel: CreateAvatarViewModel(interactor: CoreInteractor(container: container))
-                )
+                builder.createAvatarView()
             }
         )
         .task {
@@ -85,15 +83,11 @@ struct ProfileView: View {
                 .removeListRowFormatting()
             } else {
                 ForEach(viewModel.myAvatars, id: \.self) { avatar in
-                    CustomListCellView(
-                        imageName: avatar.profileImageName,
-                        title: avatar.name,
-                        subtitle: nil
-                    )
-                    .anyButton(.highlight, action: {
-                        viewModel.onAvatarPressed(avatar: avatar)
-                    })
-                    .removeListRowFormatting()
+                    builder.customListCellView(delegate: CustomListCellDelegate())
+                        .anyButton(.highlight, action: {
+                            viewModel.onAvatarPressed(avatar: avatar)
+                        })
+                        .removeListRowFormatting()
                 }
                 .onDelete { indexSet in
                     viewModel.onDeleteAvatar(indexSet: indexSet)
@@ -117,8 +111,7 @@ struct ProfileView: View {
 }
 
 #Preview {
-    ProfileView(
-        viewModel: ProfileViewModel(interactor: CoreInteractor(container: DevPreview.shared.container))
-    )
-    .previewEnvironment()
+    CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+        .profileView()
+        .previewEnvironment()
 }

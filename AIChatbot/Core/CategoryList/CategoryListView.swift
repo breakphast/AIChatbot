@@ -7,17 +7,22 @@
 
 import SwiftUI
 
-struct CategoryListView: View {
-    @State var viewModel: CategoryListViewModel
-    @Binding var path: [TabBarPathOption]
+struct CategoryListDelegate {
+    var path: Binding<[TabBarPathOption]>
     var category: CharacterOption = .alien
     var imageName: String = Constants.randomImage
+}
+
+struct CategoryListView: View {
+    @Environment(CoreBuilder.self) private var builder
+    @State var viewModel: CategoryListViewModel
+    let delegate: CategoryListDelegate
     
     var body: some View {
         List {
             CategoryCellView(
-                title: category.pluralized.capitalized,
-                imageName: imageName,
+                title: delegate.category.pluralized.capitalized,
+                imageName: delegate.imageName,
                 font: .largeTitle,
                 cornerRadius: 0
             )
@@ -38,13 +43,15 @@ struct CategoryListView: View {
                     .removeListRowFormatting()
             } else {
                 ForEach(viewModel.avatars, id: \.self) { avatar in
-                    CustomListCellView(
-                        imageName: avatar.profileImageName,
-                        title: avatar.name,
-                        subtitle: avatar.characterDescription
+                    builder.customListCellView(
+                        delegate: CustomListCellDelegate(
+                            imageName: avatar.profileImageName,
+                            title: avatar.name,
+                            subtitle: avatar.characterDescription
+                        )
                     )
                     .anyButton(.highlight, action: {
-                        viewModel.onAvatarPressed(avatar: avatar, path: $path)
+                        viewModel.onAvatarPressed(avatar: avatar, path: delegate.path)
                     })
                     .removeListRowFormatting()
                 }
@@ -55,7 +62,7 @@ struct CategoryListView: View {
         .ignoresSafeArea()
         .listStyle(.plain)
         .task {
-            await viewModel.loadAvatars(category: category)
+            await viewModel.loadAvatars(category: delegate.category)
         }
     }
 }
@@ -63,43 +70,39 @@ struct CategoryListView: View {
 #Preview("Has data") {
     let container = DevPreview.shared.container
     container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService()))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
+    let delegate = CategoryListDelegate(path: .constant([]))
     
-    return CategoryListView(
-        viewModel: CategoryListViewModel(interactor: CoreInteractor(container: container)),
-        path: .constant([])
-    )
-    .previewEnvironment()
+    return builder.categoryListView(delegate: delegate)
+        .previewEnvironment()
 }
 
 #Preview("No data") {
     let container = DevPreview.shared.container
     container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService(avatars: [])))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
+    let delegate = CategoryListDelegate(path: .constant([]))
     
-    return CategoryListView(
-        viewModel: CategoryListViewModel(interactor: CoreInteractor(container: container)),
-        path: .constant([])
-    )
-    .previewEnvironment()
+    return builder.categoryListView(delegate: delegate)
+        .previewEnvironment()
 }
 
 #Preview("Slow loading") {
     let container = DevPreview.shared.container
     container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService(delay: 8)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
+    let delegate = CategoryListDelegate(path: .constant([])) 
     
-    return CategoryListView(
-        viewModel: CategoryListViewModel(interactor: CoreInteractor(container: container)),
-        path: .constant([])
-    )
-    .previewEnvironment()
+    return builder.categoryListView(delegate: delegate)
+        .previewEnvironment()
 }
 
 #Preview("Error loading") {
     let container = DevPreview.shared.container
     container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService(delay: 4, showError: true)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
+    let delegate = CategoryListDelegate(path: .constant([]))
     
-    return CategoryListView(
-        viewModel: CategoryListViewModel(interactor: CoreInteractor(container: container)),
-        path: .constant([])
-    )
-    .previewEnvironment()
+    return builder.categoryListView(delegate: delegate)
+        .previewEnvironment()
 }

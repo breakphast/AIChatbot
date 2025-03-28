@@ -22,9 +22,8 @@ class OnboardingColorViewModel {
     private(set) var selectedColor: Color?
     let profileColors: [Color] = [.red, .green, .indigo, .blue, .orange, .pink, .yellow, .purple, .cyan]
     
-    init(interactor: OnboardingColorInteractor, selectedColor: Color) {
+    init(interactor: OnboardingColorInteractor) {
         self.interactor = interactor
-        self.selectedColor = selectedColor
     }
     
     func onColorPressed(color: Color) {

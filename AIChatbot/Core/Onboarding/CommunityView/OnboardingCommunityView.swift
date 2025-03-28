@@ -7,13 +7,17 @@
 
 import SwiftUI
 
+struct OnboardingCommunityDelegate {
+    var path: Binding<[OnboardingPathOption]>
+}
+
 struct OnboardingCommunityView: View {
-    @Environment(DependencyContainer.self) private var container
+    @Environment(CoreBuilder.self) private var builder
     @State var viewModel: OnboardingCommunityViewModel
-    @Binding var path: [OnboardingPathOption]
+    let delegate: OnboardingCommunityDelegate
     
     var body: some View {
-        NavigationStack(path: $path) {
+        NavigationStack(path: delegate.path) {
             VStack {
                 VStack(spacing: 40) {
                     ImageLoaderView()
@@ -40,7 +44,7 @@ struct OnboardingCommunityView: View {
             .font(.title3)
             .toolbar(.hidden, for: .navigationBar)
             .screenAppearAnalytics(name: "OnboardingCommunityView")
-            .navigationDestinationForOnboarding(path: $path)
+            .navigationDestinationForOnboarding(path: delegate.path)
         }
     }
     
@@ -49,15 +53,16 @@ struct OnboardingCommunityView: View {
             .callToActionButton()
             .font(.title3)
             .anyButton {
-                viewModel.onContinueButtonPressed(path: $path)
+                viewModel.onContinueButtonPressed(path: delegate.path)
             }
             .accessibilityIdentifier("OnboardingCommunityContinueButton")
     }
 }
 
 #Preview {
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
     NavigationStack {
-        OnboardingCommunityView(viewModel: OnboardingCommunityViewModel(interactor: CoreInteractor(container: DevPreview.shared.container)), path: .constant([]))
+        builder.onboardingCommunityView(delegate: OnboardingCommunityDelegate(path: .constant([])))
     }
     .previewEnvironment()
 }

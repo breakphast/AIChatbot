@@ -37,18 +37,17 @@ struct AIChatCourseApp: App {
                 if Utilities.isUITesting {
                     AppViewForUITesting()
                 } else {
-                    AppView(viewModel: AppViewModel(interactor: CoreInteractor(container: delegate.dependencies.container)))
+                    delegate.builder.appView()
                 }
             }
-            .environment(CoreBuilder(interactor: CoreInteractor(container: delegate.dependencies.container)))
-            .environment(delegate.dependencies.container)
+            .environment(delegate.builder)
             .environment(delegate.dependencies.logManager)
         }
     }
 }
 
 struct AppViewForUITesting: View {
-    @Environment(DependencyContainer.self) private var container
+    @Environment(CoreBuilder.self) private var builder
     
     private var startOnAvatarScreen: Bool {
         ProcessInfo.processInfo.arguments.contains("STARTSCREEN_CREATEAVATAR")
@@ -56,9 +55,9 @@ struct AppViewForUITesting: View {
     
     var body: some View {
         if startOnAvatarScreen {
-            CreateAvatarView(viewModel: CreateAvatarViewModel(interactor: CoreInteractor(container: container)))
+            builder.createAvatarView()
         } else {
-            AppView(viewModel: AppViewModel(interactor: CoreInteractor(container: container)))
+            builder.appView()
         }
     }
 }
@@ -66,7 +65,6 @@ struct AppViewForUITesting: View {
 extension View {
     func previewEnvironment(isSignedIn: Bool = true) -> some View {
         self
-            .environment(DevPreview.shared.container)
             .environment(LogManager(services: []))
             .environment(CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container)))
     }

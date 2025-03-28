@@ -7,12 +7,16 @@
 
 import SwiftUI
 
+struct ChatViewDelegate {
+    var chat: ChatModel?
+    var avatarID: String = AvatarModel.mock.avatarID
+}
+
 struct ChatView: View {
     @Environment(\.dismiss) var dismiss
-    @Environment(DependencyContainer.self) private var container
+    @Environment(CoreBuilder.self) private var builder
     @State var viewModel: ChatViewModel
-    @State var chat: ChatModel?
-    var avatarID: String = AvatarModel.mock.avatarID
+    let delegate: ChatViewDelegate
     
     var body: some View {
         VStack(spacing: 0) {
@@ -48,17 +52,17 @@ struct ChatView: View {
             }
         }
         .sheet(isPresented: $viewModel.showPaywall, content: {
-            PaywallView(viewModel: PaywallViewModel(interactor: CoreInteractor(container: container)))
+            builder.paywallView()
         })
         .task {
-            await viewModel.loadAvatar(avatarID: avatarID)
+            await viewModel.loadAvatar(avatarID: delegate.avatarID)
         }
         .task {
-            await viewModel.loadChat(avatarID: avatarID)
+            await viewModel.loadChat(avatarID: delegate.avatarID)
             await viewModel.listenForChatMessages()
         }
         .onFirstAppear {
-            viewModel.onViewFirstAppear(chat: chat)
+            viewModel.onViewFirstAppear(chat: delegate.chat)
         }
     }
     
@@ -134,7 +138,7 @@ struct ChatView: View {
                     .padding(.trailing, 4)
                     .foregroundStyle(.accent)
                     .anyButton(.plain, action: {
-                        viewModel.onSendMessagePressed(avatarID: avatarID)
+                        viewModel.onSendMessagePressed(avatarID: delegate.avatarID)
                     })
                 , alignment: .trailing
             )
@@ -153,15 +157,19 @@ struct ChatView: View {
 }
 
 #Preview("Working Chat") {
-    NavigationStack {
-        ChatView(viewModel: ChatViewModel(interactor: CoreInteractor(container: DevPreview.shared.container)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+    
+    return NavigationStack {
+        builder.chatView()
             .previewEnvironment()
     }
 }
 
 #Preview("Working Chat - Not Premium") {
-    NavigationStack {
-        ChatView(viewModel: ChatViewModel(interactor: CoreInteractor(container: DevPreview.shared.container)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+    
+    return NavigationStack {
+        builder.chatView()
             .previewEnvironment()
     }
 }
@@ -169,9 +177,10 @@ struct ChatView: View {
 #Preview("Working Chat - Premium") {
     let container = DevPreview.shared.container
     container.register(PurchaseManager.self, service: PurchaseManager(service: MockPurchaseService(activeEntitlements: [.mock])))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
     return NavigationStack {
-        ChatView(viewModel: ChatViewModel(interactor: CoreInteractor(container: container)))
+        builder.chatView()
             .previewEnvironment()
     }
 }
@@ -179,9 +188,10 @@ struct ChatView: View {
 #Preview("Slow AI Generation") {
     let container = DevPreview.shared.container
     container.register(AIManager.self, service: AIManager(service: MockAIService(delay: 10)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
     return NavigationStack {
-        ChatView(viewModel: ChatViewModel(interactor: CoreInteractor(container: container)))
+        builder.chatView()
             .previewEnvironment()
     }
 }
@@ -190,9 +200,10 @@ struct ChatView: View {
     let container = DevPreview.shared.container
     container.register(AIManager.self, service: AIManager(service: MockAIService(delay: 2, showError: true)))
     container.register(PurchaseManager.self, service: PurchaseManager(service: MockPurchaseService(activeEntitlements: [.mock])))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
     return NavigationStack {
-        ChatView(viewModel: ChatViewModel(interactor: CoreInteractor(container: container)))
+        builder.chatView()
             .previewEnvironment()
     }
 }

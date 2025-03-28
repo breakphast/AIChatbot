@@ -7,13 +7,17 @@
 
 import SwiftUI
 
+struct OnboardingColorDelegate {
+    var path: Binding<[OnboardingPathOption]>
+}
+
 struct OnboardingColorView: View {
-    @Environment(DependencyContainer.self) private var container
+    @Environment(CoreBuilder.self) private var builder
     @State var viewModel: OnboardingColorViewModel
-    @Binding var path: [OnboardingPathOption]
+    let delegate: OnboardingColorDelegate
     
     var body: some View {
-        NavigationStack(path: $path) {
+        NavigationStack(path: delegate.path) {
             ScrollView {
                 colorGrid
                     .padding(.horizontal)
@@ -31,7 +35,7 @@ struct OnboardingColorView: View {
             .animation(.bouncy, value: viewModel.selectedColor)
             .toolbar(.hidden, for: .navigationBar)
             .screenAppearAnalytics(name: "OnboardingColorView")
-            .navigationDestinationForOnboarding(path: $path)
+            .navigationDestinationForOnboarding(path: delegate.path)
         }
     }
     
@@ -67,15 +71,16 @@ struct OnboardingColorView: View {
         Text("Continue")
             .callToActionButton()
             .anyButton {
-                viewModel.onContinueButtonPressed(path: $path)
+                viewModel.onContinueButtonPressed(path: delegate.path)
             }
             .accessibilityIdentifier("ColorContinueButton")
     }
 }
 
 #Preview {
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
     NavigationStack {
-        OnboardingColorView(viewModel: OnboardingColorViewModel(interactor: CoreInteractor(container: DevPreview.shared.container), selectedColor: .mint), path: .constant([]))
+        builder.onboardingColorView(delegate: OnboardingColorDelegate(path: .constant([])))
     }
     .previewEnvironment()
 }

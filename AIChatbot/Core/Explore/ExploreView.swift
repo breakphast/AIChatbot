@@ -198,10 +198,12 @@ struct ExploreView: View {
     private var popularSection: some View {
         Section {
             ForEach(viewModel.popularAvatars, id: \.self) { avatar in
-                CustomListCellView(
-                    imageName: avatar.profileImageName,
-                    title: avatar.name,
-                    subtitle: avatar.characterDescription
+                builder.customListCellView(
+                    delegate: CustomListCellDelegate(
+                        imageName: avatar.profileImageName,
+                        title: avatar.name,
+                        subtitle: avatar.characterDescription
+                    )
                 )
                 .anyButton(.highlight) {
                     viewModel.onAvatarPressed(avatar: avatar)

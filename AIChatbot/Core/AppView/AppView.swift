@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AppView: View {
-    @Environment(DependencyContainer.self) private var container
+    @Environment(CoreBuilder.self) private var builder
     @Environment(\.scenePhase) private var scenePhase
     
     @State var viewModel: AppViewModel
@@ -31,14 +31,10 @@ struct AppView: View {
                 AppViewBuilder(
                     showTabBar: viewModel.showTabBar,
                     tabBarView: {
-                        TabBarView()
+                        builder.tabBarView()
                     },
                     onboardingView: {
-                        WelcomeView(
-                            viewModel: WelcomeViewModel(
-                                interactor: CoreInteractor(container: container)
-                            )
-                        )
+                        builder.welcomeView()
                     }
                 )
                 .task {
@@ -68,13 +64,10 @@ struct AppView: View {
 #Preview("AppView - TabBar") {
     let container = DevPreview.shared.container
     container.register(AppState.self, service: AppState(showTabBar: true))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return AppView(
-        viewModel: AppViewModel(
-            interactor: CoreInteractor(container: container)
-        )
-    )
-    .previewEnvironment()
+    return builder.appView()
+        .previewEnvironment()
 }
 
 #Preview("AppView - Onboarding") {
@@ -82,11 +75,8 @@ struct AppView: View {
     container.register(AuthManager.self, service: AuthManager(service: MockAuthService(user: nil)))
     container.register(UserManager.self, service: UserManager(services: MockUserServices(user: nil)))
     container.register(AppState.self, service: AppState(showTabBar: false))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return AppView(
-        viewModel: AppViewModel(
-            interactor: CoreInteractor(container: container)
-        )
-    )
-    .previewEnvironment()
+    return builder.appView()
+        .previewEnvironment()
 }

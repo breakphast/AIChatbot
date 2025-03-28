@@ -121,6 +121,7 @@ struct DevSettingsView: View {
 }
 
 #Preview {
-    DevSettingsView(viewModel: DevSettingsViewModel(interactor: CoreInteractor(container: DevPreview.shared.container)))
+    CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+        .devSettingsView()
         .previewEnvironment()
 }

@@ -9,7 +9,6 @@ import SwiftUI
 
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(DependencyContainer.self) private var container
     @Environment(CoreBuilder.self) private var builder
     @State var viewModel: SettingsViewModel
     
@@ -34,10 +33,8 @@ struct SettingsView: View {
                     viewModel.setAnonymousAccountStatus()
                 },
                 content: {
-                    CreateAccountView(
-                        viewModel: CreateAccountViewModel(interactor: CoreInteractor(container: container))
-                    )
-                    .presentationDetents([.medium])
+                    builder.createAccountView()
+                        .presentationDetents([.medium])
                 }
             )
             .onAppear {
@@ -192,8 +189,9 @@ fileprivate extension View {
     let container = DevPreview.shared.container
     container.register(AuthManager.self, service: AuthManager(service: MockAuthService(user: UserAuthInfo.mock(isAnonymous: false))))
     container.register(UserManager.self, service: UserManager(services: MockUserServices(user: .mock)))
-                       
-    return SettingsView(viewModel: SettingsViewModel(interactor: CoreInteractor(container: container)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
+    
+    return builder.settingsView()
         .previewEnvironment()
 }
 
@@ -201,8 +199,9 @@ fileprivate extension View {
     let container = DevPreview.shared.container
     container.register(AuthManager.self, service: AuthManager(service: MockAuthService(user: UserAuthInfo.mock(isAnonymous: true))))
     container.register(UserManager.self, service: UserManager(services: MockUserServices(user: .mock)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return SettingsView(viewModel: SettingsViewModel(interactor: CoreInteractor(container: container)))
+    return builder.settingsView()
         .previewEnvironment()
 }
 
@@ -210,7 +209,8 @@ fileprivate extension View {
     let container = DevPreview.shared.container
     container.register(AuthManager.self, service: AuthManager(service: MockAuthService(user: nil)))
     container.register(UserManager.self, service: UserManager(services: MockUserServices(user: nil)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return SettingsView(viewModel: SettingsViewModel(interactor: CoreInteractor(container: container)))
+    return builder.settingsView()
         .previewEnvironment()
 }
