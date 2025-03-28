@@ -40,6 +40,7 @@ struct AIChatCourseApp: App {
                     AppView(viewModel: AppViewModel(interactor: CoreInteractor(container: delegate.dependencies.container)))
                 }
             }
+            .environment(CoreBuilder(interactor: CoreInteractor(container: delegate.dependencies.container)))
             .environment(delegate.dependencies.container)
             .environment(delegate.dependencies.logManager)
         }
@@ -67,6 +68,7 @@ extension View {
         self
             .environment(DevPreview.shared.container)
             .environment(LogManager(services: []))
+            .environment(CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container)))
     }
 }
 

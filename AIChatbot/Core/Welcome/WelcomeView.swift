@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct WelcomeView: View {
-    @Environment(DependencyContainer.self) private var container
-    
+    @Environment(CoreBuilder.self) private var builder
     @State var viewModel: WelcomeViewModel
     
     var body: some View {
@@ -27,13 +26,14 @@ struct WelcomeView: View {
                 policyLinks
             }
             .sheet(isPresented: $viewModel.showSignInView) {
-                CreateAccountView(
-                    viewModel: CreateAccountViewModel(interactor: CoreInteractor(container: container)),
-                    title: "Sign in",
-                    subtitle: "Connect to an existing account.",
-                    onDidSignIn: { isNewUser in
-                        viewModel.handleDidSignIn(isNewUser: isNewUser)
-                    }
+                builder.createAccountView(
+                    delegate: CreateAccountDelegate(
+                        title: "Sign in",
+                        subtitle: "Connect to an existing account.",
+                        onDidSignIn: { isNewUser in
+                            viewModel.handleDidSignIn(isNewUser: isNewUser)
+                        }
+                    )
                 )
                 .presentationDetents([.medium])
             }

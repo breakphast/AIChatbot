@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ExploreView: View {
-    @Environment(DependencyContainer.self) private var container
+    @Environment(CoreBuilder.self) private var builder
     @State var viewModel: ExploreViewModel
     
     var body: some View {
@@ -54,13 +54,11 @@ struct ExploreView: View {
                 }
             })
             .sheet(isPresented: $viewModel.showDevSettings, content: {
-                DevSettingsView(
-                    viewModel: DevSettingsViewModel(interactor: CoreInteractor(container: container))
-                )
+                builder.devSettingsView()
             })
             .sheet(
                 isPresented: $viewModel.showCreateAccountView, content: {
-                    CreateAccountView(viewModel: CreateAccountViewModel(interactor: CoreInteractor(container: container)))
+                    builder.createAccountView()
                         .presentationDetents([.medium])
                 }
             )
@@ -228,8 +226,9 @@ struct ExploreView: View {
     let container = DevPreview.shared.container
     container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService()))
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(categoryRowTest: .original)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return ExploreView(viewModel: ExploreViewModel(interactor: CoreInteractor(container: container)))
+    return builder.exploreView()
         .previewEnvironment()
 }
 
@@ -237,8 +236,9 @@ struct ExploreView: View {
     let container = DevPreview.shared.container
     container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService()))
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(categoryRowTest: .top)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return ExploreView(viewModel: ExploreViewModel(interactor: CoreInteractor(container: container)))
+    return builder.exploreView()
         .previewEnvironment()
 }
 
@@ -246,8 +246,9 @@ struct ExploreView: View {
     let container = DevPreview.shared.container
     container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService()))
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(categoryRowTest: .hidden)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return ExploreView(viewModel: ExploreViewModel(interactor: CoreInteractor(container: container)))
+    return builder.exploreView()
         .previewEnvironment()
 }
 
@@ -256,23 +257,26 @@ struct ExploreView: View {
     container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService()))
     container.register(AuthManager.self, service: AuthManager(service: MockAuthService(user: .mock(isAnonymous: true))))
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(createAccountTest: true)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return ExploreView(viewModel: ExploreViewModel(interactor: CoreInteractor(container: container)))
+    return builder.exploreView()
         .previewEnvironment()
 }
 
 #Preview("No Data") {
     let container = DevPreview.shared.container
     container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService(avatars: [], delay: 2)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return ExploreView(viewModel: ExploreViewModel(interactor: CoreInteractor(container: container)))
+    return builder.exploreView()
         .previewEnvironment()
 }
 
 #Preview("Slow loading") {
     let container = DevPreview.shared.container
     container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService(delay: 10)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return ExploreView(viewModel: ExploreViewModel(interactor: CoreInteractor(container: container)))
+    return builder.exploreView()
         .previewEnvironment()
 }
