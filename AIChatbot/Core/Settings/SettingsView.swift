@@ -9,8 +9,8 @@ import SwiftUI
 
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(CoreBuilder.self) private var builder
     @State var viewModel: SettingsViewModel
+    @ViewBuilder var createAccountView: () -> AnyView
     
     var body: some View {
         NavigationStack {
@@ -33,7 +33,7 @@ struct SettingsView: View {
                     viewModel.setAnonymousAccountStatus()
                 },
                 content: {
-                    builder.createAccountView()
+                    createAccountView()
                         .presentationDetents([.medium])
                 }
             )

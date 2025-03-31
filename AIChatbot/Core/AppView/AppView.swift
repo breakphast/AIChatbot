@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct AppView: View {
-    @Environment(CoreBuilder.self) private var builder
     @Environment(\.scenePhase) private var scenePhase
-    
     @State var viewModel: AppViewModel
+    @ViewBuilder var tabBarView: () -> AnyView
+    @ViewBuilder var onboardingView: () -> AnyView
     
     var body: some View {
         RootView(
@@ -31,10 +31,10 @@ struct AppView: View {
                 AppViewBuilder(
                     showTabBar: viewModel.showTabBar,
                     tabBarView: {
-                        builder.tabBarView()
+                        tabBarView()
                     },
                     onboardingView: {
-                        builder.welcomeView()
+                        onboardingView()
                     }
                 )
                 .task {

@@ -16,35 +16,32 @@ struct OnboardingIntroView: View {
     let delegate: OnboardingIntroDelegate
     
     var body: some View {
-        NavigationStack(path: delegate.path) {
-            VStack {
-                Group {
-                    Text("Make your own ")
-                    +
-                    Text("Avatars ")
-                        .foregroundStyle(.accent)
-                        .fontWeight(.semibold)
-                    +
-                    Text("and chat with them!\n\nHave ") 
-                    +
-                    Text("real conversations")
-                        .foregroundStyle(.accent)
-                        .fontWeight(.semibold)
-                    +
-                    Text("with AI generated responses.")
-                }
-                .baselineOffset(6)
-                .minimumScaleFactor(0.5)
-                .frame(maxHeight: .infinity)
-                .padding(24)
-                
-                ctaButton
+        VStack {
+            Group {
+                Text("Make your own ")
+                +
+                Text("Avatars ")
+                    .foregroundStyle(.accent)
+                    .fontWeight(.semibold)
+                +
+                Text("and chat with them!\n\nHave ")
+                +
+                Text("real conversations")
+                    .foregroundStyle(.accent)
+                    .fontWeight(.semibold)
+                +
+                Text("with AI generated responses.")
             }
-            .font(.title3)
-            .toolbar(.hidden, for: .navigationBar)
-            .screenAppearAnalytics(name: "OnboardingIntroView")
-            .navigationDestinationForOnboarding(path: delegate.path)
+            .baselineOffset(6)
+            .minimumScaleFactor(0.5)
+            .frame(maxHeight: .infinity)
+            .padding(24)
+            
+            ctaButton
         }
+        .font(.title3)
+        .toolbar(.hidden, for: .navigationBar)
+        .screenAppearAnalytics(name: "OnboardingIntroView")
     }
     
     private var ctaButton: some View {
@@ -56,7 +53,6 @@ struct OnboardingIntroView: View {
                 .anyButton {
                     viewModel.onContinueButtonPressed(path: delegate.path)
                 }
-                .accessibilityIdentifier("ContinueButton")
         }
     }
 }

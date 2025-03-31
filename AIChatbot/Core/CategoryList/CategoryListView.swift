@@ -14,8 +14,8 @@ struct CategoryListDelegate {
 }
 
 struct CategoryListView: View {
-    @Environment(CoreBuilder.self) private var builder
     @State var viewModel: CategoryListViewModel
+    @ViewBuilder var customListCellView: (CustomListCellDelegate) -> AnyView
     let delegate: CategoryListDelegate
     
     var body: some View {
@@ -43,8 +43,8 @@ struct CategoryListView: View {
                     .removeListRowFormatting()
             } else {
                 ForEach(viewModel.avatars, id: \.self) { avatar in
-                    builder.customListCellView(
-                        delegate: CustomListCellDelegate(
+                    customListCellView(
+                        CustomListCellDelegate(
                             imageName: avatar.profileImageName,
                             title: avatar.name,
                             subtitle: avatar.characterDescription

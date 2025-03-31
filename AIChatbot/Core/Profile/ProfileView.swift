@@ -8,8 +8,12 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @Environment(CoreBuilder.self) private var builder
     @State var viewModel: ProfileViewModel
+    @ViewBuilder var settingsView: () -> AnyView
+    @ViewBuilder var createAvatarView: () -> AnyView
+    @ViewBuilder var customListCellView: (CustomListCellDelegate) -> AnyView
+    @ViewBuilder var chatView: (ChatViewDelegate) -> AnyView
+    @ViewBuilder var categoryListView: (CategoryListDelegate) -> AnyView
     
     var body: some View {
         NavigationStack(path: $viewModel.path) {
@@ -17,7 +21,11 @@ struct ProfileView: View {
                 myInfoSection
                 myAvatarSection
             }
-            .navigationDestinationForCoreModule(path: $viewModel.path)
+            .navigationDestinationForCoreModule(
+                path: $viewModel.path,
+                chatView: chatView,
+                categoryListView: categoryListView
+            )
             .navigationTitle("Profile")
             .showCustomAlert(alert: $viewModel.showAlert)
             .screenAppearAnalytics(name: "ProfileView")
@@ -28,7 +36,7 @@ struct ProfileView: View {
             }
         }
         .sheet(isPresented: $viewModel.showSettingsView) {
-            builder.settingsView()
+            settingsView()
         }
         .fullScreenCover(
             isPresented: $viewModel.showCreateAvatarView,
@@ -38,7 +46,7 @@ struct ProfileView: View {
                 }
             },
             content: {
-                builder.createAvatarView()
+                createAvatarView()
             }
         )
         .task {
@@ -83,7 +91,7 @@ struct ProfileView: View {
                 .removeListRowFormatting()
             } else {
                 ForEach(viewModel.myAvatars, id: \.self) { avatar in
-                    builder.customListCellView(delegate: CustomListCellDelegate())
+                    customListCellView(CustomListCellDelegate())
                         .anyButton(.highlight, action: {
                             viewModel.onAvatarPressed(avatar: avatar)
                         })

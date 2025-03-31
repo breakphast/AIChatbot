@@ -12,31 +12,27 @@ struct OnboardingColorDelegate {
 }
 
 struct OnboardingColorView: View {
-    @Environment(CoreBuilder.self) private var builder
     @State var viewModel: OnboardingColorViewModel
     let delegate: OnboardingColorDelegate
     
     var body: some View {
-        NavigationStack(path: delegate.path) {
-            ScrollView {
-                colorGrid
-                    .padding(.horizontal)
-            }
-            .safeAreaInset(edge: .bottom, alignment: .center, spacing: 16, content: {
-                ZStack {
-                    if let selectedColor = viewModel.selectedColor {
-                        ctaButton(selectedColor: selectedColor)
-                            .transition(AnyTransition.move(edge: .bottom))
-                    }
-                }
-                .padding(24)
-                .background(Color(UIColor.systemBackground))
-            })
-            .animation(.bouncy, value: viewModel.selectedColor)
-            .toolbar(.hidden, for: .navigationBar)
-            .screenAppearAnalytics(name: "OnboardingColorView")
-            .navigationDestinationForOnboarding(path: delegate.path)
+        ScrollView {
+            colorGrid
+                .padding(.horizontal)
         }
+        .safeAreaInset(edge: .bottom, alignment: .center, spacing: 16, content: {
+            ZStack {
+                if let selectedColor = viewModel.selectedColor {
+                    ctaButton(selectedColor: selectedColor)
+                        .transition(AnyTransition.move(edge: .bottom))
+                }
+            }
+            .padding(24)
+            .background(Color(UIColor.systemBackground))
+        })
+        .animation(.bouncy, value: viewModel.selectedColor)
+        .toolbar(.hidden, for: .navigationBar)
+        .screenAppearAnalytics(name: "OnboardingColorView")
     }
     
     private var colorGrid: some View {
@@ -73,7 +69,6 @@ struct OnboardingColorView: View {
             .anyButton {
                 viewModel.onContinueButtonPressed(path: delegate.path)
             }
-            .accessibilityIdentifier("ColorContinueButton")
     }
 }
 

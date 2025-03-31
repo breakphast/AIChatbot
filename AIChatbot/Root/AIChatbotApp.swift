@@ -35,19 +35,18 @@ struct AIChatCourseApp: App {
         WindowGroup {
             Group {
                 if Utilities.isUITesting {
-                    AppViewForUITesting()
+                    AppViewForUITesting(builder: delegate.builder)
                 } else {
                     delegate.builder.appView()
                 }
             }
-            .environment(delegate.builder)
             .environment(delegate.dependencies.logManager)
         }
     }
 }
 
 struct AppViewForUITesting: View {
-    @Environment(CoreBuilder.self) private var builder
+    var builder: CoreBuilder
     
     private var startOnAvatarScreen: Bool {
         ProcessInfo.processInfo.arguments.contains("STARTSCREEN_CREATEAVATAR")
@@ -66,7 +65,6 @@ extension View {
     func previewEnvironment(isSignedIn: Bool = true) -> some View {
         self
             .environment(LogManager(services: []))
-            .environment(CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container)))
     }
 }
 

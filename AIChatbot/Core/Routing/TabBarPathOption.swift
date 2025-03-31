@@ -9,8 +9,9 @@ import SwiftUI
 import Foundation
 
 struct NavigationDestinationForTabBarModule: ViewModifier {
-    @Environment(CoreBuilder.self) private var builder
     let path: Binding<[TabBarPathOption]>
+    @ViewBuilder var chatView: (ChatViewDelegate) -> AnyView
+    @ViewBuilder var categoryListView: (CategoryListDelegate) -> AnyView
     
     func body(content: Content) -> some View {
         content
@@ -19,42 +20,73 @@ struct NavigationDestinationForTabBarModule: ViewModifier {
                 destination: { newValue in
                     switch newValue {
                     case .chat(avatarID: let avatarID, chat: let chat):
-                        builder.chatView(delegate: ChatViewDelegate(chat: chat, avatarID: avatarID))
+                        chatView(ChatViewDelegate(chat: chat, avatarID: avatarID))
                     case .category(category: let category, imageName: let imageName):
-                        builder.categoryListView(delegate: CategoryListDelegate(path: path, category: category, imageName: imageName))
+                        categoryListView(CategoryListDelegate(path: path, category: category, imageName: imageName))
                     }
             })
     }
 }
 
-struct NavigationDestinationForOnboarding: ViewModifier {
-    @Environment(CoreBuilder.self) private var builder
+struct NavDestinationOnboardingViewModifier: ViewModifier {
     let path: Binding<[OnboardingPathOption]>
+    @ViewBuilder var onboardingColorView: (OnboardingColorDelegate) -> AnyView
+    @ViewBuilder var onboardingCommunityView: (OnboardingCommunityDelegate) -> AnyView
+    @ViewBuilder var onboardingIntroView: (OnboardingIntroDelegate) -> AnyView
+    @ViewBuilder var onboardingCompletedView: (OnboardingCompletedDelegate) -> AnyView
     
     func body(content: Content) -> some View {
         content
             .navigationDestination(for: OnboardingPathOption.self, destination: { newValue in
                 switch newValue {
                 case .intro:
-                    builder.onboardingCommunityView(delegate: OnboardingCommunityDelegate(path: path))
+                    onboardingIntroView(OnboardingIntroDelegate(path: path))
                 case .community:
-                    builder.onboardingCommunityView(delegate: OnboardingCommunityDelegate(path: path))
+                    onboardingCommunityView(OnboardingCommunityDelegate(path: path))
                 case .color:
-                    builder.onboardingColorView(delegate: OnboardingColorDelegate(path: path))
+                    onboardingColorView(OnboardingColorDelegate(path: path))
                 case .completed(selectedColor: let color):
-                    builder.onboardingCompletedView(delegate: OnboardingCompletedDelegate(selectedColor: color))
+                    onboardingCompletedView(OnboardingCompletedDelegate(selectedColor: color))
                 }
             })
     }
 }
 
 extension View {
-    func navigationDestinationForCoreModule(path: Binding<[TabBarPathOption]>) -> some View {
-        modifier(NavigationDestinationForTabBarModule(path: path))
+    func navigationDestinationForCoreModule(
+        path: Binding<[TabBarPathOption]>,
+        @ViewBuilder chatView: @escaping (ChatViewDelegate) -> AnyView,
+        @ViewBuilder categoryListView: @escaping (CategoryListDelegate) -> AnyView
+    ) -> some View {
+        modifier(
+            NavigationDestinationForTabBarModule(
+                path: path,
+                chatView: { delegate in
+                    chatView(delegate)
+                },
+                categoryListView: { delegate in
+                    categoryListView(delegate)
+                }
+            )
+        )
     }
     
-    func navigationDestinationForOnboarding(path: Binding<[OnboardingPathOption]>) -> some View {
-        modifier(NavigationDestinationForOnboarding(path: path))
+    func navigationDestinationForOnboardingModule(
+        path: Binding<[OnboardingPathOption]>,
+        @ViewBuilder onboardingColorView: @escaping (OnboardingColorDelegate) -> AnyView,
+        @ViewBuilder onboardingCommunityView: @escaping (OnboardingCommunityDelegate) -> AnyView,
+        @ViewBuilder onboardingIntroView: @escaping (OnboardingIntroDelegate) -> AnyView,
+        @ViewBuilder onboardingCompletedView: @escaping (OnboardingCompletedDelegate) -> AnyView
+    ) -> some View {
+        modifier(
+            NavDestinationOnboardingViewModifier(
+                path: path,
+                onboardingColorView: onboardingColorView,
+                onboardingCommunityView: onboardingCommunityView,
+                onboardingIntroView: onboardingIntroView,
+                onboardingCompletedView: onboardingCompletedView
+            )
+        )
     }
 }
 

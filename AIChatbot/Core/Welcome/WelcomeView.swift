@@ -8,37 +8,47 @@
 import SwiftUI
 
 struct WelcomeView: View {
-    @Environment(CoreBuilder.self) private var builder
     @State var viewModel: WelcomeViewModel
+    @ViewBuilder var createAccountView: (CreateAccountDelegate) -> AnyView
+    @ViewBuilder var onboardingColorView: (OnboardingColorDelegate) -> AnyView
+    @ViewBuilder var onboardingCommunityView: (OnboardingCommunityDelegate) -> AnyView
+    @ViewBuilder var onboardingIntroView: (OnboardingIntroDelegate) -> AnyView
+    @ViewBuilder var onboardingCompletedView: (OnboardingCompletedDelegate) -> AnyView
     
     var body: some View {
         NavigationStack(path: $viewModel.path) {
-            VStack {
+            VStack(spacing: 8) {
                 ImageLoaderView(urlString: viewModel.imageName)
                     .ignoresSafeArea()
                 
                 titleSection
-                    .padding(.top)
+                    .padding(.top, 24)
                 
                 ctaButtons
-                    .padding()
+                    .padding(16)
                 
                 policyLinks
             }
-            .sheet(isPresented: $viewModel.showSignInView) {
-                builder.createAccountView(
-                    delegate: CreateAccountDelegate(
-                        title: "Sign in",
-                        subtitle: "Connect to an existing account.",
-                        onDidSignIn: { isNewUser in
-                            viewModel.handleDidSignIn(isNewUser: isNewUser)
-                        }
-                    )
+            .navigationDestinationForOnboardingModule(
+                path: $viewModel.path,
+                onboardingColorView: onboardingColorView,
+                onboardingCommunityView: onboardingCommunityView,
+                onboardingIntroView: onboardingIntroView,
+                onboardingCompletedView: onboardingCompletedView
+            )
+        }
+        .screenAppearAnalytics(name: "WelcomeView")
+        .sheet(isPresented: $viewModel.showSignInView) {
+            createAccountView(
+                CreateAccountDelegate(
+                    title: "Sign in",
+                    subtitle: "Connect to an existing account.",
+                    onDidSignIn: { isNewUser in
+                        viewModel.handleDidSignIn(isNewUser: isNewUser)
+                    }
                 )
-                .presentationDetents([.medium])
-            }
-            .screenAppearAnalytics(name: "WelcomeView")
-            .navigationDestinationForOnboarding(path: $viewModel.path)
+            )
+            .presentationDetents([.medium])
         }
     }
     
@@ -101,7 +111,8 @@ struct WelcomeView: View {
 }
 
 #Preview {
-    CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
-        .welcomeView()
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+    
+    return builder.welcomeView()
         .previewEnvironment()
 }

@@ -14,8 +14,8 @@ struct ChatViewDelegate {
 
 struct ChatView: View {
     @Environment(\.dismiss) var dismiss
-    @Environment(CoreBuilder.self) private var builder
     @State var viewModel: ChatViewModel
+    @ViewBuilder var paywallView: () -> AnyView
     let delegate: ChatViewDelegate
     
     var body: some View {
@@ -52,7 +52,7 @@ struct ChatView: View {
             }
         }
         .sheet(isPresented: $viewModel.showPaywall, content: {
-            builder.paywallView()
+            paywallView()
         })
         .task {
             await viewModel.loadAvatar(avatarID: delegate.avatarID)

@@ -24,14 +24,14 @@ final class AIChatUITests: XCTestCase {
         app.launch()
         
         app.buttons["StartButton"].tap()
-        app.buttons["ContinueButton"].tap()
+        app.buttons["Continue"].tap()
         
         let colorCircles = app.otherElements.matching(identifier: "ColorCircle")
         let randomIndex = Int.random(in: 0 ..< colorCircles.count)
         let colorCircle = colorCircles.element(boundBy: randomIndex)
         colorCircle.tap()
         
-        app.buttons["ColorContinueButton"].tap()
+        app.buttons["Continue"].tap()
         app.buttons["FinishButton"].tap()
         
         let exploreExists = app.navigationBars["Explore"].waitForExistence(timeout: 2)
@@ -47,7 +47,7 @@ final class AIChatUITests: XCTestCase {
         app.buttons["StartButton"].tap()
         
         // Onboarding Intro View
-        app.buttons["ContinueButton"].tap()
+        app.buttons["Continue"].tap()
         
         // Onboarding Community View
         app.buttons["OnboardingCommunityContinueButton"].tap()
@@ -57,7 +57,7 @@ final class AIChatUITests: XCTestCase {
         let colorCircle = colorCircles.element(boundBy: randomIndex)
         colorCircle.tap()
         
-        app.buttons["ColorContinueButton"].tap()
+        app.buttons["Continue"].tap()
         app.buttons["FinishButton"].tap()
         
         let exploreExists = app.navigationBars["Explore"].waitForExistence(timeout: 2)
@@ -69,39 +69,53 @@ final class AIChatUITests: XCTestCase {
         app.launchArguments = ["UI_TESTING", "SIGNED_IN"]
         app.launch()
         
-        var exploreExists = app.navigationBars["Explore"].waitForExistence(timeout: 2)
+        let tabBar = app.tabBars["Tab Bar"]
+
+        // Explore View
+        let exploreExists = app.navigationBars["Explore"].exists
         XCTAssertTrue(exploreExists)
         
-        let tabBar = app.tabBars["Tab Bar"]
+        // Click hero cell
+        app.collectionViews.scrollViews.otherElements.buttons.firstMatch.tap()
         
+        // Chat View
+        let textFieldExists = app.textFields["ChatTextField"].exists
+        XCTAssertTrue(textFieldExists)
+
+        app.navigationBars.buttons.firstMatch.tap()
+        let exploreExists2 = app.navigationBars["Explore"].exists
+        XCTAssertTrue(exploreExists2)
+               
         tabBar.buttons["Chats"].tap()
         let chatsExists = app.navigationBars["Chats"].exists
         XCTAssertTrue(chatsExists)
         
+        app.collectionViews.scrollViews.otherElements.buttons.firstMatch.tap()
+        
+        let textFieldExists2 = app.textFields["ChatTextField"].exists
+        XCTAssertTrue(textFieldExists2)
+
+        app.navigationBars.buttons.firstMatch.tap()
+        let chatsExists2 = app.navigationBars["Chats"].exists
+        XCTAssertTrue(chatsExists2)
+
         tabBar.buttons["Profile"].tap()
         let profileExists = app.navigationBars["Profile"].exists
         XCTAssertTrue(profileExists)
+
+        app.collectionViews.buttons.element(boundBy: 1).tap()
         
+        let textFieldExists3 = app.textFields["ChatTextField"].exists
+        XCTAssertTrue(textFieldExists3)
+
+        app.navigationBars.buttons.firstMatch.tap()
+        
+        let profileExists2 = app.navigationBars["Profile"].exists
+        XCTAssertTrue(profileExists2)
+
         tabBar.buttons["Explore"].tap()
-        exploreExists = app.navigationBars["Explore"].exists
-        XCTAssertTrue(exploreExists)
-        
-        app.collectionViews/*@START_MENU_TOKEN@*/.scrollViews/*[[".cells.scrollViews",".scrollViews"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.otherElements.buttons.firstMatch.tap()
-        let chatTextFieldExists = app.textFields["ChatTextField"].exists
-        XCTAssertTrue(chatTextFieldExists)
-        
-        let alphaNavigationBar = app.navigationBars["Alpha"]
-        alphaNavigationBar.buttons["Explore"].tap()
-        
-        tabBar.buttons["Chats"].tap()
-        app.collectionViews.children(matching: .cell).element(boundBy: 3).firstMatch.tap()
-        alphaNavigationBar.buttons["Chats"].tap()
-        XCTAssertTrue(chatsExists)
-        
-        tabBar.buttons["Profile"].tap()
-        app.collectionViews/*@START_MENU_TOKEN@*/.staticTexts["Alpha"]/*[[".cells",".buttons[\"Alpha\"].staticTexts[\"Alpha\"]",".staticTexts[\"Alpha\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/.tap()
-        alphaNavigationBar.firstMatch.tap()
-        XCTAssertTrue(profileExists)
+        let exploreExists3 = app.navigationBars["Explore"].exists
+        XCTAssertTrue(exploreExists3)
     }
     
     func testSignOutFlow() throws {

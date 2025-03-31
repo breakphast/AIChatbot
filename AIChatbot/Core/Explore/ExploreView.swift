@@ -8,8 +8,11 @@
 import SwiftUI
 
 struct ExploreView: View {
-    @Environment(CoreBuilder.self) private var builder
     @State var viewModel: ExploreViewModel
+    @ViewBuilder var devSettingsView: () -> AnyView
+    @ViewBuilder var createAccountView: () -> AnyView
+    @ViewBuilder var chatView: (ChatViewDelegate) -> AnyView
+    @ViewBuilder var categoryListView: (CategoryListDelegate) -> AnyView
     
     var body: some View {
         NavigationStack(path: $viewModel.path) {
@@ -54,15 +57,19 @@ struct ExploreView: View {
                 }
             })
             .sheet(isPresented: $viewModel.showDevSettings, content: {
-                builder.devSettingsView()
+                devSettingsView()
             })
             .sheet(
                 isPresented: $viewModel.showCreateAccountView, content: {
-                    builder.createAccountView()
+                    createAccountView()
                         .presentationDetents([.medium])
                 }
             )
-            .navigationDestinationForCoreModule(path: $viewModel.path)
+            .navigationDestinationForCoreModule(
+                path: $viewModel.path,
+                chatView: chatView,
+                categoryListView: categoryListView
+            )
             .showModal(showModal: $viewModel.showPushNotificationModal, content: {
                 pushNotificationModal
             })
@@ -198,7 +205,7 @@ struct ExploreView: View {
     private var popularSection: some View {
         Section {
             ForEach(viewModel.popularAvatars, id: \.self) { avatar in
-                builder.customListCellView(
+                CustomListCellView(
                     delegate: CustomListCellDelegate(
                         imageName: avatar.profileImageName,
                         title: avatar.name,
@@ -216,11 +223,34 @@ struct ExploreView: View {
     }
 }
 
-#Preview("Has Data") {
+#Preview("Without Builder") {
     let container = DevPreview.shared.container
     container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService()))
     
-    return ExploreView(viewModel: ExploreViewModel(interactor: CoreInteractor(container: container)))
+    return ExploreView(
+        viewModel: ExploreViewModel(interactor: CoreInteractor(container: container)),
+        devSettingsView: {
+            Color.red.any()
+        },
+        createAccountView: {
+            Color.blue.any()
+        },
+        chatView: { _ in
+            Color.green.any()
+        },
+        categoryListView: { _ in
+            Color.yellow.any()
+        }
+    )
+    .previewEnvironment()
+}
+
+#Preview("Has Data") {
+    let container = DevPreview.shared.container
+    container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService()))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
+    
+    return builder.exploreView()
         .previewEnvironment()
 }
 
