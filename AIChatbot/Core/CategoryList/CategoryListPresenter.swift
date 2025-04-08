@@ -8,24 +8,8 @@
 import SwiftUI
 
 @MainActor
-protocol CategoryListInteractor {
-    func trackEvent(event: LoggableEvent)
-    func getAvatarsForCategory(category: CharacterOption) async throws -> [AvatarModel]
-}
-
-extension CoreInteractor: CategoryListInteractor { }
-
-@MainActor
-protocol CategoryListRouter {
-    func showChatView(delegate: ChatViewDelegate)
-    func showAlert(error: Error)
-}
-
-extension CoreRouter: CategoryListRouter { }
-
-@MainActor
 @Observable
-class CategoryListViewModel {
+class CategoryListPresenter {
     private let interactor: CategoryListInteractor
     private let router: CategoryListRouter
     

@@ -8,43 +8,8 @@
 import SwiftUI
 
 @MainActor
-protocol ChatInteractor {
-    var currentUser: UserModel? { get }
-    var isPremium: Bool { get }
-    
-    func trackEvent(event: LoggableEvent)
-    func getAvatar(id: String) async throws -> AvatarModel
-    func getRecentAvatars() throws -> [AvatarModel]
-    func addRecentAvatar(avatar: AvatarModel) async throws
-    func getAuthID() throws -> String
-    func getChat(userID: String, avatarID: String) async throws -> ChatModel?
-    func streamChatMessages(chatID: String) -> AsyncThrowingStream<[ChatMessageModel], Error>
-    func markChatMessageAsSeen(chatID: String, messageID: String, userID: String) async throws
-    func addChatMessage(chatID: String, message: ChatMessageModel) async throws
-    func generateText(chats: [AIChatModel]) async throws -> AIChatModel
-    func createNewChat(chat: ChatModel) async throws
-    func reportChat(chatID: String, userID: String) async throws
-    func deleteChat(chatID: String) async throws
-}
-
-extension CoreInteractor: ChatInteractor { }
-
-@MainActor
-protocol ChatRouter {
-    func showPaywallView()
-    func showAlert(error: Error)
-    func showAlert(_ option: AlertType, title: String, subtitle: String?, buttons: (@Sendable () -> AnyView)?)
-    func showSimpleAlert(title: String, subtitle: String?)
-    func showProfileModal(avatar: AvatarModel, onXMarkPressed: @escaping () -> Void)
-    func dismissModal()
-    func dismissScreen()
-}
-
-extension CoreRouter: ChatRouter { }
-
-@MainActor
 @Observable
-class ChatViewModel {
+class ChatPresenter {
     private let interactor: ChatInteractor
     private let router: ChatRouter
     

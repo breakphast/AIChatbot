@@ -8,26 +8,8 @@
 import SwiftUI
 
 @MainActor
-protocol OnboardingCompletedInteractor {
-    func updateAppState(showTabBar: Bool)
-    func markOnboardingCompletedForCurrentUser(profileColorHex: String) async throws
-    func trackEvent(event: LoggableEvent)
-}
-
-extension CoreInteractor: OnboardingCompletedInteractor { }
-
-@MainActor
-protocol OnboardingCompletedRouter {
-    func showAlert(error: Error)
-    
-    func dismissAlert()
-}
-
-extension CoreRouter: OnboardingCompletedRouter { }
-
-@MainActor
 @Observable
-class OnboardingCompletedViewModel {
+class OnboardingCompletedPresenter {
     private let interactor: OnboardingCompletedInteractor
     private let router: OnboardingCompletedRouter
     

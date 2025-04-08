@@ -7,11 +7,10 @@
 
 import SwiftUI
 
-struct AppView: View {
-    @Environment(\.scenePhase) private var scenePhase
-    @State var viewModel: AppViewModel
-    @ViewBuilder var tabBarView: () -> AnyView
-    @ViewBuilder var onboardingView: () -> AnyView
+struct AppView<TabBarView: View, OnboardingView: View>: View {
+    @State var presenter: AppPresenter
+    @ViewBuilder var tabBarView: () -> TabBarView
+    @ViewBuilder var onboardingView: () -> OnboardingView
     
     var body: some View {
         RootView(
@@ -19,7 +18,7 @@ struct AppView: View {
                 onApplicationDidAppear: nil,
                 onApplicationWillEnterForeground: { _ in
                     Task {
-                        await viewModel.checkUserStatus()
+                        await presenter.checkUserStatus()
                     }
                 },
                 onApplicationDidBecomeActive: nil,
@@ -29,7 +28,7 @@ struct AppView: View {
             ),
             content: {
                 AppViewBuilder(
-                    showTabBar: viewModel.showTabBar,
+                    showTabBar: presenter.showTabBar,
                     tabBarView: {
                         tabBarView()
                     },
@@ -38,21 +37,21 @@ struct AppView: View {
                     }
                 )
                 .task {
-                    await viewModel.checkUserStatus()
+                    await presenter.checkUserStatus()
                 }
                 .onNotificationReceived(name: UIApplication.willEnterForegroundNotification, action: { _ in
                     Task {
-                        await viewModel.checkUserStatus()
+                        await presenter.checkUserStatus()
                     }
                 })
                 .task {
                     try? await Task.sleep(for: .seconds(2))
-                    await viewModel.showATTPromptIfNeeded()
+                    await presenter.showATTPromptIfNeeded()
                 }
-                .onChange(of: viewModel.showTabBar) { _, showTabBar in
+                .onChange(of: presenter.showTabBar) { _, showTabBar in
                     if !showTabBar {
                         Task {
-                            await viewModel.checkUserStatus()
+                            await presenter.checkUserStatus()
                         }
                     }
                 }

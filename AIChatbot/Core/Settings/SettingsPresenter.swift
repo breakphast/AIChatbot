@@ -9,33 +9,8 @@ import SwiftUI
 import SwiftfulUtilities
 
 @MainActor
-protocol SettingsInteractor {
-    var auth: UserAuthInfo? { get }
-    
-    func signOut() async throws
-    func getAuthID() throws -> String
-    func trackEvent(event: LoggableEvent)
-    func deleteAccount(userID: String) async throws
-    func updateAppState(showTabBar: Bool)
-}
-
-extension CoreInteractor: SettingsInteractor { }
-
-@MainActor
-protocol SettingsRouter {
-    func showRatingsModal(onYesPressed: @escaping () -> Void, onNoPressed: @escaping () -> Void)
-    func dismissModal()
-    func dismissScreen()
-    func showAlert(error: Error)
-    func showAlert(_ option: AlertType, title: String, subtitle: String?, buttons: (@Sendable () -> AnyView)?)
-    func showCreateAccountView(delegate: CreateAccountDelegate, onDisappear: (() -> Void)?)
-}
-
-extension CoreRouter: SettingsRouter { }
-
-@MainActor
 @Observable
-class SettingsViewModel {
+class SettingsPresenter {
     private let interactor: SettingsInteractor
     private let router: SettingsRouter
     

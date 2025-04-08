@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct ExploreView: View {
-    @State var viewModel: ExploreViewModel
+    @State var presenter: ExplorePresenter
     
     var body: some View {
         List {
-            if viewModel.featuredAvatars.isEmpty && viewModel.popularAvatars.isEmpty {
+            if presenter.featuredAvatars.isEmpty && presenter.popularAvatars.isEmpty {
                 ZStack {
-                    if viewModel.isLoadingFeatured || viewModel.isLoadingPopular {
+                    if presenter.isLoadingFeatured || presenter.isLoadingPopular {
                         loadingIndicator
                     } else {
                         errorMessageView
@@ -23,15 +23,15 @@ struct ExploreView: View {
                 .removeListRowFormatting()
             }
             
-            if !viewModel.popularAvatars.isEmpty, viewModel.categoryRowTestType == .top {
+            if !presenter.popularAvatars.isEmpty, presenter.categoryRowTestType == .top {
                 categorySection
             }
             
-            if !viewModel.featuredAvatars.isEmpty {
+            if !presenter.featuredAvatars.isEmpty {
                 featuredSection
             }
-            if !viewModel.popularAvatars.isEmpty {
-                if viewModel.categoryRowTestType == .original {
+            if !presenter.popularAvatars.isEmpty {
+                if presenter.categoryRowTestType == .original {
                     categorySection
                 }
                 popularSection
@@ -41,31 +41,31 @@ struct ExploreView: View {
         .screenAppearAnalytics(name: "ExploreView")
         .toolbar(content: {
             ToolbarItem(placement: .topBarLeading) {
-                if viewModel.showDevSettingsButton == true {
+                if presenter.showDevSettingsButton == true {
                     devSettingsButton
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
-                if viewModel.showNotificationButton {
+                if presenter.showNotificationButton {
                     pushNotificationButton
                 }
             }
         })
         .task {
-            await viewModel.loadFeaturedAvatars()
+            await presenter.loadFeaturedAvatars()
         }
         .task {
-            await viewModel.loadPopularAvatars()
+            await presenter.loadPopularAvatars()
         }
         .task {
-            await viewModel.handleShowPushNotificationButton()
+            await presenter.handleShowPushNotificationButton()
         }
         .onFirstAppear {
-            viewModel.schedulePushNotifications()
-            viewModel.showCreateAccountScreenIfNeeded()
+            presenter.schedulePushNotifications()
+            presenter.showCreateAccountScreenIfNeeded()
         }
         .onOpenURL { url in
-            viewModel.handleDeepLink(url: url)
+            presenter.handleDeepLink(url: url)
         }
     }
     
@@ -76,7 +76,7 @@ struct ExploreView: View {
             .tappableBackground()
             .foregroundStyle(.accent)
             .anyButton {
-                viewModel.onPushNotificationButtonPressed()
+                presenter.onPushNotificationButtonPressed()
             }
     }
     
@@ -84,7 +84,7 @@ struct ExploreView: View {
         Text("DEV 🤫")
             .badgeButton()
             .anyButton(.press) {
-                viewModel.onDevSettingsPressed()
+                presenter.onDevSettingsPressed()
             }
     }
     
@@ -104,7 +104,7 @@ struct ExploreView: View {
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
             Button("Try Again") {
-                viewModel.onTryAgainPressed()
+                presenter.onTryAgainPressed()
             }
             .tint(.blue)
         }
@@ -116,14 +116,14 @@ struct ExploreView: View {
     private var featuredSection: some View {
         Section {
             ZStack {
-                CarouselView(items: viewModel.featuredAvatars) { avatar in
+                CarouselView(items: presenter.featuredAvatars) { avatar in
                     HeroCellView(
                         title: avatar.name,
                         subtitle: avatar.characterDescription,
                         imageName: avatar.profileImageName
                     )
                     .anyButton {
-                        viewModel.onAvatarPressed(avatar: avatar)
+                        presenter.onAvatarPressed(avatar: avatar)
                     }
                 }
             }
@@ -138,8 +138,8 @@ struct ExploreView: View {
             ZStack {
                 ScrollView(.horizontal) {
                     HStack(spacing: 12) {
-                        ForEach(viewModel.categories, id: \.self) { category in
-                            let imageName = viewModel.popularAvatars.last(where: { $0.characterOption == category })?.profileImageName
+                        ForEach(presenter.categories, id: \.self) { category in
+                            let imageName = presenter.popularAvatars.last(where: { $0.characterOption == category })?.profileImageName
                             
                             if let imageName {
                                 CategoryCellView(
@@ -147,7 +147,7 @@ struct ExploreView: View {
                                     imageName: imageName
                                 )
                                 .anyButton {
-                                    viewModel.onCategoryPressed(category: category, imageName: imageName)
+                                    presenter.onCategoryPressed(category: category, imageName: imageName)
                                 }
                             }
                         }
@@ -166,14 +166,14 @@ struct ExploreView: View {
     
     private var popularSection: some View {
         Section {
-            ForEach(viewModel.popularAvatars, id: \.self) { avatar in
+            ForEach(presenter.popularAvatars, id: \.self) { avatar in
                 CustomListCellView(
                     imageName: avatar.profileImageName,
                     title: avatar.name,
                     subtitle: avatar.characterDescription
                 )
                 .anyButton(.highlight) {
-                    viewModel.onAvatarPressed(avatar: avatar)
+                    presenter.onAvatarPressed(avatar: avatar)
                 }
                 .removeListRowFormatting()
             }

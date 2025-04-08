@@ -1,5 +1,5 @@
 //
-//  ProfileViewModel.swift
+//  ProfilePresenter.swift
 //  AIChatbot
 //
 //  Created by Desmond Fitch on 3/25/25.
@@ -9,29 +9,8 @@ import SwiftUI
 import CustomRouting
 
 @MainActor
-protocol ProfileInteractor {
-    var currentUser: UserModel? { get }
-    func getAvatarsForAuthor(userID: String) async throws -> [AvatarModel]
-    func removeAuthorIDFromAvatar(avatarID: String) async throws
-    func getAuthID() throws -> String
-    func trackEvent(event: LoggableEvent)
-}
-
-extension CoreInteractor: ProfileInteractor { }
-
-@MainActor
-protocol ProfileRouter {
-    func showSettingsView()
-    func showSimpleAlert(title: String, subtitle: String?)
-    func showChatView(delegate: ChatViewDelegate)
-    func showCreateAvatarView(onDisappear: @escaping () -> Void)
-}
-
-extension CoreRouter: ProfileRouter { }
-
-@MainActor
 @Observable
-class ProfileViewModel {
+class ProfilePresenter {
     private let interactor: ProfileInteractor
     private let router: ProfileRouter
     

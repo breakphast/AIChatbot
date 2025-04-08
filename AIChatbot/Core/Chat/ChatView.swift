@@ -13,7 +13,7 @@ struct ChatViewDelegate {
 }
 
 struct ChatView: View {
-    @State var viewModel: ChatViewModel
+    @State var presenter: ChatPresenter
     let delegate: ChatViewDelegate
     
     var body: some View {
@@ -21,34 +21,34 @@ struct ChatView: View {
             scrollViewSection
             textfieldSection
         }
-//        .animation(.bouncy, value: viewModel.showProfileModal)
-        .navigationTitle(viewModel.avatar?.name ?? "")
+//        .animation(.bouncy, value: presenter.showProfileModal)
+        .navigationTitle(presenter.avatar?.name ?? "")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 HStack {
-                    if viewModel.isGeneratingResponse {
+                    if presenter.isGeneratingResponse {
                         ProgressView()
                     }
                     
                     Image(systemName: "ellipsis")
                         .padding()
                         .anyButton {
-                            viewModel.onChatSettingsPressed()
+                            presenter.onChatSettingsPressed()
                         }
                 }
             }
         }
         .screenAppearAnalytics(name: "ChatView")
         .task {
-            await viewModel.loadAvatar(avatarID: delegate.avatarID)
+            await presenter.loadAvatar(avatarID: delegate.avatarID)
         }
         .task {
-            await viewModel.loadChat(avatarID: delegate.avatarID)
-            await viewModel.listenForChatMessages()
+            await presenter.loadChat(avatarID: delegate.avatarID)
+            await presenter.listenForChatMessages()
         }
         .onFirstAppear {
-            viewModel.onViewFirstAppear(chat: delegate.chat)
+            presenter.onViewFirstAppear(chat: delegate.chat)
         }
     }
     
@@ -69,21 +69,21 @@ struct ChatView: View {
     private var scrollViewSection: some View {
         ScrollView {
             LazyVStack(spacing: 24) {
-                ForEach(viewModel.chatMessages) { message in
-                    if viewModel.messageIsDelayed(message: message) {
+                ForEach(presenter.chatMessages) { message in
+                    if presenter.messageIsDelayed(message: message) {
                         timestampView(date: message.dateCreatedCalculated)
                     }
 
-                    let isCurrentUser = viewModel.messageIsCurrentUser(message: message)
+                    let isCurrentUser = presenter.messageIsCurrentUser(message: message)
                     ChatBubbleViewBuilder(
                         message: message,
                         isCurrentUser: isCurrentUser,
-                        currentUserProfileColor: viewModel.currentUser?.profileColorConverted ?? .accent,
-                        imageName: isCurrentUser ? nil : viewModel.avatar?.profileImageName,
-                        onProfileImagePressed: viewModel.onAvatarPressed
+                        currentUserProfileColor: presenter.currentUser?.profileColorConverted ?? .accent,
+                        imageName: isCurrentUser ? nil : presenter.avatar?.profileImageName,
+                        onProfileImagePressed: presenter.onAvatarPressed
                     )
                     .onAppear {
-                        viewModel.onMessageDidAppear(message: message)
+                        presenter.onMessageDidAppear(message: message)
                     }
                     .id(message.id)
                 }
@@ -94,13 +94,13 @@ struct ChatView: View {
         }
         .scrollIndicators(.hidden)
         .rotationEffect(.degrees(180))
-        .animation(.default, value: viewModel.chatMessages.count)
-        .scrollPosition(id: $viewModel.scrollPosition, anchor: .center)
-        .animation(.default, value: viewModel.scrollPosition)
+        .animation(.default, value: presenter.chatMessages.count)
+        .scrollPosition(id: $presenter.scrollPosition, anchor: .center)
+        .animation(.default, value: presenter.scrollPosition)
     }
     
     private var textfieldSection: some View {
-        TextField("Say something...", text: $viewModel.textFieldText)
+        TextField("Say something...", text: $presenter.textFieldText)
             .keyboardType(.alphabet)
             .autocorrectionDisabled()
             .padding(12)
@@ -112,7 +112,7 @@ struct ChatView: View {
                     .padding(.trailing, 4)
                     .foregroundStyle(.accent)
                     .anyButton(.plain, action: {
-                        viewModel.onSendMessagePressed(avatarID: delegate.avatarID)
+                        presenter.onSendMessagePressed(avatarID: delegate.avatarID)
                     })
                 , alignment: .trailing
             )

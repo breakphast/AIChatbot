@@ -12,7 +12,7 @@ struct OnboardingCommunityDelegate {
 }
 
 struct OnboardingCommunityView: View {
-    @State var viewModel: OnboardingCommunityViewModel
+    @State var presenter: OnboardingCommunityPresenter
     let delegate: OnboardingCommunityDelegate
     
     var body: some View {
@@ -49,7 +49,7 @@ struct OnboardingCommunityView: View {
             .callToActionButton()
             .font(.title3)
             .anyButton {
-                viewModel.onContinueButtonPressed()
+                presenter.onContinueButtonPressed()
             }
             .accessibilityIdentifier("OnboardingCommunityContinueButton")
     }

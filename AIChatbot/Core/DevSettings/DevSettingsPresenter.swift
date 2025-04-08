@@ -9,27 +9,8 @@ import SwiftUI
 import SwiftfulUtilities
 
 @MainActor
-protocol DevSettingsInteractor {
-    var activeTests: ActiveABTests { get }
-    var auth: UserAuthInfo? { get }
-    var currentUser: UserModel? { get }
-    
-    func override(updatedTests: ActiveABTests) throws
-    func trackEvent(event: LoggableEvent)
-}
-
-extension CoreInteractor: DevSettingsInteractor { }
-
-@MainActor
-protocol DevSettingsRouter {
-    func dismissScreen()
-}
-
-extension CoreRouter: DevSettingsRouter { }
-
-@MainActor
 @Observable
-class DevSettingsViewModel {
+class DevSettingsPresenter {
     private let interactor: DevSettingsInteractor
     private let router: DevSettingsRouter
     

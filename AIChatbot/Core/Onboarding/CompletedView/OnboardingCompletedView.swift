@@ -12,7 +12,7 @@ struct OnboardingCompletedDelegate {
 }
 
 struct OnboardingCompletedView: View {
-    @State var viewModel: OnboardingCompletedViewModel
+    @State var presenter: OnboardingCompletedPresenter
     var delegate: OnboardingCompletedDelegate = OnboardingCompletedDelegate()
     
     var body: some View {
@@ -29,10 +29,10 @@ struct OnboardingCompletedView: View {
         .frame(maxHeight: .infinity)
         .safeAreaInset(edge: .bottom, content: {
             AsyncCallToActionButton(
-                isLoading: viewModel.isCompletingProfileSetup,
+                isLoading: presenter.isCompletingProfileSetup,
                 text: "Finish",
                 action: {
-                    viewModel.onFinishButtonPressed(selectedColor: delegate.selectedColor)
+                    presenter.onFinishButtonPressed(selectedColor: delegate.selectedColor)
                 }
             )
             .accessibilityIdentifier("FinishButton")

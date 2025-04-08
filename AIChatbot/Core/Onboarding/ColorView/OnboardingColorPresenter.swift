@@ -8,22 +8,8 @@
 import SwiftUI
 
 @MainActor
-protocol OnboardingColorInteractor {
-    func trackEvent(event: LoggableEvent)
-}
-
-extension CoreInteractor: OnboardingColorInteractor { }
-
-@MainActor
-protocol OnboardingColorRouter {
-    func showOnboardingCompletedView(delegate: OnboardingCompletedDelegate)
-}
-
-extension CoreRouter: OnboardingColorRouter { }
-
-@MainActor
 @Observable
-class OnboardingColorViewModel {
+class OnboardingColorPresenter {
     private let interactor: OnboardingColorInteractor
     private let router: OnboardingColorRouter
     

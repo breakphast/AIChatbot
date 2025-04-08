@@ -9,25 +9,25 @@ import SwiftUI
 import StoreKit
 
 struct PaywallView: View {
-    @State var viewModel: PaywallViewModel
+    @State var presenter: PaywallPresenter
     
     var body: some View {
         ZStack {
-            switch viewModel.activeTests.paywallTest {
+            switch presenter.activeTests.paywallTest {
             case .custom:
-                if viewModel.products.isEmpty {
+                if presenter.products.isEmpty {
                     ProgressView()
                 } else {
                     CustomPaywallView(
-                        products: viewModel.products,
+                        products: presenter.products,
                         backButtonPressed: {
-                            viewModel.onBackButtonPressed()
+                            presenter.onBackButtonPressed()
                         },
                         restorePurchasePressed: {
-                            viewModel.onRestorePurchasePressed()
+                            presenter.onRestorePurchasePressed()
                         },
                         purchaseProductPressed: { product in
-                            viewModel.onPurchaseProductPressed(product: product)
+                            presenter.onPurchaseProductPressed(product: product)
                         }
                     )
                 }
@@ -36,10 +36,10 @@ struct PaywallView: View {
             case .storeKit:
                 StoreKitPaywallView(
                     inAppPurchaseStart: { product in
-                        viewModel.onPurchaseStart(product: product)
+                        presenter.onPurchaseStart(product: product)
                     },
                     onInAppPurchaseCompletion: { (product, result) in
-                        viewModel.onPurchaseComplete(
+                        presenter.onPurchaseComplete(
                             product: product,
                             result: result)
                     }
@@ -48,7 +48,7 @@ struct PaywallView: View {
         }
         .screenAppearAnalytics(name: "Paywall")
         .task {
-            await viewModel.onLoadProducts()
+            await presenter.onLoadProducts()
         }
     }
 }

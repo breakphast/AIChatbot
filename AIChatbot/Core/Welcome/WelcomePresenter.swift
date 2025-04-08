@@ -8,24 +8,8 @@
 import SwiftUI
 
 @MainActor
-protocol WelcomeInteractor {
-    func trackEvent(event: LoggableEvent)
-    func updateAppState(showTabBar: Bool)
-}
-
-extension CoreInteractor: WelcomeInteractor { }
-
-@MainActor
-protocol WelcomeRouter {
-    func showCreateAccountView(delegate: CreateAccountDelegate, onDisappear: (() -> Void)?)
-    func showOnboardingIntroView(delegate: OnboardingIntroDelegate)
-}
-
-extension CoreRouter: WelcomeRouter { }
-
-@MainActor
 @Observable
-class WelcomeViewModel {
+class WelcomePresenter {
     private let interactor: WelcomeInteractor
     private let router: WelcomeRouter
     

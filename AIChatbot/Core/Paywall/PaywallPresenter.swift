@@ -9,28 +9,8 @@ import SwiftUI
 import StoreKit
 
 @MainActor
-protocol PaywallInteractor {
-    var activeTests: ActiveABTests { get }
-    
-    func purchaseProduct(productID: String) async throws -> [PurchasedEntitlement]
-    func restorePurchase() async throws -> [PurchasedEntitlement]
-    func getProducts(productIDs: [String]) async throws -> [AnyProduct]
-    func trackEvent(event: LoggableEvent)
-}
-
-extension CoreInteractor: PaywallInteractor { }
-
-@MainActor
-protocol PaywallRouter {
-    func showAlert(error: Error)
-    func dismissScreen()
-}
-
-extension CoreRouter: PaywallRouter { }
-
-@MainActor
 @Observable
-class PaywallViewModel {
+class PaywallPresenter {
     private let interactor: PaywallInteractor
     private let router: PaywallRouter
     

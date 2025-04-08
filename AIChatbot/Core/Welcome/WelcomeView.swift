@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct WelcomeView: View {
-    @State var viewModel: WelcomeViewModel
+    @State var presenter: WelcomePresenter
     
     var body: some View {
         VStack(spacing: 8) {
-            ImageLoaderView(urlString: viewModel.imageName)
+            ImageLoaderView(urlString: presenter.imageName)
                 .ignoresSafeArea()
             
             titleSection
@@ -50,7 +50,7 @@ struct WelcomeView: View {
                 .accessibilityIdentifier("StartButton")
                 .frame(maxWidth: 500)
                 .anyButton {
-                    viewModel.onGetStartedPressed()
+                    presenter.onGetStartedPressed()
                 }
             
             Text("Already have an account? Sign in.")
@@ -58,7 +58,7 @@ struct WelcomeView: View {
                 .padding(8)
                 .tappableBackground()
                 .onTapGesture {
-                    viewModel.onSignInPressed()
+                    presenter.onSignInPressed()
                 }
                 .lineLimit(1)
                 .minimumScaleFactor(0.2)

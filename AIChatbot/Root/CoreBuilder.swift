@@ -12,169 +12,12 @@ typealias RouterView = CustomRouting.RouterView
 typealias AlertType = CustomRouting.AlertType
 
 @MainActor
-struct CoreRouter {
-    let router: Router
-    let builder: CoreBuilder
-    
-    // MARK: Segues
-    
-    func showCategoryListView(delegate: CategoryListDelegate) {
-        router.showScreen(.push) { router in
-            builder.categoryListView(router: router, delegate: delegate)
-        }
-    }
-    
-    func showChatView(delegate: ChatViewDelegate) {
-        router.showScreen(.push) { router in
-            builder.chatView(router: router, delegate: delegate)
-        }
-    }
-    
-    func showDevSettingsView() {
-        router.showScreen(.sheet) { router in
-            builder.devSettingsView(router: router)
-        }
-    }
-    
-    func showSettingsView() {
-        router.showScreen(.sheet) { router in
-            builder.settingsView(router: router)
-        }
-    }
-    
-    func showPaywallView() {
-        router.showScreen(.sheet) { router in
-            builder.paywallView(router: router)
-        }
-    }
-    
-    func showCreateAccountView(delegate: CreateAccountDelegate, onDisappear: (() -> Void)?) {
-        router.showScreen(.sheet) { router in
-            builder.createAccountView(router: router, delegate: delegate)
-                .presentationDetents([.medium])
-                .onDisappear {
-                    onDisappear?()
-                }
-        }
-    }
-    
-    func showCreateAvatarView(onDisappear: @escaping () -> Void) {
-        router.showScreen(.fullScreenCover) { router in
-            builder.createAvatarView(router: router)
-                .onDisappear(perform: onDisappear)
-        }
-    }
-    
-    func showOnboardingIntroView(delegate: OnboardingIntroDelegate) {
-        router.showScreen(.push) { router in
-            builder.onboardingIntroView(router: router, delegate: delegate)
-        }
-    }
-    
-    func showOnboardingCommunityView(delegate: OnboardingCommunityDelegate) {
-        router.showScreen(.push) { router in
-            builder.onboardingCommunityView(router: router, delegate: delegate)
-        }
-    }
-    
-    func showOnboardingColorView(delegate: OnboardingColorDelegate) {
-        router.showScreen(.push) { router in
-            builder.onboardingColorView(router: router, delegate: delegate)
-        }
-    }
-    
-    func showOnboardingCompletedView(delegate: OnboardingCompletedDelegate) {
-        router.showScreen(.push) { router in
-            builder.onboardingCompletedView(router: router, delegate: delegate)
-        }
-    }
-    
-    // MARK: Modals
-    
-    func dismissScreen() {
-        router.dismissScreen()
-    }
-    
-    func dismissModal() {
-        router.dismissModal()
-    }
-    
-    func showPushNotificationModal(onEnablePressed: @escaping () -> Void, onCancelPressed: @escaping () -> Void) {
-        router.showModal(
-            backgroundColor: .black.opacity(0.8),
-            transition: .move(edge: .bottom),
-            destination: {
-                CustomModalView(
-                    title: "Enable push notifications?",
-                    subtitle: "We'll send you reminders and updates!",
-                    primaryButtonTitle: "Enable",
-                    primaryButtonAction: {
-                        onEnablePressed()
-                    },
-                    secondaryButtonTitle: "Cancel",
-                    secondaryButtonAction: {
-                        onCancelPressed()
-                    }
-                )
-            }
-        )
-    }
-    
-    func showProfileModal(avatar: AvatarModel, onXMarkPressed: @escaping () -> Void) {
-        router.showModal(backgroundColor: .black.opacity(0.6), transition: .slide) {
-            ProfileModalView(
-                imageName: avatar.profileImageName,
-                title: avatar.name,
-                subtitle: avatar.characterOption?.rawValue.capitalized,
-                headline: avatar.characterDescription) {
-                    onXMarkPressed()
-                }
-                .padding(40)
-        }
-    }
-    
-    func showRatingsModal(onYesPressed: @escaping () -> Void, onNoPressed: @escaping () -> Void) {
-        router.showModal(backgroundColor: .black.opacity(0.6), transition: .fade) {
-            CustomModalView(
-                title: "Are you enjoying AIChat?",
-                subtitle: "We'd love to hear your feedback!",
-                primaryButtonTitle: "Yes",
-                primaryButtonAction: {
-                    onYesPressed()
-                },
-                secondaryButtonTitle: "No",
-                secondaryButtonAction: {
-                    onNoPressed()
-                })
-        }
-    }
-    
-    // MARK: Alerts
-    
-    func showAlert(_ option: AlertType, title: String, subtitle: String?, buttons: (@Sendable () -> AnyView)?) {
-        router.showAlert(option, title: title, subtitle: subtitle, buttons: buttons)
-    }
-    
-    func showSimpleAlert(title: String, subtitle: String?) {
-        router.showAlert(.alert, title: title, subtitle: subtitle, buttons: nil)
-    }
-    
-    func showAlert(error: Error) {
-        router.showAlert(.alert, title: "Error", subtitle: error.localizedDescription, buttons: nil)
-    }
-    
-    func dismissAlert() {
-        router.dismissAlert()
-    }
-}
-
-@MainActor
 struct CoreBuilder {
     let interactor: CoreInteractor
     
-    func appView() -> AnyView {
+    func appView() -> some View {
         AppView(
-            viewModel: AppViewModel(
+            presenter: AppPresenter(
                 interactor: interactor
             ),
             tabBarView: {
@@ -184,22 +27,20 @@ struct CoreBuilder {
                 welcomeView()
             }
         )
-        .any()
     }
     
-    func welcomeView() -> AnyView {
+    func welcomeView() -> some View {
         RouterView { router in
             WelcomeView(
-                viewModel: WelcomeViewModel(
+                presenter: WelcomePresenter(
                     interactor: interactor,
                     router: CoreRouter(router: router, builder: self)
                 )
             )
         }
-        .any()
     }
     
-    func tabBarView() -> AnyView {
+    func tabBarView() -> some View {
         TabBarView(tabs: [
             TabBarScreen(title: "Explore", systemImage: "eyes", screen: {
                 RouterView { router in
@@ -220,75 +61,68 @@ struct CoreBuilder {
                 .any()
             })
         ])
-        .any()
     }
     
-    func createAccountView(router: Router, delegate: CreateAccountDelegate = CreateAccountDelegate()) -> AnyView {
+    func createAccountView(router: Router, delegate: CreateAccountDelegate = CreateAccountDelegate()) -> some View {
         CreateAccountView(
-            viewModel: CreateAccountViewModel(
+            presenter: CreateAccountPresenter(
                 interactor: interactor,
                 router: CoreRouter(router: router, builder: self)
             ),
             delegate: delegate
         )
-        .any()
     }
     
-    func exploreView(router: Router) -> AnyView {
+    func exploreView(router: Router) -> some View {
         ExploreView(
-            viewModel: ExploreViewModel(
+            presenter: ExplorePresenter(
                 interactor: interactor,
                 router: CoreRouter(router: router, builder: self)
             )
         )
-        .any()
     }
     
-    func categoryListView(router: Router, delegate: CategoryListDelegate) -> AnyView {
+    func categoryListView(router: Router, delegate: CategoryListDelegate) -> some View {
         CategoryListView(
-            viewModel: CategoryListViewModel(
+            presenter: CategoryListPresenter(
                 interactor: interactor,
                 router: CoreRouter(router: router, builder: self)
             ),
             delegate: delegate
         )
-        .any()
     }
     
-    func devSettingsView(router: Router) -> AnyView {
+    func devSettingsView(router: Router) -> some View {
         DevSettingsView(
-            viewModel: DevSettingsViewModel(
+            presenter: DevSettingsPresenter(
                 interactor: interactor,
                 router: CoreRouter(router: router, builder: self)
             )
         )
-        .any()
     }
     
-    func paywallView(router: Router) -> AnyView {
+    func paywallView(router: Router) -> some View {
         PaywallView(
-            viewModel: PaywallViewModel(
+            presenter: PaywallPresenter(
                 interactor: interactor,
                 router: CoreRouter(router: router, builder: self)
             )
         )
-        .any()
     }
     
-    func chatView(router: Router, delegate: ChatViewDelegate = ChatViewDelegate()) -> AnyView {
+    func chatView(router: Router, delegate: ChatViewDelegate = ChatViewDelegate()) -> some View {
         ChatView(
-            viewModel: ChatViewModel(
+            presenter: ChatPresenter(
                 interactor: interactor,
                 router: CoreRouter(router: router, builder: self)
             ),
             delegate: delegate
         )
-        .any()
     }
     
-    func chatsView(router: Router) -> AnyView {
+    func chatsView(router: Router) -> some View {
         ChatsView(
-            viewModel: ChatsViewModel(
+            presenter: ChatsPresenter(
                 interactor: interactor,
                 router: CoreRouter(router: router, builder: self)
             ),
@@ -296,92 +130,83 @@ struct CoreBuilder {
                 chatRowCell(delegate: delegate)
             }
         )
-        .any()
     }
     
-    func createAvatarView(router: Router) -> AnyView {
+    func createAvatarView(router: Router) -> some View {
         CreateAvatarView(
-            viewModel: CreateAvatarViewModel(
+            presenter: CreateAvatarPresenter(
                 interactor: interactor,
                 router: CoreRouter(router: router, builder: self)
             )
         )
-        .any()
     }
     
-    func onboardingColorView(router: Router, delegate: OnboardingColorDelegate) -> AnyView {
+    func onboardingColorView(router: Router, delegate: OnboardingColorDelegate) -> some View {
         OnboardingColorView(
-            viewModel: OnboardingColorViewModel(
+            presenter: OnboardingColorPresenter(
                 interactor: interactor,
                 router: CoreRouter(router: router, builder: self)
             ),
             delegate: delegate
         )
-        .any()
     }
     
-    func onboardingCommunityView(router: Router, delegate: OnboardingCommunityDelegate) -> AnyView {
+    func onboardingCommunityView(router: Router, delegate: OnboardingCommunityDelegate) -> some View {
         OnboardingCommunityView(
-            viewModel: OnboardingCommunityViewModel(
+            presenter: OnboardingCommunityPresenter(
                 interactor: interactor,
                 router: CoreRouter(router: router, builder: self)
             ),
             delegate: delegate
         )
-        .any()
     }
     
-    func onboardingIntroView(router: Router, delegate: OnboardingIntroDelegate) -> AnyView {
+    func onboardingIntroView(router: Router, delegate: OnboardingIntroDelegate) -> some View {
         OnboardingIntroView(
-            viewModel: OnboardingIntroViewModel(
+            presenter: OnboardingIntroPresenter(
                 interactor: interactor,
                 router: CoreRouter(router: router, builder: self)
             ),
             delegate: delegate
         )
-        .any()
     }
     
-    func onboardingCompletedView(router: Router, delegate: OnboardingCompletedDelegate) -> AnyView {
+    func onboardingCompletedView(router: Router, delegate: OnboardingCompletedDelegate) -> some View {
         OnboardingCompletedView(
-            viewModel: OnboardingCompletedViewModel(
+            presenter: OnboardingCompletedPresenter(
                 interactor: interactor,
                 router: CoreRouter(router: router, builder: self)
             ),
             delegate: delegate
         )
-        .any()
     }
     
-    func settingsView(router: Router) -> AnyView {
+    func settingsView(router: Router) -> some View {
         SettingsView(
-            viewModel: SettingsViewModel(
+            presenter: SettingsPresenter(
                 interactor: interactor,
                 router: CoreRouter(router: router, builder: self)
             )
         )
-        .any()
     }
     
-    func profileView(router: Router) -> AnyView {
+    func profileView(router: Router) -> some View {
         ProfileView(
-            viewModel: ProfileViewModel(
+            presenter: ProfilePresenter(
                 interactor: interactor,
                 router: CoreRouter(router: router, builder: self)
             )
         )
-        .any()
     }
     
     // MARK: CELLS
     
-    func chatRowCell(delegate: ChatRowCellDelegate = ChatRowCellDelegate()) -> AnyView {
+    func chatRowCell(delegate: ChatRowCellDelegate = ChatRowCellDelegate()) -> some View {
         ChatRowCellViewBuilder(
-            viewModel: ChatRowCellViewModel(
+            presenter: ChatRowCellPresenter(
                 interactor: interactor
             ),
             delegate: delegate
         )
-        .any()
     }
 }

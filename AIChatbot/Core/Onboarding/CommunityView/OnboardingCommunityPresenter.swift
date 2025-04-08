@@ -8,22 +8,8 @@
 import SwiftUI
 
 @MainActor
-protocol OnboardingCommunityInteractor {
-    func trackEvent(event: LoggableEvent)
-}
-
-extension CoreInteractor: OnboardingCommunityInteractor { }
-
-@MainActor
-protocol OnboardingCommunityRouter {
-    func showOnboardingColorView(delegate: OnboardingColorDelegate)
-}
-
-extension CoreRouter: OnboardingCommunityRouter { }
-
-@MainActor
 @Observable
-class OnboardingCommunityViewModel {
+class OnboardingCommunityPresenter {
     private let interactor: OnboardingCommunityInteractor
     private let router: OnboardingCommunityRouter
     

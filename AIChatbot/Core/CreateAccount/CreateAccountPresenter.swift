@@ -8,24 +8,8 @@
 import SwiftUI
 
 @MainActor
-protocol CreateAccountInteractor {
-    func trackEvent(event: LoggableEvent)
-    func login(user: UserAuthInfo, isNewUser: Bool) async throws
-    func signInApple() async throws -> (user: UserAuthInfo, isNewUser: Bool)
-}
-
-extension CoreInteractor: CreateAccountInteractor { }
-
-@MainActor
-protocol CreateAccountRouter {
-    func dismissScreen()
-}
-
-extension CoreRouter: CreateAccountRouter { }
-
-@MainActor
 @Observable
-class CreateAccountViewModel {
+class CreateAccountPresenter {
     private let interactor: CreateAccountInteractor
     private let router: CreateAccountRouter
     

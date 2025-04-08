@@ -1,5 +1,5 @@
 //
-//  ChatsViewModel.swift
+//  ChatsPresenter.swift
 //  AIChatbot
 //
 //  Created by Desmond Fitch on 3/26/25.
@@ -7,26 +7,9 @@
 
 import SwiftUI
 
-@MainActor
-protocol ChatsInteractor {
-    func trackEvent(event: LoggableEvent)
-    func getRecentAvatars() throws -> [AvatarModel]
-    func getAuthID() throws -> String
-    func getAllChats(userID: String) async throws -> [ChatModel]
-}
-
-extension CoreInteractor: ChatsInteractor { }
-
-@MainActor
-protocol ChatsRouter {
-    func showChatView(delegate: ChatViewDelegate)
-}
-
-extension CoreRouter: ChatsRouter { }
-
 @Observable
 @MainActor
-class ChatsViewModel {
+class ChatsPresenter {
     
     private let interactor: ChatsInteractor
     private let router: ChatsRouter

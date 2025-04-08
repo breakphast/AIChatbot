@@ -12,7 +12,7 @@ struct OnboardingIntroDelegate {
 }
 
 struct OnboardingIntroView: View {
-    @State var viewModel: OnboardingIntroViewModel
+    @State var presenter: OnboardingIntroPresenter
     let delegate: OnboardingIntroDelegate
     
     var body: some View {
@@ -51,7 +51,7 @@ struct OnboardingIntroView: View {
                 .padding(24)
                 .font(.title3)
                 .anyButton {
-                    viewModel.onContinueButtonPressed()
+                    presenter.onContinueButtonPressed()
                 }
         }
     }

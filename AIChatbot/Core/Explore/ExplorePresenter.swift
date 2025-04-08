@@ -1,5 +1,5 @@
 //
-//  ExploreViewModel.swift
+//  ExplorePresenter.swift
 //  AIChatbot
 //
 //  Created by Desmond Fitch on 3/25/25.
@@ -9,39 +9,8 @@ import SwiftUI
 import CustomRouting
 
 @MainActor
-protocol ExploreInteractor {
-    var categoryRowTestType: CategoryRowTestOption { get }
-    var auth: UserAuthInfo? { get }
-    var createAccountTest: Bool { get }
-    
-    func trackEvent(event: LoggableEvent)
-    func getFeaturedAvatars() async throws -> [AvatarModel]
-    func getPopularAvatars() async throws -> [AvatarModel]
-    func canRequestAuthorization() async -> Bool
-    func schedulePushNotificationsForTheNextWeek()
-    func requestAuthorization() async throws -> Bool
-}
-
-extension CoreInteractor: ExploreInteractor { }
-
-@MainActor
-protocol ExploreRouter {
-    // Segues
-    func showCategoryListView(delegate: CategoryListDelegate)
-    func showChatView(delegate: ChatViewDelegate)
-    func showCreateAccountView(delegate: CreateAccountDelegate, onDisappear: (() -> Void)?)
-    func showDevSettingsView()
-    
-    // Modals
-    func showPushNotificationModal(onEnablePressed: @escaping () -> Void, onCancelPressed: @escaping () -> Void)
-    func dismissModal()
-}
-
-extension CoreRouter: ExploreRouter { }
-
-@MainActor
 @Observable
-class ExploreViewModel {
+class ExplorePresenter {
     private let interactor: ExploreInteractor
     private let router: ExploreRouter
     

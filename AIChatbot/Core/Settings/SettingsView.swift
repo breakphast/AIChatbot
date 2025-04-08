@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
-    @State var viewModel: SettingsViewModel
+    @State var presenter: SettingsPresenter
     
     var body: some View {
         NavigationStack {
@@ -23,25 +23,25 @@ struct SettingsView: View {
             .navigationTitle("Settings")
             .screenAppearAnalytics(name: "SettingsView")
             .onAppear {
-                viewModel.setAnonymousAccountStatus()
+                presenter.setAnonymousAccountStatus()
             }
         }
     }
     
     private var accountSection: some View {
         Section {
-            if viewModel.isAnonymousUser {
+            if presenter.isAnonymousUser {
                 Text("Save & backup account")
                     .rowFormatting()
                     .anyButton(.highlight) {
-                        viewModel.onCreateAccountPressed()
+                        presenter.onCreateAccountPressed()
                     }
                     .removeListRowFormatting()
             } else {
                 Text("Sign Out")
                     .rowFormatting()
                     .anyButton(.highlight) {
-                        viewModel.onSignOutPressed()
+                        presenter.onSignOutPressed()
                     }
                     .removeListRowFormatting()
             }
@@ -50,7 +50,7 @@ struct SettingsView: View {
                 .foregroundStyle(.red)
                 .rowFormatting()
                 .anyButton(.highlight) {
-                    viewModel.onDeleteAccountPressed()
+                    presenter.onDeleteAccountPressed()
                 }
                 .removeListRowFormatting()
         } header: {
@@ -59,7 +59,7 @@ struct SettingsView: View {
     }
     
     private var purchaseSection: some View {
-        let isPremium = viewModel.isPremium
+        let isPremium = presenter.isPremium
         
         return Section {
             HStack {
@@ -74,7 +74,7 @@ struct SettingsView: View {
             }
             .rowFormatting()
             .anyButton(.highlight) {
-                viewModel.onSignOutPressed()
+                presenter.onSignOutPressed()
             }
             .disabled(!isPremium)
             .removeListRowFormatting()
@@ -89,7 +89,7 @@ struct SettingsView: View {
                 .foregroundStyle(.blue)
                 .rowFormatting()
                 .anyButton(.highlight, action: {
-                    viewModel.onRatingButtonPressed()
+                    presenter.onRatingButtonPressed()
                 })
                 .removeListRowFormatting()
             
@@ -115,7 +115,7 @@ struct SettingsView: View {
                 .foregroundStyle(.blue)
                 .rowFormatting()
                 .anyButton(.highlight, action: {
-                    viewModel.onContactUsPressed()
+                    presenter.onContactUsPressed()
                 })
                 .removeListRowFormatting()
         } header: {

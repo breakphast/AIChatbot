@@ -13,7 +13,7 @@ struct CategoryListDelegate {
 }
 
 struct CategoryListView: View {
-    @State var viewModel: CategoryListViewModel
+    @State var presenter: CategoryListPresenter
     let delegate: CategoryListDelegate
     
     var body: some View {
@@ -26,13 +26,13 @@ struct CategoryListView: View {
             )
             .removeListRowFormatting()
             
-            if viewModel.isLoading {
+            if presenter.isLoading {
                 ProgressView()
                     .padding(40)
                     .frame(maxWidth: .infinity)
                     .listRowSeparator(.hidden)
                     .removeListRowFormatting()
-            } else if viewModel.avatars.isEmpty {
+            } else if presenter.avatars.isEmpty {
                 Text("No avatars found 😢")
                     .frame(maxWidth: .infinity)
                     .padding(40)
@@ -40,14 +40,14 @@ struct CategoryListView: View {
                     .listRowSeparator(.hidden)
                     .removeListRowFormatting()
             } else {
-                ForEach(viewModel.avatars, id: \.self) { avatar in
+                ForEach(presenter.avatars, id: \.self) { avatar in
                     CustomListCellView(
                         imageName: avatar.profileImageName,
                         title: avatar.name,
                         subtitle: avatar.characterDescription
                     )
                     .anyButton(.highlight, action: {
-                        viewModel.onAvatarPressed(avatar: avatar)
+                        presenter.onAvatarPressed(avatar: avatar)
                     })
                     .removeListRowFormatting()
                 }
@@ -57,7 +57,7 @@ struct CategoryListView: View {
         .ignoresSafeArea()
         .listStyle(.plain)
         .task {
-            await viewModel.loadAvatars(category: delegate.category)
+            await presenter.loadAvatars(category: delegate.category)
         }
     }
 }
