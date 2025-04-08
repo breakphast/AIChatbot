@@ -17,20 +17,27 @@ protocol ChatsInteractor {
 
 extension CoreInteractor: ChatsInteractor { }
 
+@MainActor
+protocol ChatsRouter {
+    func showChatView(delegate: ChatViewDelegate)
+}
+
+extension CoreRouter: ChatsRouter { }
+
 @Observable
 @MainActor
 class ChatsViewModel {
     
     private let interactor: ChatsInteractor
+    private let router: ChatsRouter
     
     private(set) var chats: [ChatModel] = []
     private(set) var isLoadingChats: Bool = true
     private(set) var recentAvatars: [AvatarModel] = []
-
-    var path: [TabBarPathOption] = []
     
-    init(interactor: ChatsInteractor) {
+    init(interactor: ChatsInteractor, router: ChatsRouter) {
         self.interactor = interactor
+        self.router = router
     }
     
     func loadRecentAvatars() {
@@ -60,13 +67,17 @@ class ChatsViewModel {
     }
 
     func onChatPressed(chat: ChatModel) {
-        path.append(.chat(avatarID: chat.avatarID, chat: chat))
         interactor.trackEvent(event: Event.chatPressed(chat: chat))
+        
+        let delegate = ChatViewDelegate(chat: chat, avatarID: chat.avatarID)
+        router.showChatView(delegate: delegate)
     }
     
     func onAvatarPressed(avatar: AvatarModel) {
-        path.append(.chat(avatarID: avatar.avatarID, chat: nil))
         interactor.trackEvent(event: Event.avatarPressed(avatar: avatar))
+        
+        let delegate = ChatViewDelegate(avatarID: avatar.avatarID)
+        router.showChatView(delegate: delegate)
     }
 
     enum Event: LoggableEvent {

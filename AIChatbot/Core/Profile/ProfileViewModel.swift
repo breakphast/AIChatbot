@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CustomRouting
 
 @MainActor
 protocol ProfileInteractor {
@@ -19,26 +20,33 @@ protocol ProfileInteractor {
 extension CoreInteractor: ProfileInteractor { }
 
 @MainActor
+protocol ProfileRouter {
+    func showSettingsView()
+    func showSimpleAlert(title: String, subtitle: String?)
+    func showChatView(delegate: ChatViewDelegate)
+    func showCreateAvatarView(onDisappear: @escaping () -> Void)
+}
+
+extension CoreRouter: ProfileRouter { }
+
+@MainActor
 @Observable
 class ProfileViewModel {
     private let interactor: ProfileInteractor
+    private let router: ProfileRouter
     
     private(set) var currentUser: UserModel?
     private(set) var myAvatars: [AvatarModel] = []
     private(set) var isLoading = true
     
-    var showSettingsView = false
-    var showCreateAvatarView = false
-    var showAlert: AnyAppAlert?
-    var path: [TabBarPathOption] = []
-    
-    init(interactor: ProfileInteractor) {
+    init(interactor: ProfileInteractor, router: ProfileRouter) {
         self.interactor = interactor
+        self.router = router
     }
     
     func onSettingsButtonPressed() {
         interactor.trackEvent(event: Event.settingsPressed)
-        showSettingsView = true
+        router.showSettingsView()
     }
     
     func loadData() async {
@@ -57,7 +65,11 @@ class ProfileViewModel {
     
     func onNewAvatarButtonPressed() {
         interactor.trackEvent(event: Event.newAvatarPressed)
-        showCreateAvatarView = true
+        router.showCreateAvatarView {
+            Task {
+                await self.loadData()
+            }
+        }
     }
     
     func onDeleteAvatar(indexSet: IndexSet) {
@@ -71,7 +83,7 @@ class ProfileViewModel {
                 myAvatars.remove(at: index)
                 interactor.trackEvent(event: Event.deleteAvatarSuccess(avatar: avatar))
             } catch {
-                showAlert = AnyAppAlert(title: "Unable to delete avatar", subtitle: "Please try again")
+                router.showSimpleAlert(title: "Unable to delete avatar", subtitle: "Please try again")
                 interactor.trackEvent(event: Event.deleteAvatarFail(error: error))
             }
         }
@@ -79,7 +91,8 @@ class ProfileViewModel {
     
     func onAvatarPressed(avatar: AvatarModel) {
         interactor.trackEvent(event: Event.avatarPressed(avatar: avatar))
-        path.append(.chat(avatarID: avatar.avatarID, chat: nil))
+        let delegate = ChatViewDelegate(avatarID: avatar.avatarID)
+        router.showChatView(delegate: delegate)
     }
     
     enum Event: LoggableEvent {

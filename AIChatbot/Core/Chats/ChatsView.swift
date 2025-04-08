@@ -10,30 +10,21 @@ import SwiftUI
 struct ChatsView: View {
     @State var viewModel: ChatsViewModel
     @ViewBuilder var chatRowCell: (ChatRowCellDelegate) -> AnyView
-    @ViewBuilder var chatView: (ChatViewDelegate) -> AnyView
-    @ViewBuilder var categoryListView: (CategoryListDelegate) -> AnyView
     
     var body: some View {
-        NavigationStack(path: $viewModel.path) {
-            List {
-                if !viewModel.recentAvatars.isEmpty {
-                    recentsSection
-                }
-                chatsSection
+        List {
+            if !viewModel.recentAvatars.isEmpty {
+                recentsSection
             }
-            .navigationTitle("Chats")
-            .navigationDestinationForCoreModule(
-                path: $viewModel.path,
-                chatView: chatView,
-                categoryListView: categoryListView
-            )
-            .screenAppearAnalytics(name: "ChatsView")
-            .onAppear {
-                viewModel.loadRecentAvatars()
-            }
-            .task {
-                await viewModel.loadChats()
-            }
+            chatsSection
+        }
+        .navigationTitle("Chats")
+        .screenAppearAnalytics(name: "ChatsView")
+        .onAppear {
+            viewModel.loadRecentAvatars()
+        }
+        .task {
+            await viewModel.loadChats()
         }
     }
     
@@ -105,8 +96,10 @@ struct ChatsView: View {
 #Preview("Has data") {
     let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
     
-    return builder.chatsView()
-        .previewEnvironment()
+    return RouterView { router in
+        builder.chatsView(router: router)
+    }
+    .previewEnvironment()
 }
 
 #Preview("No data") {
@@ -118,8 +111,10 @@ struct ChatsView: View {
     container.register(ChatManager.self, service: ChatManager(service: MockChatService(chats: [])))
     let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
     
-    return builder.chatsView()
-        .previewEnvironment()
+    return RouterView { router in
+        builder.chatsView(router: router)
+    }
+    .previewEnvironment()
 }
 
 #Preview("Slow loading chats") {
@@ -127,6 +122,8 @@ struct ChatsView: View {
     container.register(ChatManager.self, service: ChatManager(service: MockChatService(delay: 5)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
     
-    return builder.chatsView()
-        .previewEnvironment()
+    return RouterView { router in
+        builder.chatsView(router: router)
+    }
+    .previewEnvironment()
 }

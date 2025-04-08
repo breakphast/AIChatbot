@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CustomRouting
 
 @MainActor
 protocol ExploreInteractor {
@@ -80,7 +81,7 @@ class ExploreViewModel {
             if queryItem.name == "category", let value = queryItem.value, let category = CharacterOption(rawValue: value) {
                 let imageName = popularAvatars.first(where: { $0.characterOption == category })?.profileImageName ?? Constants.randomImage
                 
-                let delegate = CategoryListDelegate(path: .constant([]), category: category, imageName: imageName)
+                let delegate = CategoryListDelegate(category: category, imageName: imageName)
                 router.showCategoryListView(delegate: delegate)
                 
                 interactor.trackEvent(event: Event.deepLinkCategory(category: category))
@@ -195,7 +196,7 @@ class ExploreViewModel {
     func onCategoryPressed(category: CharacterOption, imageName: String) {
         interactor.trackEvent(event: Event.categoryPressed(category: category))
         
-        let delegate = CategoryListDelegate(path: .constant([]), category: category, imageName: imageName)
+        let delegate = CategoryListDelegate(category: category, imageName: imageName)
         router.showCategoryListView(delegate: delegate)
     }
     

@@ -8,14 +8,12 @@
 import SwiftUI
 
 struct CategoryListDelegate {
-    var path: Binding<[TabBarPathOption]>
     var category: CharacterOption = .alien
     var imageName: String = Constants.randomImage
 }
 
 struct CategoryListView: View {
     @State var viewModel: CategoryListViewModel
-    @ViewBuilder var customListCellView: (CustomListCellDelegate) -> AnyView
     let delegate: CategoryListDelegate
     
     var body: some View {
@@ -43,21 +41,18 @@ struct CategoryListView: View {
                     .removeListRowFormatting()
             } else {
                 ForEach(viewModel.avatars, id: \.self) { avatar in
-                    customListCellView(
-                        CustomListCellDelegate(
-                            imageName: avatar.profileImageName,
-                            title: avatar.name,
-                            subtitle: avatar.characterDescription
-                        )
+                    CustomListCellView(
+                        imageName: avatar.profileImageName,
+                        title: avatar.name,
+                        subtitle: avatar.characterDescription
                     )
                     .anyButton(.highlight, action: {
-                        viewModel.onAvatarPressed(avatar: avatar, path: delegate.path)
+                        viewModel.onAvatarPressed(avatar: avatar)
                     })
                     .removeListRowFormatting()
                 }
             }
         }
-        .showCustomAlert(alert: $viewModel.showAlert)
         .screenAppearAnalytics(name: "CategoryList")
         .ignoresSafeArea()
         .listStyle(.plain)
@@ -71,38 +66,46 @@ struct CategoryListView: View {
     let container = DevPreview.shared.container
     container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService()))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
-    let delegate = CategoryListDelegate(path: .constant([]))
+    let delegate = CategoryListDelegate()
     
-    return builder.categoryListView(delegate: delegate)
-        .previewEnvironment()
+    return RouterView { router in
+        builder.categoryListView(router: router, delegate: delegate)
+    }
+    .previewEnvironment()
 }
 
 #Preview("No data") {
     let container = DevPreview.shared.container
     container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService(avatars: [])))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
-    let delegate = CategoryListDelegate(path: .constant([]))
+    let delegate = CategoryListDelegate()
     
-    return builder.categoryListView(delegate: delegate)
-        .previewEnvironment()
+    return RouterView { router in
+        builder.categoryListView(router: router, delegate: delegate)
+    }
+    .previewEnvironment()
 }
 
 #Preview("Slow loading") {
     let container = DevPreview.shared.container
     container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService(delay: 8)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
-    let delegate = CategoryListDelegate(path: .constant([])) 
+    let delegate = CategoryListDelegate()
     
-    return builder.categoryListView(delegate: delegate)
-        .previewEnvironment()
+    return RouterView { router in
+        builder.categoryListView(router: router, delegate: delegate)
+    }
+    .previewEnvironment()
 }
 
 #Preview("Error loading") {
     let container = DevPreview.shared.container
     container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService(delay: 4, showError: true)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
-    let delegate = CategoryListDelegate(path: .constant([]))
+    let delegate = CategoryListDelegate()
     
-    return builder.categoryListView(delegate: delegate)
-        .previewEnvironment()
+    return RouterView { router in
+        builder.categoryListView(router: router, delegate: delegate)
+    }
+    .previewEnvironment()
 }

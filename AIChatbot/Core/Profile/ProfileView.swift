@@ -9,46 +9,19 @@ import SwiftUI
 
 struct ProfileView: View {
     @State var viewModel: ProfileViewModel
-    @ViewBuilder var settingsView: () -> AnyView
-    @ViewBuilder var createAvatarView: () -> AnyView
-    @ViewBuilder var customListCellView: (CustomListCellDelegate) -> AnyView
-    @ViewBuilder var chatView: (ChatViewDelegate) -> AnyView
-    @ViewBuilder var categoryListView: (CategoryListDelegate) -> AnyView
     
     var body: some View {
-        NavigationStack(path: $viewModel.path) {
-            List {
-                myInfoSection
-                myAvatarSection
-            }
-            .navigationDestinationForCoreModule(
-                path: $viewModel.path,
-                chatView: chatView,
-                categoryListView: categoryListView
-            )
-            .navigationTitle("Profile")
-            .showCustomAlert(alert: $viewModel.showAlert)
-            .screenAppearAnalytics(name: "ProfileView")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    settingsButton
-                }
+        List {
+            myInfoSection
+            myAvatarSection
+        }
+        .navigationTitle("Profile")
+        .screenAppearAnalytics(name: "ProfileView")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                settingsButton
             }
         }
-        .sheet(isPresented: $viewModel.showSettingsView) {
-            settingsView()
-        }
-        .fullScreenCover(
-            isPresented: $viewModel.showCreateAvatarView,
-            onDismiss: {
-                Task {
-                    await viewModel.loadData()
-                }
-            },
-            content: {
-                createAvatarView()
-            }
-        )
         .task {
             await viewModel.loadData()
         }
@@ -91,11 +64,15 @@ struct ProfileView: View {
                 .removeListRowFormatting()
             } else {
                 ForEach(viewModel.myAvatars, id: \.self) { avatar in
-                    customListCellView(CustomListCellDelegate())
-                        .anyButton(.highlight, action: {
-                            viewModel.onAvatarPressed(avatar: avatar)
-                        })
-                        .removeListRowFormatting()
+                    CustomListCellView(
+                        imageName: avatar.profileImageName,
+                        title: avatar.name,
+                        subtitle: nil
+                    )
+                    .anyButton(.highlight, action: {
+                        viewModel.onAvatarPressed(avatar: avatar)
+                    })
+                    .removeListRowFormatting()
                 }
                 .onDelete { indexSet in
                     viewModel.onDeleteAvatar(indexSet: indexSet)
@@ -119,7 +96,10 @@ struct ProfileView: View {
 }
 
 #Preview {
-    CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
-        .profileView()
-        .previewEnvironment()
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+    
+    return RouterView { router in
+        builder.profileView(router: router)
+    }
+    .previewEnvironment()
 }

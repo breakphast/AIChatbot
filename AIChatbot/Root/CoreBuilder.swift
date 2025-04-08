@@ -18,8 +18,8 @@ struct CoreRouter {
     // MARK: Segues
     
     func showCategoryListView(delegate: CategoryListDelegate) {
-        router.showScreen(.push) { _ in
-            builder.categoryListView(delegate: delegate)
+        router.showScreen(.push) { router in
+            builder.categoryListView(router: router, delegate: delegate)
         }
     }
     
@@ -48,9 +48,12 @@ struct CoreRouter {
         }
     }
     
-    func showCreateAvatarView() {
+    func showCreateAvatarView(onDisappear: @escaping () -> Void) {
         router.showScreen(.fullScreenCover) { _ in
             builder.createAvatarView()
+                .onDisappear {
+                    onDisappear()
+                }
         }
     }
     
@@ -115,6 +118,10 @@ struct CoreRouter {
         router.showAlert(option, title: title, subtitle: subtitle, buttons: buttons)
     }
     
+    func showSimpleAlert(title: String, subtitle: String?) {
+        router.showAlert(.alert, title: title, subtitle: subtitle, buttons: nil)
+    }
+    
     func showAlert(error: Error) {
         router.showAlert(.alert, title: "Error", subtitle: error.localizedDescription, buttons: nil)
     }
@@ -165,13 +172,13 @@ struct CoreBuilder {
             }),
             TabBarScreen(title: "Chats", systemImage: "bubble.left.and.bubble.right.fill", screen: {
                 RouterView { router in
-                    chatsView()
+                    chatsView(router: router)
                 }
                 .any()
             }),
             TabBarScreen(title: "Profile", systemImage: "person.fill", screen: {
                 RouterView { router in
-                    profileView()
+                    profileView(router: router)
                 }
                 .any()
             })
@@ -206,12 +213,12 @@ struct CoreBuilder {
         .any()
     }
     
-    func categoryListView(delegate: CategoryListDelegate) -> AnyView {
+    func categoryListView(router: Router, delegate: CategoryListDelegate) -> AnyView {
         CategoryListView(
-            viewModel: CategoryListViewModel(interactor: interactor),
-            customListCellView: { delegate in
-                customListCellView(delegate: delegate)
-            },
+            viewModel: CategoryListViewModel(
+                interactor: interactor,
+                router: CoreRouter(router: router, builder: self)
+            ),
             delegate: delegate
         )
         .any()
@@ -248,19 +255,14 @@ struct CoreBuilder {
         .any()
     }
     
-    func chatsView() -> AnyView {
+    func chatsView(router: Router) -> AnyView {
         ChatsView(
             viewModel: ChatsViewModel(
-                interactor: interactor
+                interactor: interactor,
+                router: CoreRouter(router: router, builder: self)
             ),
             chatRowCell: { delegate in
                 chatRowCell(delegate: delegate)
-            },
-            chatView: { delegate in
-                chatView(delegate: delegate)
-            },
-            categoryListView: { delegate in
-                categoryListView(delegate: delegate)
             }
         )
         .any()
@@ -331,31 +333,12 @@ struct CoreBuilder {
         .any()
     }
     
-    func customListCellView(delegate: CustomListCellDelegate) -> AnyView {
-        CustomListCellView(delegate: delegate)
-            .any()
-    }
-    
-    func profileView() -> AnyView {
+    func profileView(router: Router) -> AnyView {
         ProfileView(
             viewModel: ProfileViewModel(
-                interactor: interactor
-            ),
-            settingsView: {
-                settingsView()
-            },
-            createAvatarView: {
-                createAvatarView()
-            },
-            customListCellView: { delegate in
-                customListCellView(delegate: delegate)
-            },
-            chatView: { delegate in
-                chatView(delegate: delegate)
-            },
-            categoryListView: { delegate in
-                categoryListView(delegate: delegate)
-            }
+                interactor: interactor,
+                router: CoreRouter(router: router, builder: self)
+            )
         )
         .any()
     }

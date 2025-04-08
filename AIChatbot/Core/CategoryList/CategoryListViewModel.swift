@@ -16,17 +16,25 @@ protocol CategoryListInteractor {
 extension CoreInteractor: CategoryListInteractor { }
 
 @MainActor
+protocol CategoryListRouter {
+    func showChatView(delegate: ChatViewDelegate)
+    func showAlert(error: Error)
+}
+
+extension CoreRouter: CategoryListRouter { }
+
+@MainActor
 @Observable
 class CategoryListViewModel {
     private let interactor: CategoryListInteractor
+    private let router: CategoryListRouter
     
     private(set) var avatars = [AvatarModel]()
     private(set) var isLoading = true
     
-    var showAlert: AnyAppAlert?
-    
-    init(interactor: CategoryListInteractor) {
+    init(interactor: CategoryListInteractor, router: CoreRouter) {
         self.interactor = interactor
+        self.router = router
     }
 
     enum Event: LoggableEvent {
@@ -71,15 +79,17 @@ class CategoryListViewModel {
             avatars = try await interactor.getAvatarsForCategory(category: category)
             interactor.trackEvent(event: Event.loadAvatarsSuccess)
         } catch {
-            showAlert = AnyAppAlert(error: error)
+            router.showAlert(error: error)
             interactor.trackEvent(event: Event.loadAvatarsFail(error: error))
         }
         
         isLoading = false
     }
     
-    func onAvatarPressed(avatar: AvatarModel, path: Binding<[TabBarPathOption]>) {
-        path.wrappedValue.append(.chat(avatarID: avatar.avatarID, chat: nil))
+    func onAvatarPressed(avatar: AvatarModel) {
         interactor.trackEvent(event: Event.avatarPressed(avatar: avatar))
+        
+        let delegate = ChatViewDelegate(avatarID: avatar.avatarID)
+        router.showChatView(delegate: delegate)
     }
 }
