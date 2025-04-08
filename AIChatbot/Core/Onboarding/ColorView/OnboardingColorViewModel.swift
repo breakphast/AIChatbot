@@ -15,22 +15,34 @@ protocol OnboardingColorInteractor {
 extension CoreInteractor: OnboardingColorInteractor { }
 
 @MainActor
+protocol OnboardingColorRouter {
+    func showOnboardingCompletedView(delegate: OnboardingCompletedDelegate)
+}
+
+extension CoreRouter: OnboardingColorRouter { }
+
+@MainActor
 @Observable
 class OnboardingColorViewModel {
     private let interactor: OnboardingColorInteractor
+    private let router: OnboardingColorRouter
     
     private(set) var selectedColor: Color?
     let profileColors: [Color] = [.red, .green, .indigo, .blue, .orange, .pink, .yellow, .purple, .cyan]
     
-    init(interactor: OnboardingColorInteractor) {
+    init(interactor: OnboardingColorInteractor, router: OnboardingColorRouter) {
         self.interactor = interactor
+        self.router = router
     }
     
     func onColorPressed(color: Color) {
         selectedColor = color
     }
     
-    func onContinueButtonPressed(path: Binding<[OnboardingPathOption]>) {
-        path.wrappedValue.append(.completed(selectedColor: selectedColor ?? .orange))
+    func onContinueButtonPressed() {
+        guard let selectedColor else { return }
+        
+        let delegate = OnboardingCompletedDelegate(selectedColor: selectedColor)
+        router.showOnboardingCompletedView(delegate: delegate)
     }
 }

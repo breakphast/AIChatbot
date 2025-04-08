@@ -17,15 +17,25 @@ protocol OnboardingCompletedInteractor {
 extension CoreInteractor: OnboardingCompletedInteractor { }
 
 @MainActor
+protocol OnboardingCompletedRouter {
+    func showAlert(error: Error)
+    
+    func dismissAlert()
+}
+
+extension CoreRouter: OnboardingCompletedRouter { }
+
+@MainActor
 @Observable
 class OnboardingCompletedViewModel {
     private let interactor: OnboardingCompletedInteractor
+    private let router: OnboardingCompletedRouter
     
     var isCompletingProfileSetup = false
-    var showAlert: AnyAppAlert?
     
-    init(interactor: OnboardingCompletedInteractor) {
+    init(interactor: OnboardingCompletedInteractor, router: OnboardingCompletedRouter) {
         self.interactor = interactor
+        self.router = router
     }
     
     func onFinishButtonPressed(selectedColor: Color) {
@@ -42,7 +52,7 @@ class OnboardingCompletedViewModel {
                 
                 interactor.updateAppState(showTabBar: true)
             } catch {
-                showAlert = AnyAppAlert(error: error)
+                router.showAlert(error: error)
                 interactor.trackEvent(event: Event.finishFail(error: error))
             }
         }

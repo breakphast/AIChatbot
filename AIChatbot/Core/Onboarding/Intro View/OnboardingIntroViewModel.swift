@@ -17,19 +17,29 @@ protocol OnboardingIntroInteractor {
 extension CoreInteractor: OnboardingIntroInteractor { }
 
 @MainActor
+protocol OnboardingIntroRouter {
+    func showOnboardingCommunityView(delegate: OnboardingCommunityDelegate)
+    func showOnboardingColorView(delegate: OnboardingColorDelegate)
+}
+
+extension CoreRouter: OnboardingIntroRouter { }
+
+@MainActor
 @Observable
 class OnboardingIntroViewModel {
     private let interactor: OnboardingIntroInteractor
+    private let router: OnboardingIntroRouter
 
-    init(interactor: OnboardingIntroInteractor) {
+    init(interactor: OnboardingIntroInteractor, router: OnboardingIntroRouter) {
         self.interactor = interactor
+        self.router = router
     }
     
-    func onContinueButtonPressed(path: Binding<[OnboardingPathOption]>) {
+    func onContinueButtonPressed() {
         if interactor.onboardingCommunityTest {
-            path.wrappedValue.append(.community)
+            router.showOnboardingCommunityView(delegate: OnboardingCommunityDelegate())
         } else {
-            path.wrappedValue.append(.color)
+            router.showOnboardingColorView(delegate: OnboardingColorDelegate())
         }
     }
     

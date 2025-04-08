@@ -16,30 +16,44 @@ protocol WelcomeInteractor {
 extension CoreInteractor: WelcomeInteractor { }
 
 @MainActor
+protocol WelcomeRouter {
+    func showCreateAccountView(delegate: CreateAccountDelegate)
+    func showOnboardingIntroView(delegate: OnboardingIntroDelegate)
+}
+
+extension CoreRouter: WelcomeRouter { }
+
+@MainActor
 @Observable
 class WelcomeViewModel {
     private let interactor: WelcomeInteractor
+    private let router: WelcomeRouter
     
     private(set) var imageName: String = Constants.randomImage
     
-    var path: [OnboardingPathOption] = []
-    
-    var showSignInView = false
-    
-    init(interactor: WelcomeInteractor) {
+    init(interactor: WelcomeInteractor, router: WelcomeRouter) {
         self.interactor = interactor
+        self.router = router
     }
     
     func onGetStartedPressed() {
-        path.append(.intro)
+        router.showOnboardingIntroView(delegate: OnboardingIntroDelegate())
     }
     
     func onSignInPressed() {
         interactor.trackEvent(event: Event.signInPressed)
-        showSignInView = true
+        
+        let delegate = CreateAccountDelegate(
+            title: "Sign in",
+            subtitle: "Connect to an existing account.",
+            onDidSignIn: { isNewUser in
+                self.handleDidSignIn(isNewUser: isNewUser)
+            }
+        )
+        router.showCreateAccountView(delegate: delegate)
     }
     
-    func handleDidSignIn(isNewUser: Bool) {
+    private func handleDidSignIn(isNewUser: Bool) {
         interactor.trackEvent(event: Event.didSignIn(isNewUser: isNewUser))
         if isNewUser {
             

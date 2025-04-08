@@ -9,47 +9,21 @@ import SwiftUI
 
 struct WelcomeView: View {
     @State var viewModel: WelcomeViewModel
-    @ViewBuilder var createAccountView: (CreateAccountDelegate) -> AnyView
-    @ViewBuilder var onboardingColorView: (OnboardingColorDelegate) -> AnyView
-    @ViewBuilder var onboardingCommunityView: (OnboardingCommunityDelegate) -> AnyView
-    @ViewBuilder var onboardingIntroView: (OnboardingIntroDelegate) -> AnyView
-    @ViewBuilder var onboardingCompletedView: (OnboardingCompletedDelegate) -> AnyView
     
     var body: some View {
-        NavigationStack(path: $viewModel.path) {
-            VStack(spacing: 8) {
-                ImageLoaderView(urlString: viewModel.imageName)
-                    .ignoresSafeArea()
-                
-                titleSection
-                    .padding(.top, 24)
-                
-                ctaButtons
-                    .padding(16)
-                
-                policyLinks
-            }
-            .navigationDestinationForOnboardingModule(
-                path: $viewModel.path,
-                onboardingColorView: onboardingColorView,
-                onboardingCommunityView: onboardingCommunityView,
-                onboardingIntroView: onboardingIntroView,
-                onboardingCompletedView: onboardingCompletedView
-            )
+        VStack(spacing: 8) {
+            ImageLoaderView(urlString: viewModel.imageName)
+                .ignoresSafeArea()
+            
+            titleSection
+                .padding(.top, 24)
+            
+            ctaButtons
+                .padding(16)
+            
+            policyLinks
         }
         .screenAppearAnalytics(name: "WelcomeView")
-        .sheet(isPresented: $viewModel.showSignInView) {
-            createAccountView(
-                CreateAccountDelegate(
-                    title: "Sign in",
-                    subtitle: "Connect to an existing account.",
-                    onDidSignIn: { isNewUser in
-                        viewModel.handleDidSignIn(isNewUser: isNewUser)
-                    }
-                )
-            )
-            .presentationDetents([.medium])
-        }
     }
     
     private var titleSection: some View {

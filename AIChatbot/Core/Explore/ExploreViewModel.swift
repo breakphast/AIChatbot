@@ -29,7 +29,7 @@ protocol ExploreRouter {
     func showCategoryListView(delegate: CategoryListDelegate)
     func showChatView(delegate: ChatViewDelegate)
     func showCreateAccountView(delegate: CreateAccountDelegate)
-    func showDevSettings()
+    func showDevSettingsView()
     
     // Modals
     func showPushNotificationModal(onEnablePressed: @escaping () -> Void, onCancelPressed: @escaping () -> Void)
@@ -139,7 +139,7 @@ class ExploreViewModel {
     
     func onDevSettingsPressed() {
         interactor.trackEvent(event: Event.devSettingsPressed)
-        router.showDevSettings()
+        router.showDevSettingsView()
     }
     
     func onTryAgainPressed() {

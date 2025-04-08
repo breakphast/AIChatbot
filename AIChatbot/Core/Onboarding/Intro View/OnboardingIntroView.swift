@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct OnboardingIntroDelegate {
-    var path: Binding<[OnboardingPathOption]>
+    
 }
 
 struct OnboardingIntroView: View {
@@ -51,7 +51,7 @@ struct OnboardingIntroView: View {
                 .padding(24)
                 .font(.title3)
                 .anyButton {
-                    viewModel.onContinueButtonPressed(path: delegate.path)
+                    viewModel.onContinueButtonPressed()
                 }
         }
     }
@@ -59,8 +59,8 @@ struct OnboardingIntroView: View {
 
 #Preview("Original") {
     let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
-    NavigationStack {
-        builder.onboardingIntroView(delegate: OnboardingIntroDelegate(path: .constant([])))
+    RouterView { router in
+        builder.onboardingIntroView(router: router, delegate: OnboardingIntroDelegate())
     }
     .previewEnvironment()
 }
@@ -70,8 +70,8 @@ struct OnboardingIntroView: View {
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(onboardingCommunityTest: true)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return NavigationStack {
-        builder.onboardingIntroView(delegate: OnboardingIntroDelegate(path: .constant([])))
+    return RouterView { router in
+        builder.onboardingIntroView(router: router, delegate: OnboardingIntroDelegate())
     }
     .previewEnvironment()
 }

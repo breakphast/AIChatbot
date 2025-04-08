@@ -40,12 +40,14 @@ struct OnboardingCompletedView: View {
         .padding(24)
         .toolbar(.hidden, for: .navigationBar)
         .screenAppearAnalytics(name: "OnboardingCompletedView")
-        .showCustomAlert(alert: $viewModel.showAlert)
     }
 }
 
 #Preview {
-    CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
-        .onboardingCompletedView(delegate: OnboardingCompletedDelegate(selectedColor: .mint))
-        .previewEnvironment()
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+    
+    return RouterView { router in
+        builder.onboardingCompletedView(router: router, delegate: OnboardingCompletedDelegate())
+    }
+    .previewEnvironment()
 }

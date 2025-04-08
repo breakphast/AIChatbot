@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct OnboardingColorDelegate {
-    var path: Binding<[OnboardingPathOption]>
+    
 }
 
 struct OnboardingColorView: View {
@@ -67,15 +67,15 @@ struct OnboardingColorView: View {
         Text("Continue")
             .callToActionButton()
             .anyButton {
-                viewModel.onContinueButtonPressed(path: delegate.path)
+                viewModel.onContinueButtonPressed()
             }
     }
 }
 
 #Preview {
     let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
-    NavigationStack {
-        builder.onboardingColorView(delegate: OnboardingColorDelegate(path: .constant([])))
+    RouterView { router in
+        builder.onboardingColorView(router: router, delegate: OnboardingColorDelegate())
     }
     .previewEnvironment()
 }
