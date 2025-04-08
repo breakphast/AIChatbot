@@ -151,7 +151,7 @@ class SettingsViewModel {
             buttons: {
                 AnyView(
                     Button("Delete", role: .destructive, action: {
-                        self.onDeleteAccountPressed(onDismiss: onDismiss)
+                        self.onDeleteAccountConfirmed(onDismiss: onDismiss)
                     })
                 )
             }

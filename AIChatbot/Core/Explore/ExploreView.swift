@@ -9,86 +9,63 @@ import SwiftUI
 
 struct ExploreView: View {
     @State var viewModel: ExploreViewModel
-    @ViewBuilder var devSettingsView: () -> AnyView
-    @ViewBuilder var createAccountView: () -> AnyView
-    @ViewBuilder var chatView: (ChatViewDelegate) -> AnyView
-    @ViewBuilder var categoryListView: (CategoryListDelegate) -> AnyView
     
     var body: some View {
-        NavigationStack(path: $viewModel.path) {
-            List {
-                if viewModel.featuredAvatars.isEmpty && viewModel.popularAvatars.isEmpty {
-                    ZStack {
-                        if viewModel.isLoadingFeatured || viewModel.isLoadingPopular {
-                            loadingIndicator
-                        } else {
-                            errorMessageView
-                        }
+        List {
+            if viewModel.featuredAvatars.isEmpty && viewModel.popularAvatars.isEmpty {
+                ZStack {
+                    if viewModel.isLoadingFeatured || viewModel.isLoadingPopular {
+                        loadingIndicator
+                    } else {
+                        errorMessageView
                     }
-                    .removeListRowFormatting()
                 }
-                
-                if !viewModel.popularAvatars.isEmpty, viewModel.categoryRowTestType == .top {
+                .removeListRowFormatting()
+            }
+            
+            if !viewModel.popularAvatars.isEmpty, viewModel.categoryRowTestType == .top {
+                categorySection
+            }
+            
+            if !viewModel.featuredAvatars.isEmpty {
+                featuredSection
+            }
+            if !viewModel.popularAvatars.isEmpty {
+                if viewModel.categoryRowTestType == .original {
                     categorySection
                 }
-                
-                if !viewModel.featuredAvatars.isEmpty {
-                    featuredSection
+                popularSection
+            }
+        }
+        .navigationTitle("Explore")
+        .screenAppearAnalytics(name: "ExploreView")
+        .toolbar(content: {
+            ToolbarItem(placement: .topBarLeading) {
+                if viewModel.showDevSettingsButton == true {
+                    devSettingsButton
                 }
-                if !viewModel.popularAvatars.isEmpty {
-                    if viewModel.categoryRowTestType == .original {
-                        categorySection
-                    }
-                    popularSection
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                if viewModel.showNotificationButton {
+                    pushNotificationButton
                 }
             }
-            .navigationTitle("Explore")
-            .screenAppearAnalytics(name: "ExploreView")
-            .toolbar(content: {
-                ToolbarItem(placement: .topBarLeading) {
-                    if viewModel.showDevSettingsButton == true {
-                        devSettingsButton
-                    }
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    if viewModel.showNotificationButton {
-                        pushNotificationButton
-                    }
-                }
-            })
-            .sheet(isPresented: $viewModel.showDevSettings, content: {
-                devSettingsView()
-            })
-            .sheet(
-                isPresented: $viewModel.showCreateAccountView, content: {
-                    createAccountView()
-                        .presentationDetents([.medium])
-                }
-            )
-            .navigationDestinationForCoreModule(
-                path: $viewModel.path,
-                chatView: chatView,
-                categoryListView: categoryListView
-            )
-            .showModal(showModal: $viewModel.showPushNotificationModal, content: {
-                pushNotificationModal
-            })
-            .task {
-                await viewModel.loadFeaturedAvatars()
-            }
-            .task {
-                await viewModel.loadPopularAvatars()
-            }
-            .task {
-                await viewModel.handleShowPushNotificationButton()
-            }
-            .onFirstAppear {
-                viewModel.schedulePushNotifications()
-                viewModel.showCreateAccountScreenIfNeeded()
-            }
-            .onOpenURL { url in
-                viewModel.handleDeepLink(url: url)
-            }
+        })
+        .task {
+            await viewModel.loadFeaturedAvatars()
+        }
+        .task {
+            await viewModel.loadPopularAvatars()
+        }
+        .task {
+            await viewModel.handleShowPushNotificationButton()
+        }
+        .onFirstAppear {
+            viewModel.schedulePushNotifications()
+            viewModel.showCreateAccountScreenIfNeeded()
+        }
+        .onOpenURL { url in
+            viewModel.handleDeepLink(url: url)
         }
     }
     
@@ -101,21 +78,6 @@ struct ExploreView: View {
             .anyButton {
                 viewModel.onPushNotificationButtonPressed()
             }
-    }
-    
-    private var pushNotificationModal: some View {
-        CustomModalView(
-            title: "Enable push notifications?",
-            subtitle: "We'll send you reminders and updates!",
-            primaryButtonTitle: "Enable",
-            primaryButtonAction: {
-                viewModel.onEnablePushNotificationsPressed()
-            },
-            secondaryButtonTitle: "Cancel",
-            secondaryButtonAction: {
-                viewModel.onCancelPushNotificationsPressed()
-            }
-        )
     }
     
     private var devSettingsButton: some View {
@@ -223,35 +185,15 @@ struct ExploreView: View {
     }
 }
 
-#Preview("Without Builder") {
-    let container = DevPreview.shared.container
-    container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService()))
-    
-    return ExploreView(
-        viewModel: ExploreViewModel(interactor: CoreInteractor(container: container)),
-        devSettingsView: {
-            Color.red.any()
-        },
-        createAccountView: {
-            Color.blue.any()
-        },
-        chatView: { _ in
-            Color.green.any()
-        },
-        categoryListView: { _ in
-            Color.yellow.any()
-        }
-    )
-    .previewEnvironment()
-}
-
 #Preview("Has Data") {
     let container = DevPreview.shared.container
     container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService()))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return builder.exploreView()
-        .previewEnvironment()
+    return RouterView { router in
+        builder.exploreView(router: router)
+    }
+    .previewEnvironment()
 }
 
 #Preview("CategoryRowTest: Original") {
@@ -260,8 +202,10 @@ struct ExploreView: View {
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(categoryRowTest: .original)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return builder.exploreView()
-        .previewEnvironment()
+    return RouterView { router in
+        builder.exploreView(router: router)
+    }
+    .previewEnvironment()
 }
 
 #Preview("CategoryRowTest: Top") {
@@ -270,8 +214,10 @@ struct ExploreView: View {
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(categoryRowTest: .top)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return builder.exploreView()
-        .previewEnvironment()
+    return RouterView { router in
+        builder.exploreView(router: router)
+    }
+    .previewEnvironment()
 }
 
 #Preview("CategoryRowTest: Hidden") {
@@ -280,8 +226,10 @@ struct ExploreView: View {
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(categoryRowTest: .hidden)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return builder.exploreView()
-        .previewEnvironment()
+    return RouterView { router in
+        builder.exploreView(router: router)
+    }
+    .previewEnvironment()
 }
 
 #Preview("Has Data w/ Create Acct Test") {
@@ -291,8 +239,10 @@ struct ExploreView: View {
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(createAccountTest: true)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return builder.exploreView()
-        .previewEnvironment()
+    return RouterView { router in
+        builder.exploreView(router: router)
+    }
+    .previewEnvironment()
 }
 
 #Preview("No Data") {
@@ -300,8 +250,10 @@ struct ExploreView: View {
     container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService(avatars: [], delay: 2)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return builder.exploreView()
-        .previewEnvironment()
+    return RouterView { router in
+        builder.exploreView(router: router)
+    }
+    .previewEnvironment()
 }
 
 #Preview("Slow loading") {
@@ -309,6 +261,8 @@ struct ExploreView: View {
     container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService(delay: 10)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return builder.exploreView()
-        .previewEnvironment()
+    return RouterView { router in
+        builder.exploreView(router: router)
+    }
+    .previewEnvironment()
 }

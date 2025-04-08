@@ -6,6 +6,75 @@
 //
 
 import SwiftUI
+import CustomRouting
+
+typealias RouterView = CustomRouting.RouterView
+
+@MainActor
+struct CoreRouter {
+    let router: Router
+    let builder: CoreBuilder
+    
+    // MARK: Segues
+    
+    func showCategoryListView(delegate: CategoryListDelegate) {
+        router.showScreen(.push) { _ in
+            builder.categoryListView(delegate: delegate)
+        }
+    }
+    
+    func showChatView(delegate: ChatViewDelegate) {
+        router.showScreen(.push) { _ in
+            builder.chatView(delegate: delegate)
+        }
+    }
+    
+    func showDevSettings() {
+        router.showScreen(.sheet) { _ in
+            builder.devSettingsView()
+        }
+    }
+    
+    func showCreateAccountView(delegate: CreateAccountDelegate) {
+        router.showScreen(.sheet) { _ in
+            builder.createAccountView(delegate: delegate)
+                .presentationDetents([.medium])
+        }
+    }
+    
+    // MARK: Modals
+    
+    func dismissScreen() {
+        router.dismissScreen()
+    }
+    
+    func dismissModal() {
+        router.dismissModal()
+    }
+    
+    func showPushNotificationModal(onEnablePressed: @escaping () -> Void, onCancelPressed: @escaping () -> Void) {
+        router.showModal(
+            backgroundColor: .black.opacity(0.8),
+            transition: .move(edge: .bottom),
+            destination: {
+                CustomModalView(
+                    title: "Enable push notifications?",
+                    subtitle: "We'll send you reminders and updates!",
+                    primaryButtonTitle: "Enable",
+                    primaryButtonAction: {
+                        onEnablePressed()
+                    },
+                    secondaryButtonTitle: "Cancel",
+                    secondaryButtonAction: {
+                        onCancelPressed()
+                    }
+                )
+            }
+        )
+    }
+    
+    // MARK: Alerts
+}
 
 @MainActor
 struct CoreBuilder {
@@ -53,7 +122,10 @@ struct CoreBuilder {
     func tabBarView() -> AnyView {
         TabBarView(tabs: [
             TabBarScreen(title: "Explore", systemImage: "eyes", screen: {
-                exploreView()
+                RouterView { router in
+                    exploreView(router: router)
+                }
+                .any()
             }),
             TabBarScreen(title: "Chats", systemImage: "bubble.left.and.bubble.right.fill", screen: {
                 chatsView()
@@ -82,23 +154,12 @@ struct CoreBuilder {
         .any()
     }
     
-    func exploreView() -> AnyView {
+    func exploreView(router: Router) -> AnyView {
         ExploreView(
             viewModel: ExploreViewModel(
-                interactor: interactor
-            ),
-            devSettingsView: {
-                devSettingsView()
-            },
-            createAccountView: {
-                createAccountView()
-            },
-            chatView: { delegate in
-                chatView(delegate: delegate)
-            },
-            categoryListView: { delegate in
-                categoryListView(delegate: delegate)
-            }
+                interactor: interactor,
+                router: CoreRouter(router: router, builder: self)
+            )
         )
         .any()
     }
