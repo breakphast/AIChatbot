@@ -21,17 +21,26 @@ protocol DevSettingsInteractor {
 extension CoreInteractor: DevSettingsInteractor { }
 
 @MainActor
+protocol DevSettingsRouter {
+    func dismissScreen()
+}
+
+extension CoreRouter: DevSettingsRouter { }
+
+@MainActor
 @Observable
 class DevSettingsViewModel {
     private let interactor: DevSettingsInteractor
+    private let router: DevSettingsRouter
     
     var createAccountTest: Bool = false
     var onboardingCommunityTest: Bool = false
     var categoryRowTest: CategoryRowTestOption = .default
     var paywallTest: PaywallTestOption = .default
     
-    init(interactor: DevSettingsInteractor) {
+    init(interactor: DevSettingsInteractor, router: CoreRouter) {
         self.interactor = interactor
+        self.router = router
     }
     
     var authData: [(key: String, value: Any)] {
@@ -114,7 +123,7 @@ class DevSettingsViewModel {
         }
     }
     
-    func onBackButtonPressed(onDismiss: @escaping () -> Void) {
-        onDismiss()
+    func onBackButtonPressed() {
+        router.dismissScreen()
     }
 }

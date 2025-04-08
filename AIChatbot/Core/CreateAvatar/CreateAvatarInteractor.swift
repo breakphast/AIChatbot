@@ -18,9 +18,18 @@ protocol CreateAvatarInteractor {
 extension CoreInteractor: CreateAvatarInteractor { }
 
 @MainActor
+protocol CreateAvatarRouter {
+    func dismissScreen()
+    func showAlert(error: Error)
+}
+
+extension CoreRouter: CreateAvatarRouter { }
+
+@MainActor
 @Observable
 class CreateAvatarViewModel {
     private let interactor: CreateAvatarInteractor
+    private let router: CreateAvatarRouter
     
     private(set) var isGenerating = false
     private(set) var generatedImage: UIImage?
@@ -30,10 +39,10 @@ class CreateAvatarViewModel {
     var characterAction: CharacterAction = .default
     var characterLocation: CharacterLocation = .default
     var avatarName: String = ""
-    var showAlert: AnyAppAlert?
     
-    init(interactor: CreateAvatarInteractor) {
+    init(interactor: CreateAvatarInteractor, router: CreateAvatarRouter) {
         self.interactor = interactor
+        self.router = router
     }
     
     func onGenerateImagePressed() {
@@ -60,7 +69,7 @@ class CreateAvatarViewModel {
         }
     }
     
-    func onSavePressed(onDismiss: @escaping () -> Void) {
+    func onSavePressed() {
         interactor.trackEvent(event: Event.saveAvatarStart)
         guard let generatedImage else { return }
         
@@ -82,9 +91,9 @@ class CreateAvatarViewModel {
                 try await interactor.createAvatar(avatar: avatar, image: generatedImage)
                 interactor.trackEvent(event: Event.saveAvatarSuccess(avatar: avatar))
                 
-                onDismiss()
+                router.dismissScreen()
             } catch {
-                showAlert = AnyAppAlert(error: error)
+                router.showAlert(error: error)
                 interactor.trackEvent(event: Event.saveAvatarFail(error: error))
             }
             
@@ -92,9 +101,9 @@ class CreateAvatarViewModel {
         }
     }
     
-    func onBackButtonPressed(onDismiss: () -> Void) {
+    func onBackButtonPressed() {
         interactor.trackEvent(event: Event.backButtonPressed)
-        onDismiss()
+        router.dismissScreen()
     }
     
     enum Event: LoggableEvent {

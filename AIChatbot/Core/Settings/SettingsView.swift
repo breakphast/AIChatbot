@@ -10,7 +10,6 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @State var viewModel: SettingsViewModel
-    @ViewBuilder var createAccountView: () -> AnyView
     
     var body: some View {
         NavigationStack {
@@ -22,44 +21,11 @@ struct SettingsView: View {
             .lineLimit(1)
             .minimumScaleFactor(0.4)
             .navigationTitle("Settings")
-            .showCustomAlert(alert: $viewModel.showAlert)
             .screenAppearAnalytics(name: "SettingsView")
-            .showModal(showModal: $viewModel.showRatingsModal) {
-                ratingsModal
-            }
-            .sheet(
-                isPresented: $viewModel.showCreateAccountView,
-                onDismiss: {
-                    viewModel.setAnonymousAccountStatus()
-                },
-                content: {
-                    createAccountView()
-                        .presentationDetents([.medium])
-                }
-            )
             .onAppear {
                 viewModel.setAnonymousAccountStatus()
             }
         }
-    }
-    
-    func dismissScreen() async {
-        dismiss()
-        try? await Task.sleep(for: .seconds(1))
-    }
-    
-    private var ratingsModal: some View {
-        CustomModalView(
-            title: "Are you enjoying AIChat?",
-            subtitle: "We'd love to hear your feedback!",
-            primaryButtonTitle: "Yes",
-            primaryButtonAction: {
-                viewModel.onEnjoyingAppYesPressed()
-            },
-            secondaryButtonTitle: "No",
-            secondaryButtonAction: {
-                viewModel.onEnjoyingAppNoPressed()
-            })
     }
     
     private var accountSection: some View {
@@ -75,9 +41,7 @@ struct SettingsView: View {
                 Text("Sign Out")
                     .rowFormatting()
                     .anyButton(.highlight) {
-                        viewModel.onSignOutPressed {
-                            await dismissScreen()
-                        }
+                        viewModel.onSignOutPressed()
                     }
                     .removeListRowFormatting()
             }
@@ -86,9 +50,7 @@ struct SettingsView: View {
                 .foregroundStyle(.red)
                 .rowFormatting()
                 .anyButton(.highlight) {
-                    viewModel.onDeleteAccountPressed {
-                        await dismissScreen()
-                    }
+                    viewModel.onDeleteAccountPressed()
                 }
                 .removeListRowFormatting()
         } header: {
@@ -112,9 +74,7 @@ struct SettingsView: View {
             }
             .rowFormatting()
             .anyButton(.highlight) {
-                viewModel.onSignOutPressed {
-                    await dismissScreen()
-                }
+                viewModel.onSignOutPressed()
             }
             .disabled(!isPremium)
             .removeListRowFormatting()
@@ -191,8 +151,10 @@ fileprivate extension View {
     container.register(UserManager.self, service: UserManager(services: MockUserServices(user: .mock)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return builder.settingsView()
-        .previewEnvironment()
+    return RouterView { router in
+        builder.settingsView(router: router)
+    }
+    .previewEnvironment()
 }
 
 #Preview("Anonymous") {
@@ -201,8 +163,10 @@ fileprivate extension View {
     container.register(UserManager.self, service: UserManager(services: MockUserServices(user: .mock)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return builder.settingsView()
-        .previewEnvironment()
+    return RouterView { router in
+        builder.settingsView(router: router)
+    }
+    .previewEnvironment()
 }
 
 #Preview("No auth") {
@@ -211,6 +175,8 @@ fileprivate extension View {
     container.register(UserManager.self, service: UserManager(services: MockUserServices(user: nil)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return builder.settingsView()
-        .previewEnvironment()
+    return RouterView { router in
+        builder.settingsView(router: router)
+    }
+    .previewEnvironment()
 }

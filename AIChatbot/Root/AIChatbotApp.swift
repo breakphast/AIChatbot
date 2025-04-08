@@ -54,7 +54,9 @@ struct AppViewForUITesting: View {
     
     var body: some View {
         if startOnAvatarScreen {
-            builder.createAvatarView()
+            RouterView { router in
+                builder.createAvatarView(router: router)
+            }
         } else {
             builder.appView()
         }

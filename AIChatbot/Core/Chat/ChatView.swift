@@ -13,9 +13,7 @@ struct ChatViewDelegate {
 }
 
 struct ChatView: View {
-    @Environment(\.dismiss) var dismiss
     @State var viewModel: ChatViewModel
-    @ViewBuilder var paywallView: () -> AnyView
     let delegate: ChatViewDelegate
     
     var body: some View {
@@ -23,7 +21,7 @@ struct ChatView: View {
             scrollViewSection
             textfieldSection
         }
-        .animation(.bouncy, value: viewModel.showProfileModal)
+//        .animation(.bouncy, value: viewModel.showProfileModal)
         .navigationTitle(viewModel.avatar?.name ?? "")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
@@ -36,24 +34,12 @@ struct ChatView: View {
                     Image(systemName: "ellipsis")
                         .padding()
                         .anyButton {
-                            viewModel.onChatSettingsPressed {
-                                dismiss()
-                            }
+                            viewModel.onChatSettingsPressed()
                         }
                 }
             }
         }
         .screenAppearAnalytics(name: "ChatView")
-        .showCustomAlert(type: .confirmationDialog, alert: $viewModel.showChatSettings)
-        .showCustomAlert(alert: $viewModel.showAlert)
-        .showModal(showModal: $viewModel.showProfileModal) {
-            if let avatar = viewModel.avatar {
-                profileModal(avatar: avatar)
-            }
-        }
-        .sheet(isPresented: $viewModel.showPaywall, content: {
-            paywallView()
-        })
         .task {
             await viewModel.loadAvatar(avatarID: delegate.avatarID)
         }
@@ -64,18 +50,6 @@ struct ChatView: View {
         .onFirstAppear {
             viewModel.onViewFirstAppear(chat: delegate.chat)
         }
-    }
-    
-    func profileModal(avatar: AvatarModel) -> some View {
-        ProfileModalView(
-            imageName: avatar.profileImageName,
-            title: avatar.name,
-            subtitle: avatar.characterOption?.rawValue.capitalized,
-            headline: avatar.characterDescription) {
-                viewModel.onProfileModalXMarkPressed()
-            }
-            .padding(40)
-            .transition(.slide)
     }
     
     func timestampView(date: Date) -> some View {
@@ -159,8 +133,8 @@ struct ChatView: View {
 #Preview("Working Chat") {
     let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
     
-    return NavigationStack {
-        builder.chatView()
+    return RouterView { router in
+        builder.chatView(router: router)
             .previewEnvironment()
     }
 }
@@ -168,8 +142,8 @@ struct ChatView: View {
 #Preview("Working Chat - Not Premium") {
     let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
     
-    return NavigationStack {
-        builder.chatView()
+    return RouterView { router in
+        builder.chatView(router: router)
             .previewEnvironment()
     }
 }
@@ -179,8 +153,8 @@ struct ChatView: View {
     container.register(PurchaseManager.self, service: PurchaseManager(service: MockPurchaseService(activeEntitlements: [.mock])))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return NavigationStack {
-        builder.chatView()
+    return RouterView { router in
+        builder.chatView(router: router)
             .previewEnvironment()
     }
 }
@@ -190,8 +164,8 @@ struct ChatView: View {
     container.register(AIManager.self, service: AIManager(service: MockAIService(delay: 10)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return NavigationStack {
-        builder.chatView()
+    return RouterView { router in
+        builder.chatView(router: router)
             .previewEnvironment()
     }
 }
@@ -202,8 +176,8 @@ struct ChatView: View {
     container.register(PurchaseManager.self, service: PurchaseManager(service: MockPurchaseService(activeEntitlements: [.mock])))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return NavigationStack {
-        builder.chatView()
+    return RouterView { router in
+        builder.chatView(router: router)
             .previewEnvironment()
     }
 }

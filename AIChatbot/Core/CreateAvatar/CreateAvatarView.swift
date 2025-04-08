@@ -8,26 +8,22 @@
 import SwiftUI
 
 struct CreateAvatarView: View {
-    @Environment(\.dismiss) private var dismiss
     @State var viewModel: CreateAvatarViewModel
 
     var body: some View {
-        NavigationStack {
-            List {
-                nameSection
-                attributesSection
-                imageSection
-                saveSection
-            }
-            .navigationTitle("Create Avatar")
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    backButton
-                }
-            }
-            .showCustomAlert(alert: $viewModel.showAlert)
-            .screenAppearAnalytics(name: "CreateAvatar")
+        List {
+            nameSection
+            attributesSection
+            imageSection
+            saveSection
         }
+        .navigationTitle("Create Avatar")
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                backButton
+            }
+        }
+        .screenAppearAnalytics(name: "CreateAvatar")
     }
     
     private var backButton: some View {
@@ -35,9 +31,7 @@ struct CreateAvatarView: View {
             .font(.title2)
             .fontWeight(.semibold)
             .anyButton(.plain) {
-                viewModel.onBackButtonPressed {
-                    dismiss()
-                }
+                viewModel.onBackButtonPressed()
             }
     }
     
@@ -82,12 +76,7 @@ struct CreateAvatarView: View {
             AsyncCallToActionButton(
                 isLoading: viewModel.isSaving,
                 text: "Save") {
-                    viewModel.onSavePressed(onDismiss: {
-                        dismiss()
-                    })
-//                    viewModel.onSavePressed {
-////                        dismiss()
-//                    }
+                    viewModel.onSavePressed()
                 }
                 .removeListRowFormatting()
                 .padding(.top, 24)
@@ -152,7 +141,9 @@ struct CreateAvatarView: View {
 }
 
 #Preview {
-    CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
-        .createAvatarView()
-        .previewEnvironment()
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+    RouterView { router in
+        builder.createAvatarView(router: router)
+    }
+    .previewEnvironment()
 }

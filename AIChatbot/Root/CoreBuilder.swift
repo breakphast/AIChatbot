@@ -9,6 +9,7 @@ import SwiftUI
 import CustomRouting
 
 typealias RouterView = CustomRouting.RouterView
+typealias AlertType = CustomRouting.AlertType
 
 @MainActor
 struct CoreRouter {
@@ -24,36 +25,43 @@ struct CoreRouter {
     }
     
     func showChatView(delegate: ChatViewDelegate) {
-        router.showScreen(.push) { _ in
-            builder.chatView(delegate: delegate)
+        router.showScreen(.push) { router in
+            builder.chatView(router: router, delegate: delegate)
         }
     }
     
     func showDevSettingsView() {
-        router.showScreen(.sheet) { _ in
-            builder.devSettingsView()
+        router.showScreen(.sheet) { router in
+            builder.devSettingsView(router: router)
         }
     }
     
     func showSettingsView() {
-        router.showScreen(.sheet) { _ in
-            builder.settingsView()
+        router.showScreen(.sheet) { router in
+            builder.settingsView(router: router)
         }
     }
     
-    func showCreateAccountView(delegate: CreateAccountDelegate) {
-        router.showScreen(.sheet) { _ in
-            builder.createAccountView(delegate: delegate)
+    func showPaywallView() {
+        router.showScreen(.sheet) { router in
+            builder.paywallView(router: router)
+        }
+    }
+    
+    func showCreateAccountView(delegate: CreateAccountDelegate, onDisappear: (() -> Void)?) {
+        router.showScreen(.sheet) { router in
+            builder.createAccountView(router: router, delegate: delegate)
                 .presentationDetents([.medium])
+                .onDisappear {
+                    onDisappear?()
+                }
         }
     }
     
     func showCreateAvatarView(onDisappear: @escaping () -> Void) {
-        router.showScreen(.fullScreenCover) { _ in
-            builder.createAvatarView()
-                .onDisappear {
-                    onDisappear()
-                }
+        router.showScreen(.fullScreenCover) { router in
+            builder.createAvatarView(router: router)
+                .onDisappear(perform: onDisappear)
         }
     }
     
@@ -112,9 +120,38 @@ struct CoreRouter {
         )
     }
     
+    func showProfileModal(avatar: AvatarModel, onXMarkPressed: @escaping () -> Void) {
+        router.showModal(backgroundColor: .black.opacity(0.6), transition: .slide) {
+            ProfileModalView(
+                imageName: avatar.profileImageName,
+                title: avatar.name,
+                subtitle: avatar.characterOption?.rawValue.capitalized,
+                headline: avatar.characterDescription) {
+                    onXMarkPressed()
+                }
+                .padding(40)
+        }
+    }
+    
+    func showRatingsModal(onYesPressed: @escaping () -> Void, onNoPressed: @escaping () -> Void) {
+        router.showModal(backgroundColor: .black.opacity(0.6), transition: .fade) {
+            CustomModalView(
+                title: "Are you enjoying AIChat?",
+                subtitle: "We'd love to hear your feedback!",
+                primaryButtonTitle: "Yes",
+                primaryButtonAction: {
+                    onYesPressed()
+                },
+                secondaryButtonTitle: "No",
+                secondaryButtonAction: {
+                    onNoPressed()
+                })
+        }
+    }
+    
     // MARK: Alerts
     
-    func showAlert(_ option: CustomRouting.AlertType, title: String, subtitle: String?, buttons: (@Sendable () -> AnyView)?) {
+    func showAlert(_ option: AlertType, title: String, subtitle: String?, buttons: (@Sendable () -> AnyView)?) {
         router.showAlert(option, title: title, subtitle: subtitle, buttons: buttons)
     }
     
@@ -186,19 +223,13 @@ struct CoreBuilder {
         .any()
     }
     
-    func createAccountView(delegate: CreateAccountDelegate = CreateAccountDelegate()) -> AnyView {
-        CreateAccountView(
-            viewModel: CreateAccountViewModel(interactor: interactor),
-            delegate: delegate
-        )
-        .any()
-    }
-    
-    func createAccountView() -> AnyView {
+    func createAccountView(router: Router, delegate: CreateAccountDelegate = CreateAccountDelegate()) -> AnyView {
         CreateAccountView(
             viewModel: CreateAccountViewModel(
-                interactor: interactor
-            )
+                interactor: interactor,
+                router: CoreRouter(router: router, builder: self)
+            ),
+            delegate: delegate
         )
         .any()
     }
@@ -224,32 +255,32 @@ struct CoreBuilder {
         .any()
     }
     
-    func devSettingsView() -> AnyView {
+    func devSettingsView(router: Router) -> AnyView {
         DevSettingsView(
             viewModel: DevSettingsViewModel(
-                interactor: interactor
+                interactor: interactor,
+                router: CoreRouter(router: router, builder: self)
             )
         )
         .any()
     }
     
-    func paywallView() -> AnyView {
+    func paywallView(router: Router) -> AnyView {
         PaywallView(
             viewModel: PaywallViewModel(
-                interactor: interactor
+                interactor: interactor,
+                router: CoreRouter(router: router, builder: self)
             )
         )
         .any()
     }
     
-    func chatView(delegate: ChatViewDelegate = ChatViewDelegate()) -> AnyView {
+    func chatView(router: Router, delegate: ChatViewDelegate = ChatViewDelegate()) -> AnyView {
         ChatView(
             viewModel: ChatViewModel(
-                interactor: interactor
+                interactor: interactor,
+                router: CoreRouter(router: router, builder: self)
             ),
-            paywallView: {
-                paywallView()
-            },
             delegate: delegate
         )
         .any()
@@ -268,10 +299,11 @@ struct CoreBuilder {
         .any()
     }
     
-    func createAvatarView() -> AnyView {
+    func createAvatarView(router: Router) -> AnyView {
         CreateAvatarView(
             viewModel: CreateAvatarViewModel(
-                interactor: interactor
+                interactor: interactor,
+                router: CoreRouter(router: router, builder: self)
             )
         )
         .any()
@@ -321,14 +353,12 @@ struct CoreBuilder {
         .any()
     }
     
-    func settingsView() -> AnyView {
+    func settingsView(router: Router) -> AnyView {
         SettingsView(
             viewModel: SettingsViewModel(
-                interactor: interactor
-            ),
-            createAccountView: {
-                createAccountView()
-            }
+                interactor: interactor,
+                router: CoreRouter(router: router, builder: self)
+            )
         )
         .any()
     }

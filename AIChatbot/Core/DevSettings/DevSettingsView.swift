@@ -8,28 +8,25 @@
 import SwiftUI
 
 struct DevSettingsView: View {
-    @Environment(\.dismiss) private var dismiss
     @State var viewModel: DevSettingsViewModel
     
     var body: some View {
-        NavigationStack {
-            List {
-                abTestSection
-                authSection
-                userSection
-                deviceSection
+        List {
+            abTestSection
+            authSection
+            userSection
+            deviceSection
+        }
+        .navigationTitle("Dev settings 🫨")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                backButtonView
             }
-            .navigationTitle("Dev settings 🫨")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    backButtonView
-                }
-            }
-            .screenAppearAnalytics(name: "DevSettings")
-            .onFirstAppear {
-                viewModel.loadABTests()
-            }
+        }
+        .screenAppearAnalytics(name: "DevSettings")
+        .onFirstAppear {
+            viewModel.loadABTests()
         }
     }
     
@@ -38,9 +35,7 @@ struct DevSettingsView: View {
             .font(.title2)
             .fontWeight(.black)
             .anyButton {
-                viewModel.onBackButtonPressed {
-                    dismiss()
-                }
+                viewModel.onBackButtonPressed()
             }
     }
     
@@ -121,7 +116,10 @@ struct DevSettingsView: View {
 }
 
 #Preview {
-    CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
-        .devSettingsView()
-        .previewEnvironment()
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+    
+    return RouterView { router in
+        builder.devSettingsView(router: router)
+    }
+    .previewEnvironment()
 }

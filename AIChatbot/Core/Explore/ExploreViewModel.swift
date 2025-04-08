@@ -29,7 +29,7 @@ protocol ExploreRouter {
     // Segues
     func showCategoryListView(delegate: CategoryListDelegate)
     func showChatView(delegate: ChatViewDelegate)
-    func showCreateAccountView(delegate: CreateAccountDelegate)
+    func showCreateAccountView(delegate: CreateAccountDelegate, onDisappear: (() -> Void)?)
     func showDevSettingsView()
     
     // Modals
@@ -106,7 +106,7 @@ class ExploreViewModel {
             else {
                 return
             }
-            router.showCreateAccountView(delegate: CreateAccountDelegate())
+            router.showCreateAccountView(delegate: CreateAccountDelegate(), onDisappear: nil)
         }
     }
     

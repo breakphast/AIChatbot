@@ -9,7 +9,6 @@ import SwiftUI
 import StoreKit
 
 struct PaywallView: View {
-    @Environment(\.dismiss) private var dismiss
     @State var viewModel: PaywallViewModel
     
     var body: some View {
@@ -22,19 +21,13 @@ struct PaywallView: View {
                     CustomPaywallView(
                         products: viewModel.products,
                         backButtonPressed: {
-                            viewModel.onBackButtonPressed {
-                                dismiss()
-                            }
+                            viewModel.onBackButtonPressed()
                         },
                         restorePurchasePressed: {
-                            viewModel.onRestorePurchasePressed {
-                                dismiss()
-                            }
+                            viewModel.onRestorePurchasePressed()
                         },
                         purchaseProductPressed: { product in
-                            viewModel.onPurchaseProductPressed(product: product) {
-                                dismiss()
-                            }
+                            viewModel.onPurchaseProductPressed(product: product)
                         }
                     )
                 }
@@ -48,15 +41,12 @@ struct PaywallView: View {
                     onInAppPurchaseCompletion: { (product, result) in
                         viewModel.onPurchaseComplete(
                             product: product,
-                            result: result) {
-                                dismiss()
-                            }
+                            result: result)
                     }
                 )
             }
         }
         .screenAppearAnalytics(name: "Paywall")
-        .showCustomAlert(alert: $viewModel.showAlert)
         .task {
             await viewModel.onLoadProducts()
         }
@@ -68,8 +58,10 @@ struct PaywallView: View {
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(paywallTest: .custom)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return builder.paywallView()
-        .previewEnvironment()
+    return RouterView { router in
+        builder.paywallView(router: router)
+    }
+    .previewEnvironment()
 }
 
 #Preview("RevenueCat") {
@@ -77,14 +69,18 @@ struct PaywallView: View {
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(paywallTest: .revenueCat)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return builder.paywallView()
-        .previewEnvironment()
+    return RouterView { router in
+        builder.paywallView(router: router)
+    }
+    .previewEnvironment()
 }
 #Preview("StoreKit") {
     let container = DevPreview.shared.container
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(paywallTest: .storeKit)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return builder.paywallView()
-        .previewEnvironment()
+    return RouterView { router in
+        builder.paywallView(router: router)
+    }
+    .previewEnvironment()
 }
