@@ -144,8 +144,8 @@ struct ChatView: View {
     
     return RouterView { router in
         builder.chatView(router: router)
-            .previewEnvironment()
     }
+    .previewEnvironment()
 }
 
 #Preview("Working Chat - Premium") {
@@ -155,29 +155,29 @@ struct ChatView: View {
     
     return RouterView { router in
         builder.chatView(router: router)
-            .previewEnvironment()
     }
+    .previewEnvironment()
 }
 
 #Preview("Slow AI Generation") {
     let container = DevPreview.shared.container
-    container.register(AIManager.self, service: AIManager(service: MockAIService(delay: 10)))
+    container.register(AIService.self, service: MockAIService(delay: 15, showError: true))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
     return RouterView { router in
         builder.chatView(router: router)
-            .previewEnvironment()
     }
+    .previewEnvironment()
 }
 
 #Preview("Failed AI Generation") {
     let container = DevPreview.shared.container
-    container.register(AIManager.self, service: AIManager(service: MockAIService(delay: 2, showError: true)))
+    container.register(AIService.self, service: MockAIService(delay: 2, showError: true))
     container.register(PurchaseManager.self, service: PurchaseManager(service: MockPurchaseService(activeEntitlements: [.mock])))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
     return RouterView { router in
         builder.chatView(router: router)
-            .previewEnvironment()
     }
+    .previewEnvironment()
 }

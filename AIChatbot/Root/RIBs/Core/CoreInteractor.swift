@@ -11,26 +11,35 @@ import SwiftUI
 struct CoreInteractor {
     private let authManager: AuthManager
     private let userManager: UserManager
-    private let avatarManager: AvatarManager
-    private let aiManager: AIManager
-    private let chatManager: ChatManager
     private let logManager: LogManager
-    private let pushManager: PushManager
     private let abTestManager: ABTestManager
     private let purchaseManager: PurchaseManager
     private let appState: AppState
     
+    private let aiManager: AIManager
+    private let avatarManager: AvatarManager
+    private let chatManager: ChatManager
+    private let pushManager: PushManager
+    
     init(container: DependencyContainer) {
         self.authManager = container.resolve(AuthManager.self)!
         self.userManager = container.resolve(UserManager.self)!
-        self.avatarManager = container.resolve(AvatarManager.self)!
-        self.aiManager = container.resolve(AIManager.self)!
-        self.chatManager = container.resolve(ChatManager.self)!
         self.logManager = container.resolve(LogManager.self)!
-        self.pushManager = container.resolve(PushManager.self)!
         self.abTestManager = container.resolve(ABTestManager.self)!
         self.purchaseManager = container.resolve(PurchaseManager.self)!
         self.appState = container.resolve(AppState.self)!
+        
+        let aiService = container.resolve(AIService.self)!
+        self.aiManager = AIManager(service: aiService)
+        
+        let localAvatarService = container.resolve(LocalAvatarPersistence.self)!
+        let remoteAvatarService = container.resolve(RemoteAvatarService.self)!
+        self.avatarManager = AvatarManager(service: remoteAvatarService, local: localAvatarService)
+        
+        let chatService = container.resolve(ChatService.self)!
+        self.chatManager = ChatManager(service: chatService)
+        
+        self.pushManager = PushManager(logManager: logManager)
     }
     
     // MARK: AppState

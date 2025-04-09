@@ -104,11 +104,9 @@ struct ChatsView<ChatRowCell: View>: View {
 
 #Preview("No data") {
     let container = DevPreview.shared.container
-    container.register(AvatarManager.self, service: AvatarManager(
-        service: MockAvatarService(avatars: []),
-        local: MockLocalAvatarPersistence(avatars: [])
-    ))
-    container.register(ChatManager.self, service: ChatManager(service: MockChatService(chats: [])))
+    container.register(RemoteAvatarService.self, service: MockAvatarService(avatars: []))
+    container.register(LocalAvatarPersistence.self, service: MockLocalAvatarPersistence(avatars: []))
+    container.register(ChatService.self, service: MockChatService(chats: []))
     let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
     
     return RouterView { router in
@@ -119,7 +117,7 @@ struct ChatsView<ChatRowCell: View>: View {
 
 #Preview("Slow loading chats") {
     let container = DevPreview.shared.container
-    container.register(ChatManager.self, service: ChatManager(service: MockChatService(delay: 5)))
+    container.register(ChatService.self, service: MockChatService(delay: 5))
     let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
     
     return RouterView { router in

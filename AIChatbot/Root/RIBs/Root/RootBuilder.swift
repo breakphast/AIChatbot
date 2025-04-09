@@ -10,8 +10,8 @@ import SwiftUI
 @MainActor
 struct RootBuilder: Builder {
     let interactor: RootInteractor
-    let loggedInRIB: any Builder
-    let loggedOutRIB: any Builder
+    let loggedInRIB: () -> any Builder
+    let loggedOutRIB: () -> any Builder
     
     func build() -> AnyView {
         appView().any()
@@ -23,9 +23,9 @@ struct RootBuilder: Builder {
                 interactor: interactor
             ),
             tabBarView: {
-                loggedInRIB.build()            },
+                loggedInRIB().build()            },
             onboardingView: {
-                loggedOutRIB.build()
+                loggedOutRIB().build()
             }
         )
     }

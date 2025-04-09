@@ -64,7 +64,7 @@ struct CategoryListView: View {
 
 #Preview("Has data") {
     let container = DevPreview.shared.container
-    container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService()))
+    container.register(RemoteAvatarService.self, service: MockAvatarService())
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     let delegate = CategoryListDelegate()
     
@@ -76,7 +76,7 @@ struct CategoryListView: View {
 
 #Preview("No data") {
     let container = DevPreview.shared.container
-    container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService(avatars: [])))
+    container.register(RemoteAvatarService.self, service: MockAvatarService(avatars: []))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     let delegate = CategoryListDelegate()
     
@@ -88,7 +88,7 @@ struct CategoryListView: View {
 
 #Preview("Slow loading") {
     let container = DevPreview.shared.container
-    container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService(delay: 8)))
+    container.register(RemoteAvatarService.self, service: MockAvatarService(delay: 8))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     let delegate = CategoryListDelegate()
     
@@ -100,7 +100,7 @@ struct CategoryListView: View {
 
 #Preview("Error loading") {
     let container = DevPreview.shared.container
-    container.register(AvatarManager.self, service: AvatarManager(service: MockAvatarService(delay: 4, showError: true)))
+    container.register(RemoteAvatarService.self, service: MockAvatarService(delay: 4, showError: true))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     let delegate = CategoryListDelegate()
     

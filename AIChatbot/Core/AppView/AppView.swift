@@ -9,8 +9,8 @@ import SwiftUI
 
 struct AppView<TabBarView: View, OnboardingView: View>: View {
     @State var presenter: AppPresenter
-    @ViewBuilder var tabBarView: () -> TabBarView
-    @ViewBuilder var onboardingView: () -> OnboardingView
+    var tabBarView: () -> TabBarView
+    var onboardingView: () -> OnboardingView
     
     var body: some View {
         RootView(
@@ -65,8 +65,12 @@ struct AppView<TabBarView: View, OnboardingView: View>: View {
     container.register(AppState.self, service: AppState(showTabBar: true))
     let builder = RootBuilder(
         interactor: RootInteractor(container: container),
-        loggedInRIB: CoreBuilder(interactor: CoreInteractor(container: container)),
-        loggedOutRIB: OnbBuilder(interactor: OnbInteractor(container: container))
+        loggedInRIB: {
+            CoreBuilder(interactor: CoreInteractor(container: container))
+        },
+        loggedOutRIB: {
+            OnbBuilder(interactor: OnbInteractor(container: container))
+        }
     )
     
     return builder.appView()
@@ -80,8 +84,12 @@ struct AppView<TabBarView: View, OnboardingView: View>: View {
     container.register(AppState.self, service: AppState(showTabBar: false))
     let builder = RootBuilder(
         interactor: RootInteractor(container: container),
-        loggedInRIB: CoreBuilder(interactor: CoreInteractor(container: container)),
-        loggedOutRIB: OnbBuilder(interactor: OnbInteractor(container: container))
+        loggedInRIB: {
+            CoreBuilder(interactor: CoreInteractor(container: container))
+        },
+        loggedOutRIB: {
+            OnbBuilder(interactor: OnbInteractor(container: container))
+        }
     )
     
     return builder.appView()
