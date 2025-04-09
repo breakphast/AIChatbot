@@ -73,7 +73,7 @@ struct OnboardingColorView: View {
 }
 
 #Preview {
-    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+    let builder = OnbBuilder(interactor: OnbInteractor(container: DevPreview.shared.container))
     RouterView { router in
         builder.onboardingColorView(router: router, delegate: OnboardingColorDelegate())
     }

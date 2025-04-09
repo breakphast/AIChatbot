@@ -13,4 +13,4 @@ protocol OnboardingIntroRouter {
     func showOnboardingColorView(delegate: OnboardingColorDelegate)
 }
 
-extension CoreRouter: OnboardingIntroRouter { }
+extension OnbRouter: OnboardingIntroRouter { }

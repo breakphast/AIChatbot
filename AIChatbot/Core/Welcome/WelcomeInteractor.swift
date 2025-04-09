@@ -13,4 +13,4 @@ protocol WelcomeInteractor {
     func updateAppState(showTabBar: Bool)
 }
 
-extension CoreInteractor: WelcomeInteractor { }
+extension OnbInteractor: WelcomeInteractor { }

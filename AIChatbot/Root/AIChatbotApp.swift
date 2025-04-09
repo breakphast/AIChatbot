@@ -51,7 +51,8 @@ struct AppViewForUITesting: View {
     private var rootBuilder: RootBuilder {
         RootBuilder(
             interactor: RootInteractor(container: container),
-            loggedInRIB: CoreBuilder(interactor: CoreInteractor(container: container))
+            loggedInRIB: CoreBuilder(interactor: CoreInteractor(container: container)),
+            loggedOutRIB: OnbBuilder(interactor: OnbInteractor(container: container))
         )
     }
     

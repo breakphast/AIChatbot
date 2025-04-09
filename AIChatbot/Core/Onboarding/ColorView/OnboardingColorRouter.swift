@@ -12,4 +12,4 @@ protocol OnboardingColorRouter {
     func showOnboardingCompletedView(delegate: OnboardingCompletedDelegate)
 }
 
-extension CoreRouter: OnboardingColorRouter { }
+extension OnbRouter: OnboardingColorRouter { }

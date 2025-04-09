@@ -8,6 +8,6 @@
 import SwiftUI
 
 @MainActor
-protocol Buildable {
+protocol Builder {
     func build() -> AnyView
 }

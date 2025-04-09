@@ -85,7 +85,7 @@ struct WelcomeView: View {
 }
 
 #Preview {
-    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+    let builder = OnbBuilder(interactor: OnbInteractor(container: DevPreview.shared.container))
     
     return builder.welcomeView()
         .previewEnvironment()

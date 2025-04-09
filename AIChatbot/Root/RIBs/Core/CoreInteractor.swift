@@ -57,10 +57,6 @@ struct CoreInteractor {
         userManager.currentUser
     }
     
-    func markOnboardingCompletedForCurrentUser(profileColorHex: String) async throws {
-        try await userManager.markOnboardingCompletedForCurrentUser(profileColorHex: profileColorHex)
-    }
-    
     // MARK: AIManager
     func generateImage(input: String) async throws -> UIImage {
         try await aiManager.generateImage(input: input)
@@ -263,9 +259,5 @@ struct CoreInteractor {
         try await authManager.deleteAccount()
         try await purchaseManager.logOut()
         logManager.deleteUserProfile()
-    }
-    
-    var onboardingCommunityTest: Bool {
-        abTestManager.activeTests.onboardingCommunityTest
     }
 }

@@ -12,4 +12,4 @@ protocol OnboardingColorInteractor {
     func trackEvent(event: LoggableEvent)
 }
 
-extension CoreInteractor: OnboardingColorInteractor { }
+extension OnbInteractor: OnboardingColorInteractor { }

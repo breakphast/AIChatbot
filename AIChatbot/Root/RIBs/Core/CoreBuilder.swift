@@ -13,22 +13,11 @@ typealias AlertType = CustomRouting.AlertType
 typealias Router = CustomRouting.Router
 
 @MainActor
-struct CoreBuilder: Buildable {
+struct CoreBuilder: Builder {
     let interactor: CoreInteractor
     
     func build() -> AnyView {
         tabBarView().any()
-    }
-    
-    func welcomeView() -> some View {
-        RouterView { router in
-            WelcomeView(
-                presenter: WelcomePresenter(
-                    interactor: interactor,
-                    router: CoreRouter(router: router, builder: self)
-                )
-            )
-        }
     }
     
     func tabBarView() -> some View {
@@ -129,46 +118,6 @@ struct CoreBuilder: Buildable {
                 interactor: interactor,
                 router: CoreRouter(router: router, builder: self)
             )
-        )
-    }
-    
-    func onboardingColorView(router: Router, delegate: OnboardingColorDelegate) -> some View {
-        OnboardingColorView(
-            presenter: OnboardingColorPresenter(
-                interactor: interactor,
-                router: CoreRouter(router: router, builder: self)
-            ),
-            delegate: delegate
-        )
-    }
-    
-    func onboardingCommunityView(router: Router, delegate: OnboardingCommunityDelegate) -> some View {
-        OnboardingCommunityView(
-            presenter: OnboardingCommunityPresenter(
-                interactor: interactor,
-                router: CoreRouter(router: router, builder: self)
-            ),
-            delegate: delegate
-        )
-    }
-    
-    func onboardingIntroView(router: Router, delegate: OnboardingIntroDelegate) -> some View {
-        OnboardingIntroView(
-            presenter: OnboardingIntroPresenter(
-                interactor: interactor,
-                router: CoreRouter(router: router, builder: self)
-            ),
-            delegate: delegate
-        )
-    }
-    
-    func onboardingCompletedView(router: Router, delegate: OnboardingCompletedDelegate) -> some View {
-        OnboardingCompletedView(
-            presenter: OnboardingCompletedPresenter(
-                interactor: interactor,
-                router: CoreRouter(router: router, builder: self)
-            ),
-            delegate: delegate
         )
     }
     

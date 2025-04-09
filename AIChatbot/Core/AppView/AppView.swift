@@ -65,7 +65,8 @@ struct AppView<TabBarView: View, OnboardingView: View>: View {
     container.register(AppState.self, service: AppState(showTabBar: true))
     let builder = RootBuilder(
         interactor: RootInteractor(container: container),
-        loggedInRIB: CoreBuilder(interactor: CoreInteractor(container: container))
+        loggedInRIB: CoreBuilder(interactor: CoreInteractor(container: container)),
+        loggedOutRIB: OnbBuilder(interactor: OnbInteractor(container: container))
     )
     
     return builder.appView()
@@ -79,7 +80,8 @@ struct AppView<TabBarView: View, OnboardingView: View>: View {
     container.register(AppState.self, service: AppState(showTabBar: false))
     let builder = RootBuilder(
         interactor: RootInteractor(container: container),
-        loggedInRIB: CoreBuilder(interactor: CoreInteractor(container: container))
+        loggedInRIB: CoreBuilder(interactor: CoreInteractor(container: container)),
+        loggedOutRIB: OnbBuilder(interactor: OnbInteractor(container: container))
     )
     
     return builder.appView()

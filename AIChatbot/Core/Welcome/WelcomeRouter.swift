@@ -13,4 +13,4 @@ protocol WelcomeRouter {
     func showOnboardingIntroView(delegate: OnboardingIntroDelegate)
 }
 
-extension CoreRouter: WelcomeRouter { }
+extension OnbRouter: WelcomeRouter { }

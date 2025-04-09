@@ -13,3 +13,4 @@ protocol CreateAccountRouter {
 }
 
 extension CoreRouter: CreateAccountRouter { }
+extension OnbRouter: CreateAccountRouter { }

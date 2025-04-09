@@ -68,30 +68,6 @@ struct CoreRouter: GlobalRouter {
         }
     }
     
-    func showOnboardingIntroView(delegate: OnboardingIntroDelegate) {
-        router.showScreen(.push) { router in
-            builder.onboardingIntroView(router: router, delegate: delegate)
-        }
-    }
-    
-    func showOnboardingCommunityView(delegate: OnboardingCommunityDelegate) {
-        router.showScreen(.push) { router in
-            builder.onboardingCommunityView(router: router, delegate: delegate)
-        }
-    }
-    
-    func showOnboardingColorView(delegate: OnboardingColorDelegate) {
-        router.showScreen(.push) { router in
-            builder.onboardingColorView(router: router, delegate: delegate)
-        }
-    }
-    
-    func showOnboardingCompletedView(delegate: OnboardingCompletedDelegate) {
-        router.showScreen(.push) { router in
-            builder.onboardingCompletedView(router: router, delegate: delegate)
-        }
-    }
-    
     // MARK: Modals
     
     func showPushNotificationModal(onEnablePressed: @escaping () -> Void, onCancelPressed: @escaping () -> Void) {

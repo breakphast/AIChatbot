@@ -15,3 +15,4 @@ protocol CreateAccountInteractor {
 }
 
 extension CoreInteractor: CreateAccountInteractor { }
+extension OnbInteractor: CreateAccountInteractor { }

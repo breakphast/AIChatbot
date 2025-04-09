@@ -14,4 +14,4 @@ protocol OnboardingCompletedRouter {
     func dismissAlert()
 }
 
-extension CoreRouter: OnboardingCompletedRouter { }
+extension OnbRouter: OnboardingCompletedRouter { }
