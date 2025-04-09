@@ -9,7 +9,7 @@ import SwiftUI
 import CustomRouting
 
 @MainActor
-struct CoreRouter {
+struct CoreRouter: GlobalRouter {
     let router: Router
     let builder: CoreBuilder
     
@@ -94,14 +94,6 @@ struct CoreRouter {
     
     // MARK: Modals
     
-    func dismissScreen() {
-        router.dismissScreen()
-    }
-    
-    func dismissModal() {
-        router.dismissModal()
-    }
-    
     func showPushNotificationModal(onEnablePressed: @escaping () -> Void, onCancelPressed: @escaping () -> Void) {
         router.showModal(
             backgroundColor: .black.opacity(0.8),
@@ -150,23 +142,5 @@ struct CoreRouter {
                     onNoPressed()
                 })
         }
-    }
-    
-    // MARK: Alerts
-    
-    func showAlert(_ option: AlertType, title: String, subtitle: String?, buttons: (@Sendable () -> AnyView)?) {
-        router.showAlert(option, title: title, subtitle: subtitle, buttons: buttons)
-    }
-    
-    func showSimpleAlert(title: String, subtitle: String?) {
-        router.showAlert(.alert, title: title, subtitle: subtitle, buttons: nil)
-    }
-    
-    func showAlert(error: Error) {
-        router.showAlert(.alert, title: "Error", subtitle: error.localizedDescription, buttons: nil)
-    }
-    
-    func dismissAlert() {
-        router.dismissAlert()
     }
 }

@@ -16,20 +16,6 @@ typealias Router = CustomRouting.Router
 struct CoreBuilder {
     let interactor: CoreInteractor
     
-    func appView() -> some View {
-        AppView(
-            presenter: AppPresenter(
-                interactor: interactor
-            ),
-            tabBarView: {
-                tabBarView()
-            },
-            onboardingView: {
-                welcomeView()
-            }
-        )
-    }
-    
     func welcomeView() -> some View {
         RouterView { router in
             WelcomeView(

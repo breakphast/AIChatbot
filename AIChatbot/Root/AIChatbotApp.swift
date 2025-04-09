@@ -35,9 +35,9 @@ struct AIChatCourseApp: App {
         WindowGroup {
             Group {
                 if Utilities.isUITesting {
-                    AppViewForUITesting(builder: delegate.builder)
+                    AppViewForUITesting(container: delegate.dependencies.container)
                 } else {
-                    delegate.builder.appView()
+                    delegate.builder.build()
                 }
             }
             .environment(delegate.dependencies.logManager)
@@ -46,7 +46,15 @@ struct AIChatCourseApp: App {
 }
 
 struct AppViewForUITesting: View {
-    var builder: CoreBuilder
+    var container: DependencyContainer
+    
+    private var rootBuilder: RootBuilder {
+        RootBuilder(interactor: RootInteractor(container: container))
+    }
+    
+    private var coreBuilder: CoreBuilder {
+        CoreBuilder(interactor: CoreInteractor(container: container))
+    }
     
     private var startOnAvatarScreen: Bool {
         ProcessInfo.processInfo.arguments.contains("STARTSCREEN_CREATEAVATAR")
@@ -55,10 +63,10 @@ struct AppViewForUITesting: View {
     var body: some View {
         if startOnAvatarScreen {
             RouterView { router in
-                builder.createAvatarView(router: router)
+                coreBuilder.createAvatarView(router: router)
             }
         } else {
-            builder.appView()
+            rootBuilder.build()
         }
     }
 }

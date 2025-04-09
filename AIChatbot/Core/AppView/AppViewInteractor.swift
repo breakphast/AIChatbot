@@ -18,4 +18,4 @@ protocol AppViewInteractor {
     func trackEvent(event: LoggableEvent)
 }
 
-extension CoreInteractor: AppViewInteractor { }
+extension RootInteractor: AppViewInteractor { }
