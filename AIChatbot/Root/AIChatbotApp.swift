@@ -49,7 +49,10 @@ struct AppViewForUITesting: View {
     var container: DependencyContainer
     
     private var rootBuilder: RootBuilder {
-        RootBuilder(interactor: RootInteractor(container: container))
+        RootBuilder(
+            interactor: RootInteractor(container: container),
+            loggedInRIB: CoreBuilder(interactor: CoreInteractor(container: container))
+        )
     }
     
     private var coreBuilder: CoreBuilder {

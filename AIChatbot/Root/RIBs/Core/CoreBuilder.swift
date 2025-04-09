@@ -13,8 +13,12 @@ typealias AlertType = CustomRouting.AlertType
 typealias Router = CustomRouting.Router
 
 @MainActor
-struct CoreBuilder {
+struct CoreBuilder: Buildable {
     let interactor: CoreInteractor
+    
+    func build() -> AnyView {
+        tabBarView().any()
+    }
     
     func welcomeView() -> some View {
         RouterView { router in

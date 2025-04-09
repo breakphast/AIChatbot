@@ -63,7 +63,10 @@ struct AppView<TabBarView: View, OnboardingView: View>: View {
 #Preview("AppView - TabBar") {
     let container = DevPreview.shared.container
     container.register(AppState.self, service: AppState(showTabBar: true))
-    let builder = RootBuilder(interactor: RootInteractor(container: container))
+    let builder = RootBuilder(
+        interactor: RootInteractor(container: container),
+        loggedInRIB: CoreBuilder(interactor: CoreInteractor(container: container))
+    )
     
     return builder.appView()
         .previewEnvironment()
@@ -74,7 +77,10 @@ struct AppView<TabBarView: View, OnboardingView: View>: View {
     container.register(AuthManager.self, service: AuthManager(service: MockAuthService(user: nil)))
     container.register(UserManager.self, service: UserManager(services: MockUserServices(user: nil)))
     container.register(AppState.self, service: AppState(showTabBar: false))
-    let builder = RootBuilder(interactor: RootInteractor(container: container))
+    let builder = RootBuilder(
+        interactor: RootInteractor(container: container),
+        loggedInRIB: CoreBuilder(interactor: CoreInteractor(container: container))
+    )
     
     return builder.appView()
         .previewEnvironment()

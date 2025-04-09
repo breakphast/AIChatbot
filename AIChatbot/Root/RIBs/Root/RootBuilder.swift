@@ -8,11 +8,12 @@
 import SwiftUI
 
 @MainActor
-struct RootBuilder {
+struct RootBuilder: Buildable {
     let interactor: RootInteractor
+    let loggedInRIB: CoreBuilder
     
-    func build() -> some View {
-        appView()
+    func build() -> AnyView {
+        appView().any()
     }
     
     func appView() -> some View {
@@ -21,8 +22,7 @@ struct RootBuilder {
                 interactor: interactor
             ),
             tabBarView: {
-                Text("Tabbar view")
-            },
+                loggedInRIB.build()            },
             onboardingView: {
                 Text("Welcome view")
             }
