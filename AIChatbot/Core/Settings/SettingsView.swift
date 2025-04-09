@@ -12,19 +12,17 @@ struct SettingsView: View {
     @State var presenter: SettingsPresenter
     
     var body: some View {
-        NavigationStack {
-            List {
-                accountSection
-                purchaseSection
-                applicationSection
-            }
-            .lineLimit(1)
-            .minimumScaleFactor(0.4)
-            .navigationTitle("Settings")
-            .screenAppearAnalytics(name: "SettingsView")
-            .onAppear {
-                presenter.setAnonymousAccountStatus()
-            }
+        List {
+            accountSection
+            purchaseSection
+            applicationSection
+        }
+        .lineLimit(1)
+        .minimumScaleFactor(0.4)
+        .navigationTitle("Settings")
+        .screenAppearAnalytics(name: "SettingsView")
+        .onAppear {
+            presenter.setAnonymousAccountStatus()
         }
     }
     
@@ -90,6 +88,14 @@ struct SettingsView: View {
                 .rowFormatting()
                 .anyButton(.highlight, action: {
                     presenter.onRatingButtonPressed()
+                })
+                .removeListRowFormatting()
+            
+            Text("About us...")
+                .foregroundStyle(.blue)
+                .rowFormatting()
+                .anyButton(.highlight, action: {
+                    presenter.onAboutUsPressed()
                 })
                 .removeListRowFormatting()
             

@@ -10,6 +10,7 @@ import CustomRouting
 
 typealias RouterView = CustomRouting.RouterView
 typealias AlertType = CustomRouting.AlertType
+typealias Router = CustomRouting.Router
 
 @MainActor
 struct CoreBuilder {
@@ -205,6 +206,16 @@ struct CoreBuilder {
         ChatRowCellViewBuilder(
             presenter: ChatRowCellPresenter(
                 interactor: interactor
+            ),
+            delegate: delegate
+        )
+    }
+    
+    func aboutView(router: Router, delegate: AboutDelegate) -> some View {
+        AboutView(
+            presenter: AboutPresenter(
+                interactor: interactor,
+                router: CoreRouter(router: router, builder: self)
             ),
             delegate: delegate
         )

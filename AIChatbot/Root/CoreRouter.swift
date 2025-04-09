@@ -39,6 +39,12 @@ struct CoreRouter {
         }
     }
     
+    func showAboutView(delegate: AboutDelegate) {
+        router.showScreen(.sheet) { router in
+            builder.aboutView(router: router, delegate: delegate)
+        }
+    }
+    
     func showPaywallView() {
         router.showScreen(.sheet) { router in
             builder.paywallView(router: router)

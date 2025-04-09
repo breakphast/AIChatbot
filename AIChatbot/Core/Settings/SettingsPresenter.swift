@@ -97,6 +97,10 @@ class SettingsPresenter {
         })
     }
     
+    func onAboutUsPressed() {
+        router.showAboutView(delegate: AboutDelegate())
+    }
+    
     func onContactUsPressed() {
         interactor.trackEvent(event: Event.contactUsPressed)
         let email = "hello@devsmond.com"
