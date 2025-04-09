@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CustomListCellView: View {
+    
     @Environment(\.colorScheme) private var colorScheme
     
     var imageName: String? = Constants.randomImage
@@ -50,11 +51,17 @@ struct CustomListCellView: View {
     ZStack {
         Color.gray.ignoresSafeArea()
         
-        VStack {
-            CustomListCellView()
-            CustomListCellView(imageName: nil)
-            CustomListCellView(title: nil)
-            CustomListCellView(subtitle: nil)
+        List {
+            ChatRowCellView()
+                .removeListRowFormatting()
+            ChatRowCellView(hasNewChat: false)
+                .removeListRowFormatting()
+            ChatRowCellView(imageName: nil)
+                .removeListRowFormatting()
+            ChatRowCellView(headline: nil, hasNewChat: false)
+                .removeListRowFormatting()
+            ChatRowCellView(subheadline: nil, hasNewChat: false)
+                .removeListRowFormatting()
         }
     }
 }

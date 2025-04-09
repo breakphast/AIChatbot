@@ -9,32 +9,25 @@ import SwiftUI
 import StoreKit
 
 struct PaywallView: View {
-    @Environment(\.dismiss) private var dismiss
-    @State var viewModel: PaywallViewModel
+    @State var presenter: PaywallPresenter
     
     var body: some View {
         ZStack {
-            switch viewModel.activeTests.paywallTest {
+            switch presenter.activeTests.paywallTest {
             case .custom:
-                if viewModel.products.isEmpty {
+                if presenter.products.isEmpty {
                     ProgressView()
                 } else {
                     CustomPaywallView(
-                        products: viewModel.products,
+                        products: presenter.products,
                         backButtonPressed: {
-                            viewModel.onBackButtonPressed {
-                                dismiss()
-                            }
+                            presenter.onBackButtonPressed()
                         },
                         restorePurchasePressed: {
-                            viewModel.onRestorePurchasePressed {
-                                dismiss()
-                            }
+                            presenter.onRestorePurchasePressed()
                         },
                         purchaseProductPressed: { product in
-                            viewModel.onPurchaseProductPressed(product: product) {
-                                dismiss()
-                            }
+                            presenter.onPurchaseProductPressed(product: product)
                         }
                     )
                 }
@@ -43,22 +36,19 @@ struct PaywallView: View {
             case .storeKit:
                 StoreKitPaywallView(
                     inAppPurchaseStart: { product in
-                        viewModel.onPurchaseStart(product: product)
+                        presenter.onPurchaseStart(product: product)
                     },
                     onInAppPurchaseCompletion: { (product, result) in
-                        viewModel.onPurchaseComplete(
+                        presenter.onPurchaseComplete(
                             product: product,
-                            result: result) {
-                                dismiss()
-                            }
+                            result: result)
                     }
                 )
             }
         }
         .screenAppearAnalytics(name: "Paywall")
-        .showCustomAlert(alert: $viewModel.showAlert)
         .task {
-            await viewModel.onLoadProducts()
+            await presenter.onLoadProducts()
         }
     }
 }
@@ -66,22 +56,31 @@ struct PaywallView: View {
 #Preview("Custom") {
     let container = DevPreview.shared.container
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(paywallTest: .custom)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return PaywallView(viewModel: PaywallViewModel(interactor: CoreInteractor(container: container)))
-        .previewEnvironment()
+    return RouterView { router in
+        builder.paywallView(router: router)
+    }
+    .previewEnvironment()
 }
 
 #Preview("RevenueCat") {
     let container = DevPreview.shared.container
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(paywallTest: .revenueCat)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return PaywallView(viewModel: PaywallViewModel(interactor: CoreInteractor(container: container)))
-        .previewEnvironment()
+    return RouterView { router in
+        builder.paywallView(router: router)
+    }
+    .previewEnvironment()
 }
 #Preview("StoreKit") {
     let container = DevPreview.shared.container
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(paywallTest: .storeKit)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return PaywallView(viewModel: PaywallViewModel(interactor: CoreInteractor(container: container)))
-        .previewEnvironment()
+    return RouterView { router in
+        builder.paywallView(router: router)
+    }
+    .previewEnvironment()
 }

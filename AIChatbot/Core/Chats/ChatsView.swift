@@ -7,39 +7,36 @@
 
 import SwiftUI
 
-struct ChatsView: View {
-    @Environment(DependencyContainer.self) private var container
-    @State var viewModel: ChatsViewModel
+struct ChatsView<ChatRowCell: View>: View {
+    @State var presenter: ChatsPresenter
+    @ViewBuilder var chatRowCell: (ChatRowCellDelegate) -> ChatRowCell
     
     var body: some View {
-        NavigationStack(path: $viewModel.path) {
-            List {
-                if !viewModel.recentAvatars.isEmpty {
-                    recentsSection
-                }
-                chatsSection
+        List {
+            if !presenter.recentAvatars.isEmpty {
+                recentsSection
             }
-            .navigationTitle("Chats")
-            .navigationDestinationForCoreModule(path: $viewModel.path)
-            .screenAppearAnalytics(name: "ChatsView")
-            .onAppear {
-                viewModel.loadRecentAvatars()
-            }
-            .task {
-                await viewModel.loadChats()
-            }
+            chatsSection
+        }
+        .navigationTitle("Chats")
+        .screenAppearAnalytics(name: "ChatsView")
+        .onAppear {
+            presenter.loadRecentAvatars()
+        }
+        .task {
+            await presenter.loadChats()
         }
     }
     
     private var chatsSection: some View {
         Section {
-            if viewModel.isLoadingChats {
+            if presenter.isLoadingChats {
                 ProgressView()
                     .padding(40)
                     .frame(maxWidth: .infinity)
                     .removeListRowFormatting()
             } else {
-                if viewModel.chats.isEmpty {
+                if presenter.chats.isEmpty {
                     Text("Your chats will appear here!")
                         .foregroundStyle(.secondary)
                         .font(.title3)
@@ -48,22 +45,17 @@ struct ChatsView: View {
                         .padding(40)
                         .removeListRowFormatting()
                 } else {
-                    ForEach(viewModel.chats) { chat in
-                        ChatRowCellViewBuilder(
-                            viewModel: ChatRowCellViewModel(
-                                interactor: CoreInteractor(container: container)
-                            ),
-                            chat: chat
-                        )
-                        .anyButton(.highlight, action: {
-                            viewModel.onChatPressed(chat: chat)
-                        })
-                        .removeListRowFormatting()
+                    ForEach(presenter.chats) { chat in
+                        chatRowCell(ChatRowCellDelegate(chat: chat))
+                            .anyButton(.highlight, action: {
+                                presenter.onChatPressed(chat: chat)
+                            })
+                            .removeListRowFormatting()
                     }
                 }
             }
         } header: {
-            Text(viewModel.chats.isEmpty ? "" : "Chats")
+            Text(presenter.chats.isEmpty ? "" : "Chats")
         }
     }
     
@@ -71,7 +63,7 @@ struct ChatsView: View {
         Section {
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 8) {
-                    ForEach(viewModel.recentAvatars, id: \.self) { avatar in
+                    ForEach(presenter.recentAvatars, id: \.self) { avatar in
                         if let imageName = avatar.profileImageName {
                             VStack(spacing: 8) {
                                 ImageLoaderView(urlString: imageName)
@@ -85,7 +77,7 @@ struct ChatsView: View {
                                     .lineLimit(1)
                             }
                             .anyButton {
-                                viewModel.onAvatarPressed(avatar: avatar)
+                                presenter.onAvatarPressed(avatar: avatar)
                             }
                         }
                     }
@@ -102,25 +94,34 @@ struct ChatsView: View {
 }
 
 #Preview("Has data") {
-    ChatsView(viewModel: ChatsViewModel(interactor: CoreInteractor(container: DevPreview.shared.container)))
-        .previewEnvironment()
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+    
+    return RouterView { router in
+        builder.chatsView(router: router)
+    }
+    .previewEnvironment()
 }
 
 #Preview("No data") {
     let container = DevPreview.shared.container
-    container.register(AvatarManager.self, service: AvatarManager(
-        service: MockAvatarService(avatars: []),
-        local: MockLocalAvatarPersistence(avatars: [])
-    ))
+    container.register(RemoteAvatarService.self, service: MockAvatarService(avatars: []))
+    container.register(LocalAvatarPersistence.self, service: MockLocalAvatarPersistence(avatars: []))
+    container.register(ChatService.self, service: MockChatService(chats: []))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
     
-    return ChatsView(viewModel: ChatsViewModel(interactor: CoreInteractor(container: container)))
-        .previewEnvironment()
+    return RouterView { router in
+        builder.chatsView(router: router)
+    }
+    .previewEnvironment()
 }
 
 #Preview("Slow loading chats") {
     let container = DevPreview.shared.container
-    container.register(ChatManager.self, service: ChatManager(service: MockChatService(delay: 5)))
+    container.register(ChatService.self, service: MockChatService(delay: 5))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
     
-    return ChatsView(viewModel: ChatsViewModel(interactor: CoreInteractor(container: container)))
-        .previewEnvironment()
+    return RouterView { router in
+        builder.chatsView(router: router)
+    }
+    .previewEnvironment()
 }

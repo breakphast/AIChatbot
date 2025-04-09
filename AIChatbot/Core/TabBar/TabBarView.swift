@@ -7,31 +7,48 @@
 
 import SwiftUI
 
+struct TabBarScreen: Identifiable {
+    var id: String {
+        title
+    }
+    let title: String
+    let systemImage: String
+    @ViewBuilder var screen: () -> AnyView
+}
+
 struct TabBarView: View {
-    @Environment(DependencyContainer.self) private var container
+    var tabs: [TabBarScreen] = []
     
     var body: some View {
         TabView {
-            ExploreView(viewModel: ExploreViewModel(interactor: CoreInteractor(container: container)))
-                .tabItem {
-                    Label("Explore", systemImage: "eyes")
-                }
-            
-            ChatsView(viewModel: ChatsViewModel(interactor: CoreInteractor(container: container)))
-                .tabItem {
-                    Label("Chats", systemImage: "bubble.left.and.bubble.right.fill")
-                }
-            
-            ProfileView(
-                viewModel: ProfileViewModel(interactor: CoreInteractor(container: container))
-            )
-            .tabItem {
-                Label("Profile", systemImage: "person.fill")
+            ForEach(tabs) { tab in
+                tab.screen()
+                    .tabItem {
+                        Label(tab.title, systemImage: tab.systemImage)
+                    }
             }
         }
     }
 }
 
-#Preview {
-    TabBarView()
+#Preview("Fake Tabs") {
+    TabBarView(tabs: [
+        TabBarScreen(title: "Explore", systemImage: "eyes", screen: {
+            Color.red.any()
+        }),
+        TabBarScreen(title: "Chats", systemImage: "bubble.left.and.bubble.right.fill", screen: {
+            Color.green.any()
+        }),
+        TabBarScreen(title: "Profile", systemImage: "person.fill", screen: {
+            Color.blue.any()
+        })
+    ])
+    .previewEnvironment()
+}
+
+#Preview("Real Tabs") {
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+    
+    return builder.tabBarView()
+        .previewEnvironment()
 }

@@ -8,28 +8,25 @@
 import SwiftUI
 
 struct DevSettingsView: View {
-    @Environment(\.dismiss) private var dismiss
-    @State var viewModel: DevSettingsViewModel
+    @State var presenter: DevSettingsPresenter
     
     var body: some View {
-        NavigationStack {
-            List {
-                abTestSection
-                authSection
-                userSection
-                deviceSection
+        List {
+            abTestSection
+            authSection
+            userSection
+            deviceSection
+        }
+        .navigationTitle("Dev settings 🫨")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                backButtonView
             }
-            .navigationTitle("Dev settings 🫨")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    backButtonView
-                }
-            }
-            .screenAppearAnalytics(name: "DevSettings")
-            .onFirstAppear {
-                viewModel.loadABTests()
-            }
+        }
+        .screenAppearAnalytics(name: "DevSettings")
+        .onFirstAppear {
+            presenter.loadABTests()
         }
     }
     
@@ -38,35 +35,33 @@ struct DevSettingsView: View {
             .font(.title2)
             .fontWeight(.black)
             .anyButton {
-                viewModel.onBackButtonPressed {
-                    dismiss()
-                }
+                presenter.onBackButtonPressed()
             }
     }
     
     private var abTestSection: some View {
         Section {
-            Toggle("Create Account Test", isOn: $viewModel.createAccountTest)
-                .onChange(of: viewModel.createAccountTest, viewModel.handleCreateAccountChange)
+            Toggle("Create Account Test", isOn: $presenter.createAccountTest)
+                .onChange(of: presenter.createAccountTest, presenter.handleCreateAccountChange)
             
-            Toggle("Onb Community Test", isOn: $viewModel.onboardingCommunityTest)
-                .onChange(of: viewModel.onboardingCommunityTest, viewModel.handleOnbCommunityTestChange)
+            Toggle("Onb Community Test", isOn: $presenter.onboardingCommunityTest)
+                .onChange(of: presenter.onboardingCommunityTest, presenter.handleOnbCommunityTestChange)
             
-            Picker("Category Row Test", selection: $viewModel.categoryRowTest) {
+            Picker("Category Row Test", selection: $presenter.categoryRowTest) {
                 ForEach(CategoryRowTestOption.allCases, id: \.self) { option in
                     Text(option.rawValue)
                         .id(option)
                 }
             }
-            .onChange(of: viewModel.categoryRowTest, viewModel.onCategoryRowOptionChanged)
+            .onChange(of: presenter.categoryRowTest, presenter.onCategoryRowOptionChanged)
             
-            Picker("Paywall Test", selection: $viewModel.paywallTest) {
+            Picker("Paywall Test", selection: $presenter.paywallTest) {
                 ForEach(PaywallTestOption.allCases, id: \.self) { option in
                     Text(option.rawValue)
                         .id(option)
                 }
             }
-            .onChange(of: viewModel.paywallTest, viewModel.onPaywallOptionChanged)
+            .onChange(of: presenter.paywallTest, presenter.onPaywallOptionChanged)
         } header: {
             Text("AB Tests")
         }
@@ -75,7 +70,7 @@ struct DevSettingsView: View {
     
     private var authSection: some View {
         Section {
-            ForEach(viewModel.authData, id: \.key) { item in
+            ForEach(presenter.authData, id: \.key) { item in
                 itemRow(item: item)
             }
         } header: {
@@ -85,7 +80,7 @@ struct DevSettingsView: View {
     
     private var userSection: some View {
         Section {
-            ForEach(viewModel.userData, id: \.key) { item in
+            ForEach(presenter.userData, id: \.key) { item in
                 itemRow(item: item)
             }
         } header: {
@@ -95,7 +90,7 @@ struct DevSettingsView: View {
     
     private var deviceSection: some View {
         Section {
-            ForEach(viewModel.deviceData, id: \.key) { item in
+            ForEach(presenter.deviceData, id: \.key) { item in
                 itemRow(item: item)
             }
         } header: {
@@ -121,6 +116,10 @@ struct DevSettingsView: View {
 }
 
 #Preview {
-    DevSettingsView(viewModel: DevSettingsViewModel(interactor: CoreInteractor(container: DevPreview.shared.container)))
-        .previewEnvironment()
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+    
+    return RouterView { router in
+        builder.devSettingsView(router: router)
+    }
+    .previewEnvironment()
 }

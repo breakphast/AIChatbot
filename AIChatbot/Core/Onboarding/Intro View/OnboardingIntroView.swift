@@ -7,41 +7,41 @@
 
 import SwiftUI
 
+struct OnboardingIntroDelegate {
+    
+}
+
 struct OnboardingIntroView: View {
-    @Environment(DependencyContainer.self) private var container
-    @State var viewModel: OnboardingIntroViewModel
-    @Binding var path: [OnboardingPathOption]
+    @State var presenter: OnboardingIntroPresenter
+    let delegate: OnboardingIntroDelegate
     
     var body: some View {
-        NavigationStack(path: $path) {
-            VStack {
-                Group {
-                    Text("Make your own ")
-                    +
-                    Text("Avatars ")
-                        .foregroundStyle(.accent)
-                        .fontWeight(.semibold)
-                    +
-                    Text("and chat with them!\n\nHave ")
-                    +
-                    Text("real conversations")
-                        .foregroundStyle(.accent)
-                        .fontWeight(.semibold)
-                    +
-                    Text("with AI generated responses.")
-                }
-                .baselineOffset(6)
-                .minimumScaleFactor(0.5)
-                .frame(maxHeight: .infinity)
-                .padding(24)
-                
-                ctaButton
+        VStack {
+            Group {
+                Text("Make your own ")
+                +
+                Text("Avatars ")
+                    .foregroundStyle(.accent)
+                    .fontWeight(.semibold)
+                +
+                Text("and chat with them!\n\nHave ")
+                +
+                Text("real conversations")
+                    .foregroundStyle(.accent)
+                    .fontWeight(.semibold)
+                +
+                Text("with AI generated responses.")
             }
-            .font(.title3)
-            .toolbar(.hidden, for: .navigationBar)
-            .screenAppearAnalytics(name: "OnboardingIntroView")
-            .navigationDestinationForOnboarding(path: $path)
+            .baselineOffset(6)
+            .minimumScaleFactor(0.5)
+            .frame(maxHeight: .infinity)
+            .padding(24)
+            
+            ctaButton
         }
+        .font(.title3)
+        .toolbar(.hidden, for: .navigationBar)
+        .screenAppearAnalytics(name: "OnboardingIntroView")
     }
     
     private var ctaButton: some View {
@@ -51,23 +51,16 @@ struct OnboardingIntroView: View {
                 .padding(24)
                 .font(.title3)
                 .anyButton {
-                    viewModel.onContinueButtonPressed(path: $path)
+                    presenter.onContinueButtonPressed()
                 }
-                .accessibilityIdentifier("ContinueButton")
         }
     }
 }
 
 #Preview("Original") {
-    NavigationStack {
-        OnboardingIntroView(
-            viewModel: OnboardingIntroViewModel(
-                interactor: CoreInteractor(
-                    container: DevPreview.shared.container
-                )
-            ),
-            path: .constant([])
-        )
+    let builder = OnbBuilder(interactor: OnbInteractor(container: DevPreview.shared.container))
+    RouterView { router in
+        builder.onboardingIntroView(router: router, delegate: OnboardingIntroDelegate())
     }
     .previewEnvironment()
 }
@@ -75,16 +68,10 @@ struct OnboardingIntroView: View {
 #Preview("Onboarding Community Test") {
     let container = DevPreview.shared.container
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(onboardingCommunityTest: true)))
-            
-    return NavigationStack {
-        OnboardingIntroView(
-            viewModel: OnboardingIntroViewModel(
-                interactor: CoreInteractor(
-                    container: container
-                )
-            ),
-            path: .constant([])
-        )
+    let builder = OnbBuilder(interactor: OnbInteractor(container: DevPreview.shared.container))
+    
+    return RouterView { router in
+        builder.onboardingIntroView(router: router, delegate: OnboardingIntroDelegate())
     }
     .previewEnvironment()
 }

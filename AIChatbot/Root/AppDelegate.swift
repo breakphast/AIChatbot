@@ -10,6 +10,7 @@ import Firebase
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     var dependencies: Dependencies!
+    var builder: RootBuilder!
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         
@@ -30,6 +31,15 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         config.configure()
         dependencies = Dependencies(config: config)
+        builder = RootBuilder(
+            interactor: RootInteractor(container: dependencies.container),
+            loggedInRIB: {
+                CoreBuilder(interactor: CoreInteractor(container: self.dependencies.container))
+            },
+            loggedOutRIB: {
+                OnbBuilder(interactor: OnbInteractor(container: self.dependencies.container))
+            }
+        )
         return true
     }
 }

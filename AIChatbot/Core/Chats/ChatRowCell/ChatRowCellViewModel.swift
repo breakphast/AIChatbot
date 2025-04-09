@@ -19,7 +19,7 @@ extension CoreInteractor: ChatRowCellInteractor { }
 
 @MainActor
 @Observable
-class ChatRowCellViewModel {
+class ChatRowCellPresenter {
     private let interactor: ChatRowCellInteractor
     
     private(set) var avatar: AvatarModel?

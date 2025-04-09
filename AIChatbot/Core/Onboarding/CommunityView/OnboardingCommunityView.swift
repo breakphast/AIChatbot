@@ -7,41 +7,41 @@
 
 import SwiftUI
 
+struct OnboardingCommunityDelegate {
+    
+}
+
 struct OnboardingCommunityView: View {
-    @Environment(DependencyContainer.self) private var container
-    @State var viewModel: OnboardingCommunityViewModel
-    @Binding var path: [OnboardingPathOption]
+    @State var presenter: OnboardingCommunityPresenter
+    let delegate: OnboardingCommunityDelegate
     
     var body: some View {
-        NavigationStack(path: $path) {
-            VStack {
-                VStack(spacing: 40) {
-                    ImageLoaderView()
-                        .frame(width: 150, height: 150)
-                        .clipShape(Circle())
-                    Group {
-                        Text("Join our community with over ")
-                        +
-                        Text("1000+ ")
-                            .foregroundStyle(.accent)
-                            .fontWeight(.semibold)
-                        +
-                        Text("custom avatars!\nAsk them questions of have a casual conversation!")
-                    }
-                    .baselineOffset(6)
-                    .minimumScaleFactor(0.5)
-                    .padding(24)
+        VStack {
+            VStack(spacing: 40) {
+                ImageLoaderView()
+                    .frame(width: 150, height: 150)
+                    .clipShape(Circle())
+                Group {
+                    Text("Join our community with over ")
+                    +
+                    Text("1000+ ")
+                        .foregroundStyle(.accent)
+                        .fontWeight(.semibold)
+                    +
+                    Text("custom avatars!\nAsk them questions of have a casual conversation!")
                 }
-                .frame(maxHeight: .infinity)
-                
-                ctaButton
+                .baselineOffset(6)
+                .minimumScaleFactor(0.5)
+                .padding(24)
             }
-            .padding(24)
-            .font(.title3)
-            .toolbar(.hidden, for: .navigationBar)
-            .screenAppearAnalytics(name: "OnboardingCommunityView")
-            .navigationDestinationForOnboarding(path: $path)
+            .frame(maxHeight: .infinity)
+            
+            ctaButton
         }
+        .padding(24)
+        .font(.title3)
+        .toolbar(.hidden, for: .navigationBar)
+        .screenAppearAnalytics(name: "OnboardingCommunityView")
     }
     
     private var ctaButton: some View {
@@ -49,15 +49,16 @@ struct OnboardingCommunityView: View {
             .callToActionButton()
             .font(.title3)
             .anyButton {
-                viewModel.onContinueButtonPressed(path: $path)
+                presenter.onContinueButtonPressed()
             }
             .accessibilityIdentifier("OnboardingCommunityContinueButton")
     }
 }
 
 #Preview {
-    NavigationStack {
-        OnboardingCommunityView(viewModel: OnboardingCommunityViewModel(interactor: CoreInteractor(container: DevPreview.shared.container)), path: .constant([]))
+    let builder = OnbBuilder(interactor: OnbInteractor(container: DevPreview.shared.container))
+    RouterView { router in
+        builder.onboardingCommunityView(router: router, delegate: OnboardingCommunityDelegate())
     }
     .previewEnvironment()
 }

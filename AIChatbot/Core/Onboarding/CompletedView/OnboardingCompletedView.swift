@@ -7,16 +7,20 @@
 
 import SwiftUI
 
-struct OnboardingCompletedView: View {
-    @State var viewModel: OnboardingCompletedViewModel
+struct OnboardingCompletedDelegate {
     var selectedColor: Color = .orange
+}
+
+struct OnboardingCompletedView: View {
+    @State var presenter: OnboardingCompletedPresenter
+    var delegate: OnboardingCompletedDelegate = OnboardingCompletedDelegate()
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Setup complete!")
                 .font(.largeTitle)
                 .fontWeight(.semibold)
-                .foregroundStyle(selectedColor)
+                .foregroundStyle(delegate.selectedColor)
             Text("We've setup your profile and you're ready to start chatting.")
                 .font(.title)
                 .fontWeight(.medium)
@@ -25,10 +29,10 @@ struct OnboardingCompletedView: View {
         .frame(maxHeight: .infinity)
         .safeAreaInset(edge: .bottom, content: {
             AsyncCallToActionButton(
-                isLoading: viewModel.isCompletingProfileSetup,
+                isLoading: presenter.isCompletingProfileSetup,
                 text: "Finish",
                 action: {
-                    viewModel.onFinishButtonPressed(selectedColor: selectedColor)
+                    presenter.onFinishButtonPressed(selectedColor: delegate.selectedColor)
                 }
             )
             .accessibilityIdentifier("FinishButton")
@@ -36,14 +40,14 @@ struct OnboardingCompletedView: View {
         .padding(24)
         .toolbar(.hidden, for: .navigationBar)
         .screenAppearAnalytics(name: "OnboardingCompletedView")
-        .showCustomAlert(alert: $viewModel.showAlert)
     }
 }
 
 #Preview {
-    OnboardingCompletedView(
-        viewModel: OnboardingCompletedViewModel(interactor: CoreInteractor(container: DevPreview.shared.container)),
-        selectedColor: .mint
-    )
+    let builder = OnbBuilder(interactor: OnbInteractor(container: DevPreview.shared.container))
+    
+    return RouterView { router in
+        builder.onboardingCompletedView(router: router, delegate: OnboardingCompletedDelegate())
+    }
     .previewEnvironment()
 }

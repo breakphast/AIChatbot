@@ -15,13 +15,8 @@ struct CreateAccountDelegate {
 }
 
 struct CreateAccountView: View {
-    @Environment(\.dismiss) private var dismiss
-    @State var viewModel: CreateAccountViewModel
+    @State var presenter: CreateAccountPresenter
     var delegate: CreateAccountDelegate = CreateAccountDelegate()
-    
-    var title: String = "Create Account?"
-    var subtitle: String = "Don't lose your data! Connect to an SSO provider to save your account."
-    var onDidSignIn: ((_ isNewUser: Bool) -> Void)?
     
     var body: some View {
         VStack(spacing: 24) {
@@ -45,10 +40,7 @@ struct CreateAccountView: View {
             .frame(height: 55)
             .frame(maxWidth: 400)
             .anyButton(.press) {
-                viewModel.onSignInApplePressed { isNewUser in
-                    delegate.onDidSignIn?(isNewUser)
-                    dismiss()
-                }
+                presenter.onSignInApplePressed(delegate: delegate)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
@@ -61,8 +53,12 @@ struct CreateAccountView: View {
 }
 
 #Preview {
-    CreateAccountView(viewModel: CreateAccountViewModel(interactor: CoreInteractor(container: DevPreview.shared.container)))
-        .previewEnvironment()
-        .frame(maxHeight: 400)
-        .frame(maxHeight: .infinity, alignment: .bottom)
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+    
+    return RouterView { router in
+        builder.createAccountView(router: router)
+    }
+    .previewEnvironment()
+    .frame(maxHeight: 400)
+    .frame(maxHeight: .infinity, alignment: .bottom)
 }

@@ -7,11 +7,10 @@
 
 import SwiftUI
 
-struct AppView: View {
-    @Environment(DependencyContainer.self) private var container
-    @Environment(\.scenePhase) private var scenePhase
-    
-    @State var viewModel: AppViewModel
+struct AppView<TabBarView: View, OnboardingView: View>: View {
+    @State var presenter: AppPresenter
+    var tabBarView: () -> TabBarView
+    var onboardingView: () -> OnboardingView
     
     var body: some View {
         RootView(
@@ -19,7 +18,7 @@ struct AppView: View {
                 onApplicationDidAppear: nil,
                 onApplicationWillEnterForeground: { _ in
                     Task {
-                        await viewModel.checkUserStatus()
+                        await presenter.checkUserStatus()
                     }
                 },
                 onApplicationDidBecomeActive: nil,
@@ -29,34 +28,30 @@ struct AppView: View {
             ),
             content: {
                 AppViewBuilder(
-                    showTabBar: viewModel.showTabBar,
+                    showTabBar: presenter.showTabBar,
                     tabBarView: {
-                        TabBarView()
+                        tabBarView()
                     },
                     onboardingView: {
-                        WelcomeView(
-                            viewModel: WelcomeViewModel(
-                                interactor: CoreInteractor(container: container)
-                            )
-                        )
+                        onboardingView()
                     }
                 )
                 .task {
-                    await viewModel.checkUserStatus()
+                    await presenter.checkUserStatus()
                 }
                 .onNotificationReceived(name: UIApplication.willEnterForegroundNotification, action: { _ in
                     Task {
-                        await viewModel.checkUserStatus()
+                        await presenter.checkUserStatus()
                     }
                 })
                 .task {
                     try? await Task.sleep(for: .seconds(2))
-                    await viewModel.showATTPromptIfNeeded()
+                    await presenter.showATTPromptIfNeeded()
                 }
-                .onChange(of: viewModel.showTabBar) { _, showTabBar in
+                .onChange(of: presenter.showTabBar) { _, showTabBar in
                     if !showTabBar {
                         Task {
-                            await viewModel.checkUserStatus()
+                            await presenter.checkUserStatus()
                         }
                     }
                 }
@@ -68,13 +63,18 @@ struct AppView: View {
 #Preview("AppView - TabBar") {
     let container = DevPreview.shared.container
     container.register(AppState.self, service: AppState(showTabBar: true))
-    
-    return AppView(
-        viewModel: AppViewModel(
-            interactor: CoreInteractor(container: container)
-        )
+    let builder = RootBuilder(
+        interactor: RootInteractor(container: container),
+        loggedInRIB: {
+            CoreBuilder(interactor: CoreInteractor(container: container))
+        },
+        loggedOutRIB: {
+            OnbBuilder(interactor: OnbInteractor(container: container))
+        }
     )
-    .previewEnvironment()
+    
+    return builder.appView()
+        .previewEnvironment()
 }
 
 #Preview("AppView - Onboarding") {
@@ -82,11 +82,16 @@ struct AppView: View {
     container.register(AuthManager.self, service: AuthManager(service: MockAuthService(user: nil)))
     container.register(UserManager.self, service: UserManager(services: MockUserServices(user: nil)))
     container.register(AppState.self, service: AppState(showTabBar: false))
-    
-    return AppView(
-        viewModel: AppViewModel(
-            interactor: CoreInteractor(container: container)
-        )
+    let builder = RootBuilder(
+        interactor: RootInteractor(container: container),
+        loggedInRIB: {
+            CoreBuilder(interactor: CoreInteractor(container: container))
+        },
+        loggedOutRIB: {
+            OnbBuilder(interactor: OnbInteractor(container: container))
+        }
     )
-    .previewEnvironment()
+    
+    return builder.appView()
+        .previewEnvironment()
 }

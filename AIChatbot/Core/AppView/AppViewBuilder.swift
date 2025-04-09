@@ -9,16 +9,16 @@ import SwiftUI
 
 struct AppViewBuilder<TabBarView: View, OnboardingView: View>: View {
     var showTabBar = false
-    @ViewBuilder var tabBarView: TabBarView
-    @ViewBuilder var onboardingView: OnboardingView
+    var tabBarView: () -> TabBarView
+    var onboardingView: () -> OnboardingView
 
     var body: some View {
         ZStack {
             if showTabBar {
-                tabBarView
+                tabBarView()
                     .transition(.move(edge: .trailing))
             } else {
-                onboardingView
+                onboardingView()
                     .transition(.move(edge: .leading))
             }
         }

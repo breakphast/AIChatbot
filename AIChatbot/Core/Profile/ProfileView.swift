@@ -8,43 +8,22 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @Environment(DependencyContainer.self) private var container
-    @State var viewModel: ProfileViewModel
+    @State var presenter: ProfilePresenter
     
     var body: some View {
-        NavigationStack(path: $viewModel.path) {
-            List {
-                myInfoSection
-                myAvatarSection
-            }
-            .navigationDestinationForCoreModule(path: $viewModel.path)
-            .navigationTitle("Profile")
-            .showCustomAlert(alert: $viewModel.showAlert)
-            .screenAppearAnalytics(name: "ProfileView")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    settingsButton
-                }
+        List {
+            myInfoSection
+            myAvatarSection
+        }
+        .navigationTitle("Profile")
+        .screenAppearAnalytics(name: "ProfileView")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                settingsButton
             }
         }
-        .sheet(isPresented: $viewModel.showSettingsView) {
-            SettingsView(viewModel: SettingsViewModel(interactor: CoreInteractor(container: container)))
-        }
-        .fullScreenCover(
-            isPresented: $viewModel.showCreateAvatarView,
-            onDismiss: {
-                Task {
-                    await viewModel.loadData()
-                }
-            },
-            content: {
-                CreateAvatarView(
-                    viewModel: CreateAvatarViewModel(interactor: CoreInteractor(container: container))
-                )
-            }
-        )
         .task {
-            await viewModel.loadData()
+            await presenter.loadData()
         }
     }
     
@@ -53,7 +32,7 @@ struct ProfileView: View {
             .font(.headline)
             .foregroundStyle(.accent)
             .anyButton {
-                viewModel.onSettingsButtonPressed()
+                presenter.onSettingsButtonPressed()
             }
     }
     
@@ -61,7 +40,7 @@ struct ProfileView: View {
         Section {
             ZStack {
                 Circle()
-                    .fill(viewModel.currentUser?.profileColorConverted ?? .accent)
+                    .fill(presenter.currentUser?.profileColorConverted ?? .accent)
             }
             .frame(width: 100, height: 100)
             .frame(maxWidth: .infinity)
@@ -71,9 +50,9 @@ struct ProfileView: View {
     
     private var myAvatarSection: some View {
         Section {
-            if viewModel.myAvatars.isEmpty {
+            if presenter.myAvatars.isEmpty {
                 Group {
-                    if viewModel.isLoading {
+                    if presenter.isLoading {
                         ProgressView()
                     } else {
                         Text("Click + to create an avatar")
@@ -84,19 +63,19 @@ struct ProfileView: View {
                 .foregroundStyle(.secondary)
                 .removeListRowFormatting()
             } else {
-                ForEach(viewModel.myAvatars, id: \.self) { avatar in
+                ForEach(presenter.myAvatars, id: \.self) { avatar in
                     CustomListCellView(
                         imageName: avatar.profileImageName,
                         title: avatar.name,
                         subtitle: nil
                     )
                     .anyButton(.highlight, action: {
-                        viewModel.onAvatarPressed(avatar: avatar)
+                        presenter.onAvatarPressed(avatar: avatar)
                     })
                     .removeListRowFormatting()
                 }
                 .onDelete { indexSet in
-                    viewModel.onDeleteAvatar(indexSet: indexSet)
+                    presenter.onDeleteAvatar(indexSet: indexSet)
                 }
             }
         } header: {
@@ -109,7 +88,7 @@ struct ProfileView: View {
                     .font(.title)
                     .foregroundStyle(.accent)
                     .anyButton {
-                        viewModel.onNewAvatarButtonPressed()
+                        presenter.onNewAvatarButtonPressed()
                     }
             }
         }
@@ -117,8 +96,10 @@ struct ProfileView: View {
 }
 
 #Preview {
-    ProfileView(
-        viewModel: ProfileViewModel(interactor: CoreInteractor(container: DevPreview.shared.container))
-    )
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+    
+    return RouterView { router in
+        builder.profileView(router: router)
+    }
     .previewEnvironment()
 }

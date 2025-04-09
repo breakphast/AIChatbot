@@ -7,71 +7,49 @@
 
 import SwiftUI
 
-struct ChatView: View {
-    @Environment(\.dismiss) var dismiss
-    @Environment(DependencyContainer.self) private var container
-    @State var viewModel: ChatViewModel
-    @State var chat: ChatModel?
+struct ChatViewDelegate {
+    var chat: ChatModel?
     var avatarID: String = AvatarModel.mock.avatarID
+}
+
+struct ChatView: View {
+    @State var presenter: ChatPresenter
+    let delegate: ChatViewDelegate
     
     var body: some View {
         VStack(spacing: 0) {
             scrollViewSection
             textfieldSection
         }
-        .animation(.bouncy, value: viewModel.showProfileModal)
-        .navigationTitle(viewModel.avatar?.name ?? "")
+//        .animation(.bouncy, value: presenter.showProfileModal)
+        .navigationTitle(presenter.avatar?.name ?? "")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 HStack {
-                    if viewModel.isGeneratingResponse {
+                    if presenter.isGeneratingResponse {
                         ProgressView()
                     }
                     
                     Image(systemName: "ellipsis")
                         .padding()
                         .anyButton {
-                            viewModel.onChatSettingsPressed {
-                                dismiss()
-                            }
+                            presenter.onChatSettingsPressed()
                         }
                 }
             }
         }
         .screenAppearAnalytics(name: "ChatView")
-        .showCustomAlert(type: .confirmationDialog, alert: $viewModel.showChatSettings)
-        .showCustomAlert(alert: $viewModel.showAlert)
-        .showModal(showModal: $viewModel.showProfileModal) {
-            if let avatar = viewModel.avatar {
-                profileModal(avatar: avatar)
-            }
-        }
-        .sheet(isPresented: $viewModel.showPaywall, content: {
-            PaywallView(viewModel: PaywallViewModel(interactor: CoreInteractor(container: container)))
-        })
         .task {
-            await viewModel.loadAvatar(avatarID: avatarID)
+            await presenter.loadAvatar(avatarID: delegate.avatarID)
         }
         .task {
-            await viewModel.loadChat(avatarID: avatarID)
-            await viewModel.listenForChatMessages()
+            await presenter.loadChat(avatarID: delegate.avatarID)
+            await presenter.listenForChatMessages()
         }
         .onFirstAppear {
-            viewModel.onViewFirstAppear(chat: chat)
+            presenter.onViewFirstAppear(chat: delegate.chat)
         }
-    }
-    
-    func profileModal(avatar: AvatarModel) -> some View {
-        ProfileModalView(
-            imageName: avatar.profileImageName,
-            title: avatar.name,
-            subtitle: avatar.characterOption?.rawValue.capitalized,
-            headline: avatar.characterDescription) {
-                viewModel.onProfileModalXMarkPressed()
-            }
-            .padding(40)
-            .transition(.slide)
     }
     
     func timestampView(date: Date) -> some View {
@@ -91,21 +69,21 @@ struct ChatView: View {
     private var scrollViewSection: some View {
         ScrollView {
             LazyVStack(spacing: 24) {
-                ForEach(viewModel.chatMessages) { message in
-                    if viewModel.messageIsDelayed(message: message) {
+                ForEach(presenter.chatMessages) { message in
+                    if presenter.messageIsDelayed(message: message) {
                         timestampView(date: message.dateCreatedCalculated)
                     }
 
-                    let isCurrentUser = viewModel.messageIsCurrentUser(message: message)
+                    let isCurrentUser = presenter.messageIsCurrentUser(message: message)
                     ChatBubbleViewBuilder(
                         message: message,
                         isCurrentUser: isCurrentUser,
-                        currentUserProfileColor: viewModel.currentUser?.profileColorConverted ?? .accent,
-                        imageName: isCurrentUser ? nil : viewModel.avatar?.profileImageName,
-                        onProfileImagePressed: viewModel.onAvatarPressed
+                        currentUserProfileColor: presenter.currentUser?.profileColorConverted ?? .accent,
+                        imageName: isCurrentUser ? nil : presenter.avatar?.profileImageName,
+                        onProfileImagePressed: presenter.onAvatarPressed
                     )
                     .onAppear {
-                        viewModel.onMessageDidAppear(message: message)
+                        presenter.onMessageDidAppear(message: message)
                     }
                     .id(message.id)
                 }
@@ -116,13 +94,13 @@ struct ChatView: View {
         }
         .scrollIndicators(.hidden)
         .rotationEffect(.degrees(180))
-        .animation(.default, value: viewModel.chatMessages.count)
-        .scrollPosition(id: $viewModel.scrollPosition, anchor: .center)
-        .animation(.default, value: viewModel.scrollPosition)
+        .animation(.default, value: presenter.chatMessages.count)
+        .scrollPosition(id: $presenter.scrollPosition, anchor: .center)
+        .animation(.default, value: presenter.scrollPosition)
     }
     
     private var textfieldSection: some View {
-        TextField("Say something...", text: $viewModel.textFieldText)
+        TextField("Say something...", text: $presenter.textFieldText)
             .keyboardType(.alphabet)
             .autocorrectionDisabled()
             .padding(12)
@@ -134,7 +112,7 @@ struct ChatView: View {
                     .padding(.trailing, 4)
                     .foregroundStyle(.accent)
                     .anyButton(.plain, action: {
-                        viewModel.onSendMessagePressed(avatarID: avatarID)
+                        presenter.onSendMessagePressed(avatarID: delegate.avatarID)
                     })
                 , alignment: .trailing
             )
@@ -153,46 +131,53 @@ struct ChatView: View {
 }
 
 #Preview("Working Chat") {
-    NavigationStack {
-        ChatView(viewModel: ChatViewModel(interactor: CoreInteractor(container: DevPreview.shared.container)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+    
+    return RouterView { router in
+        builder.chatView(router: router)
             .previewEnvironment()
     }
 }
 
 #Preview("Working Chat - Not Premium") {
-    NavigationStack {
-        ChatView(viewModel: ChatViewModel(interactor: CoreInteractor(container: DevPreview.shared.container)))
-            .previewEnvironment()
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+    
+    return RouterView { router in
+        builder.chatView(router: router)
     }
+    .previewEnvironment()
 }
 
 #Preview("Working Chat - Premium") {
     let container = DevPreview.shared.container
     container.register(PurchaseManager.self, service: PurchaseManager(service: MockPurchaseService(activeEntitlements: [.mock])))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return NavigationStack {
-        ChatView(viewModel: ChatViewModel(interactor: CoreInteractor(container: container)))
-            .previewEnvironment()
+    return RouterView { router in
+        builder.chatView(router: router)
     }
+    .previewEnvironment()
 }
 
 #Preview("Slow AI Generation") {
     let container = DevPreview.shared.container
-    container.register(AIManager.self, service: AIManager(service: MockAIService(delay: 10)))
+    container.register(AIService.self, service: MockAIService(delay: 15, showError: true))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return NavigationStack {
-        ChatView(viewModel: ChatViewModel(interactor: CoreInteractor(container: container)))
-            .previewEnvironment()
+    return RouterView { router in
+        builder.chatView(router: router)
     }
+    .previewEnvironment()
 }
 
 #Preview("Failed AI Generation") {
     let container = DevPreview.shared.container
-    container.register(AIManager.self, service: AIManager(service: MockAIService(delay: 2, showError: true)))
+    container.register(AIService.self, service: MockAIService(delay: 2, showError: true))
     container.register(PurchaseManager.self, service: PurchaseManager(service: MockPurchaseService(activeEntitlements: [.mock])))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
-    return NavigationStack {
-        ChatView(viewModel: ChatViewModel(interactor: CoreInteractor(container: container)))
-            .previewEnvironment()
+    return RouterView { router in
+        builder.chatView(router: router)
     }
+    .previewEnvironment()
 }

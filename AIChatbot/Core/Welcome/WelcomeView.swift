@@ -8,38 +8,22 @@
 import SwiftUI
 
 struct WelcomeView: View {
-    @Environment(CoreBuilder.self) private var builder
-    @State var viewModel: WelcomeViewModel
+    @State var presenter: WelcomePresenter
     
     var body: some View {
-        NavigationStack(path: $viewModel.path) {
-            VStack {
-                ImageLoaderView(urlString: viewModel.imageName)
-                    .ignoresSafeArea()
-                
-                titleSection
-                    .padding(.top)
-                
-                ctaButtons
-                    .padding()
-                
-                policyLinks
-            }
-            .sheet(isPresented: $viewModel.showSignInView) {
-                builder.createAccountView(
-                    delegate: CreateAccountDelegate(
-                        title: "Sign in",
-                        subtitle: "Connect to an existing account.",
-                        onDidSignIn: { isNewUser in
-                            viewModel.handleDidSignIn(isNewUser: isNewUser)
-                        }
-                    )
-                )
-                .presentationDetents([.medium])
-            }
-            .screenAppearAnalytics(name: "WelcomeView")
-            .navigationDestinationForOnboarding(path: $viewModel.path)
+        VStack(spacing: 8) {
+            ImageLoaderView(urlString: presenter.imageName)
+                .ignoresSafeArea()
+            
+            titleSection
+                .padding(.top, 24)
+            
+            ctaButtons
+                .padding(16)
+            
+            policyLinks
         }
+        .screenAppearAnalytics(name: "WelcomeView")
     }
     
     private var titleSection: some View {
@@ -66,7 +50,7 @@ struct WelcomeView: View {
                 .accessibilityIdentifier("StartButton")
                 .frame(maxWidth: 500)
                 .anyButton {
-                    viewModel.onGetStartedPressed()
+                    presenter.onGetStartedPressed()
                 }
             
             Text("Already have an account? Sign in.")
@@ -74,7 +58,7 @@ struct WelcomeView: View {
                 .padding(8)
                 .tappableBackground()
                 .onTapGesture {
-                    viewModel.onSignInPressed()
+                    presenter.onSignInPressed()
                 }
                 .lineLimit(1)
                 .minimumScaleFactor(0.2)
@@ -101,6 +85,8 @@ struct WelcomeView: View {
 }
 
 #Preview {
-    WelcomeView(viewModel: WelcomeViewModel(interactor: CoreInteractor(container: DevPreview.shared.container)))
+    let builder = OnbBuilder(interactor: OnbInteractor(container: DevPreview.shared.container))
+    
+    return builder.welcomeView()
         .previewEnvironment()
 }
