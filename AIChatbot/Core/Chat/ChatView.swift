@@ -131,7 +131,7 @@ struct ChatView: View {
 }
 
 #Preview("Working Chat") {
-    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container()))
     
     return RouterView { router in
         builder.chatView(router: router)
@@ -140,7 +140,7 @@ struct ChatView: View {
 }
 
 #Preview("Working Chat - Not Premium") {
-    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container()))
     
     return RouterView { router in
         builder.chatView(router: router)
@@ -149,7 +149,7 @@ struct ChatView: View {
 }
 
 #Preview("Working Chat - Premium") {
-    let container = DevPreview.shared.container
+    let container = DevPreview.shared.container()
     container.register(PurchaseManager.self, service: PurchaseManager(service: MockPurchaseService(activeEntitlements: [.mock])))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
@@ -160,7 +160,7 @@ struct ChatView: View {
 }
 
 #Preview("Slow AI Generation") {
-    let container = DevPreview.shared.container
+    let container = DevPreview.shared.container()
     container.register(AIService.self, service: MockAIService(delay: 15, showError: true))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
@@ -171,7 +171,7 @@ struct ChatView: View {
 }
 
 #Preview("Failed AI Generation") {
-    let container = DevPreview.shared.container
+    let container = DevPreview.shared.container()
     container.register(AIService.self, service: MockAIService(delay: 2, showError: true))
     container.register(PurchaseManager.self, service: PurchaseManager(service: MockPurchaseService(activeEntitlements: [.mock])))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))

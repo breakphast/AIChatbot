@@ -184,7 +184,7 @@ struct ExploreView: View {
 }
 
 #Preview("Has Data") {
-    let container = DevPreview.shared.container
+    let container = DevPreview.shared.container()
     container.register(RemoteAvatarService.self, service: MockAvatarService())
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
@@ -195,7 +195,7 @@ struct ExploreView: View {
 }
 
 #Preview("CategoryRowTest: Original") {
-    let container = DevPreview.shared.container
+    let container = DevPreview.shared.container()
     container.register(RemoteAvatarService.self, service: MockAvatarService())
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(categoryRowTest: .original)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
@@ -207,7 +207,7 @@ struct ExploreView: View {
 }
 
 #Preview("CategoryRowTest: Top") {
-    let container = DevPreview.shared.container
+    let container = DevPreview.shared.container()
     container.register(RemoteAvatarService.self, service: MockAvatarService())
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(categoryRowTest: .top)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
@@ -219,7 +219,7 @@ struct ExploreView: View {
 }
 
 #Preview("CategoryRowTest: Hidden") {
-    let container = DevPreview.shared.container
+    let container = DevPreview.shared.container()
     container.register(RemoteAvatarService.self, service: MockAvatarService())
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(categoryRowTest: .hidden)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
@@ -231,7 +231,7 @@ struct ExploreView: View {
 }
 
 #Preview("Has Data w/ Create Acct Test") {
-    let container = DevPreview.shared.container
+    let container = DevPreview.shared.container()
     container.register(RemoteAvatarService.self, service: MockAvatarService())
     container.register(AuthManager.self, service: AuthManager(service: MockAuthService(user: .mock(isAnonymous: true))))
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(createAccountTest: true)))
@@ -244,7 +244,7 @@ struct ExploreView: View {
 }
 
 #Preview("No Data") {
-    let container = DevPreview.shared.container
+    let container = DevPreview.shared.container()
     container.register(RemoteAvatarService.self, service: MockAvatarService(avatars: [], delay: 2))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
@@ -255,7 +255,7 @@ struct ExploreView: View {
 }
 
 #Preview("Slow loading") {
-    let container = DevPreview.shared.container
+    let container = DevPreview.shared.container()
     container.register(RemoteAvatarService.self, service: MockAvatarService(delay: 10))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     

@@ -187,7 +187,7 @@ extension View {
 class DevPreview {
     static let shared = DevPreview()
     
-    var container: DependencyContainer {
+    func container() -> DependencyContainer {
         let container = DependencyContainer()
         container.register(AuthManager.self, service: authManager)
         container.register(UserManager.self, service: userManager)

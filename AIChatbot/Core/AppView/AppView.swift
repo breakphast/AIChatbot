@@ -61,7 +61,7 @@ struct AppView<TabBarView: View, OnboardingView: View>: View {
 }
 
 #Preview("AppView - TabBar") {
-    let container = DevPreview.shared.container
+    let container = DevPreview.shared.container()
     container.register(AppState.self, service: AppState(showTabBar: true))
     let builder = RootBuilder(
         interactor: RootInteractor(container: container),
@@ -78,7 +78,7 @@ struct AppView<TabBarView: View, OnboardingView: View>: View {
 }
 
 #Preview("AppView - Onboarding") {
-    let container = DevPreview.shared.container
+    let container = DevPreview.shared.container()
     container.register(AuthManager.self, service: AuthManager(service: MockAuthService(user: nil)))
     container.register(UserManager.self, service: UserManager(services: MockUserServices(user: nil)))
     container.register(AppState.self, service: AppState(showTabBar: false))

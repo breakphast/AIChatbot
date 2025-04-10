@@ -54,7 +54,7 @@ struct PaywallView: View {
 }
 
 #Preview("Custom") {
-    let container = DevPreview.shared.container
+    let container = DevPreview.shared.container()
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(paywallTest: .custom)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
@@ -65,7 +65,7 @@ struct PaywallView: View {
 }
 
 #Preview("RevenueCat") {
-    let container = DevPreview.shared.container
+    let container = DevPreview.shared.container()
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(paywallTest: .revenueCat)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     
@@ -75,7 +75,7 @@ struct PaywallView: View {
     .previewEnvironment()
 }
 #Preview("StoreKit") {
-    let container = DevPreview.shared.container
+    let container = DevPreview.shared.container()
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(paywallTest: .storeKit)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
     

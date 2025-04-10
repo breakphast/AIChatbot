@@ -58,7 +58,7 @@ struct OnboardingIntroView: View {
 }
 
 #Preview("Original") {
-    let builder = OnbBuilder(interactor: OnbInteractor(container: DevPreview.shared.container))
+    let builder = OnbBuilder(interactor: OnbInteractor(container: DevPreview.shared.container()))
     RouterView { router in
         builder.onboardingIntroView(router: router, delegate: OnboardingIntroDelegate())
     }
@@ -66,9 +66,9 @@ struct OnboardingIntroView: View {
 }
 
 #Preview("Onboarding Community Test") {
-    let container = DevPreview.shared.container
+    let container = DevPreview.shared.container()
     container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(onboardingCommunityTest: true)))
-    let builder = OnbBuilder(interactor: OnbInteractor(container: DevPreview.shared.container))
+    let builder = OnbBuilder(interactor: OnbInteractor(container: DevPreview.shared.container()))
     
     return RouterView { router in
         builder.onboardingIntroView(router: router, delegate: OnboardingIntroDelegate())

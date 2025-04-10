@@ -141,7 +141,7 @@ struct CreateAvatarView: View {
 }
 
 #Preview {
-    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container()))
     RouterView { router in
         builder.createAvatarView(router: router)
     }

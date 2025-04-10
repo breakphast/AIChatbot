@@ -47,7 +47,7 @@ struct TabBarView: View {
 }
 
 #Preview("Real Tabs") {
-    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: DevPreview.shared.container()))
     
     return builder.tabBarView()
         .previewEnvironment()

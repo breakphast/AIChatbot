@@ -152,7 +152,7 @@ fileprivate extension View {
 }
 
 #Preview("Not Anonymous") {
-    let container = DevPreview.shared.container
+    let container = DevPreview.shared.container()
     container.register(AuthManager.self, service: AuthManager(service: MockAuthService(user: UserAuthInfo.mock(isAnonymous: false))))
     container.register(UserManager.self, service: UserManager(services: MockUserServices(user: .mock)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
@@ -164,7 +164,7 @@ fileprivate extension View {
 }
 
 #Preview("Anonymous") {
-    let container = DevPreview.shared.container
+    let container = DevPreview.shared.container()
     container.register(AuthManager.self, service: AuthManager(service: MockAuthService(user: UserAuthInfo.mock(isAnonymous: true))))
     container.register(UserManager.self, service: UserManager(services: MockUserServices(user: .mock)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
@@ -176,7 +176,7 @@ fileprivate extension View {
 }
 
 #Preview("No auth") {
-    let container = DevPreview.shared.container
+    let container = DevPreview.shared.container()
     container.register(AuthManager.self, service: AuthManager(service: MockAuthService(user: nil)))
     container.register(UserManager.self, service: UserManager(services: MockUserServices(user: nil)))
     let builder = CoreBuilder(interactor: CoreInteractor(container: container))
