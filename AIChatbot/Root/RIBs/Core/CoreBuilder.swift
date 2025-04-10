@@ -6,11 +6,11 @@
 //
 
 import SwiftUI
-import CustomRouting
+import SwiftfulRouting
 
-typealias RouterView = CustomRouting.RouterView
-typealias AlertType = CustomRouting.AlertType
-typealias Router = CustomRouting.Router
+typealias RouterView = SwiftfulRouting.RouterView
+typealias AlertType = SwiftfulRouting.DialogOption
+typealias Router = SwiftfulRouting.AnyRouter
 
 @MainActor
 struct CoreBuilder: Builder {

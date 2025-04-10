@@ -15,7 +15,7 @@ protocol SettingsRouter {
     func dismissScreen()
     func showAlert(error: Error)
     func showAlert(_ option: AlertType, title: String, subtitle: String?, buttons: (@Sendable () -> AnyView)?)
-    func showCreateAccountView(delegate: CreateAccountDelegate, onDisappear: (() -> Void)?)
+    func showCreateAccountView(delegate: CreateAccountDelegate, onDismiss: (() -> Void)?)
     func showAboutView(delegate: AboutDelegate)
 }
 

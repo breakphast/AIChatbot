@@ -133,7 +133,7 @@ class SettingsPresenter {
     func onCreateAccountPressed() {
         interactor.trackEvent(event: Event.createAccountPressed)
         let delegate = CreateAccountDelegate()
-        router.showCreateAccountView(delegate: delegate, onDisappear: {
+        router.showCreateAccountView(delegate: delegate, onDismiss: {
             self.setAnonymousAccountStatus()
         })
     }

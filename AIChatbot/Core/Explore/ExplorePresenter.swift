@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import CustomRouting
 
 @MainActor
 @Observable
@@ -75,7 +74,7 @@ class ExplorePresenter {
             else {
                 return
             }
-            router.showCreateAccountView(delegate: CreateAccountDelegate(), onDisappear: nil)
+            router.showCreateAccountView(delegate: CreateAccountDelegate(), onDismiss: nil)
         }
     }
     

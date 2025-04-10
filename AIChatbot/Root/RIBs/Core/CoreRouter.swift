@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import CustomRouting
 
 @MainActor
 struct CoreRouter: GlobalRouter {
@@ -51,20 +50,16 @@ struct CoreRouter: GlobalRouter {
         }
     }
     
-    func showCreateAccountView(delegate: CreateAccountDelegate, onDisappear: (() -> Void)?) {
-        router.showScreen(.sheet) { router in
+    func showCreateAccountView(delegate: CreateAccountDelegate, onDismiss: (() -> Void)?) {
+        router.showScreen(.sheet, onDismiss: onDismiss) { router in
             builder.createAccountView(router: router, delegate: delegate)
                 .presentationDetents([.medium])
-                .onDisappear {
-                    onDisappear?()
-                }
         }
     }
     
-    func showCreateAvatarView(onDisappear: @escaping () -> Void) {
-        router.showScreen(.fullScreenCover) { router in
+    func showCreateAvatarView(onDismiss: @escaping () -> Void) {
+        router.showScreen(.sheet, onDismiss: onDismiss) { router in
             builder.createAvatarView(router: router)
-                .onDisappear(perform: onDisappear)
         }
     }
     
@@ -72,8 +67,7 @@ struct CoreRouter: GlobalRouter {
     
     func showPushNotificationModal(onEnablePressed: @escaping () -> Void, onCancelPressed: @escaping () -> Void) {
         router.showModal(
-            backgroundColor: .black.opacity(0.8),
-            transition: .move(edge: .bottom),
+            transition: .move(edge: .bottom), backgroundColor: .black.opacity(0.8),
             destination: {
                 CustomModalView(
                     title: "Enable push notifications?",
@@ -92,7 +86,7 @@ struct CoreRouter: GlobalRouter {
     }
     
     func showProfileModal(avatar: AvatarModel, onXMarkPressed: @escaping () -> Void) {
-        router.showModal(backgroundColor: .black.opacity(0.6), transition: .slide) {
+        router.showModal(transition: .slide, backgroundColor: .black.opacity(0.6)) {
             ProfileModalView(
                 imageName: avatar.profileImageName,
                 title: avatar.name,
@@ -105,7 +99,7 @@ struct CoreRouter: GlobalRouter {
     }
     
     func showRatingsModal(onYesPressed: @escaping () -> Void, onNoPressed: @escaping () -> Void) {
-        router.showModal(backgroundColor: .black.opacity(0.6), transition: .fade) {
+        router.showModal(transition: .fade, backgroundColor: .black.opacity(0.6)) {
             CustomModalView(
                 title: "Are you enjoying AIChat?",
                 subtitle: "We'd love to hear your feedback!",
