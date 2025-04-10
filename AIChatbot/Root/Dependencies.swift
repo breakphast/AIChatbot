@@ -28,6 +28,18 @@ typealias PurchasedEntitlement = SwiftfulPurchasing.PurchasedEntitlement
 typealias AnyProduct = SwiftfulPurchasing.AnyProduct
 typealias MockPurchaseService = SwiftfulPurchasing.MockPurchaseService
 
+import SwiftfulLogging
+import SwiftfulLoggingMixpanel
+import SwiftfulLoggingFirebaseAnalytics
+import SwiftfulLoggingFirebaseCrashlytics
+
+typealias LogManager = SwiftfulLogging.LogManager
+typealias LoggableEvent = SwiftfulLogging.LoggableEvent
+typealias AnyLoggableEvent = SwiftfulLogging.AnyLoggableEvent
+typealias LogType = SwiftfulLogging.LogType
+typealias MixpanelService = SwiftfulLoggingMixpanel.MixpanelService
+typealias FirebaseAnalyticsService = SwiftfulLoggingFirebaseAnalytics.FirebaseAnalyticsService
+
 extension AuthLogType {
     var type: LogType {
         switch self {
@@ -43,8 +55,8 @@ extension AuthLogType {
     }
 }
 
-extension LogManager: AuthLogger {
-    func trackEvent(event: any AuthLogEvent) {
+extension LogManager: @retroactive AuthLogger {
+    public func trackEvent(event: any AuthLogEvent) {
         trackEvent(eventName: event.eventName, parameters: event.parameters, type: event.type.type)
     }
 }
@@ -64,8 +76,8 @@ extension PurchaseLogType {
     }
 }
 
-extension LogManager: PurchaseLogger {
-    func trackEvent(event: any PurchaseLogEvent) {
+extension LogManager: @retroactive PurchaseLogger {
+    public func trackEvent(event: any PurchaseLogEvent) {
         trackEvent(eventName: event.eventName, parameters: event.parameters, type: event.type.type)
     }
 }

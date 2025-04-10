@@ -47,8 +47,8 @@ struct OnbInteractor {
             userId: user.uid,
             userAttributes: PurchaseProfileAttributes(
                 email: user.email,
-                phoneNumber: FirebaseAnalyticsService.appInstanceID,
-                displayName: MixpanelService.distinctID
+                mixpanelDistinctId: Constants.mixpanelDistinctID,
+                firebaseAppInstanceId: Constants.firebaseAnalyticsAppInstanceID
             )
         )
     }

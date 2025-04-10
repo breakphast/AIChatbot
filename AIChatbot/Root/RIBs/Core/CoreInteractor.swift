@@ -179,7 +179,7 @@ struct CoreInteractor {
     }
     
     func trackScreenEvent(event: LoggableEvent) {
-        logManager.trackScreenEvent(event: event)
+        logManager.trackScreenView(event: event)
     }
     
     // MARK: PushManager
@@ -255,8 +255,8 @@ struct CoreInteractor {
             userId: user.uid,
             userAttributes: PurchaseProfileAttributes(
                 email: user.email,
-                phoneNumber: FirebaseAnalyticsService.appInstanceID,
-                displayName: MixpanelService.distinctID
+                mixpanelDistinctId: Constants.mixpanelDistinctID,
+                firebaseAppInstanceId: Constants.firebaseAnalyticsAppInstanceID
             )
         )
     }
