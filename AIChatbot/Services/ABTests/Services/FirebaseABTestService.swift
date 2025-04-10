@@ -20,6 +20,7 @@ class FirebaseABTestService: ABTestService {
         RemoteConfig.remoteConfig().configSettings = settings
         let defaultValues = ActiveABTests(
             createAccountTest: false,
+            createAvatarTest: false,
             onboardingCommunityTest: false,
             categoryRowTest: .default,
             paywallTest: .default

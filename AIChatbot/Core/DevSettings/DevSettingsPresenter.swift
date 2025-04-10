@@ -15,6 +15,7 @@ class DevSettingsPresenter {
     private let router: DevSettingsRouter
     
     var createAccountTest: Bool = false
+    var createAvatarTest: Bool = false
     var onboardingCommunityTest: Bool = false
     var categoryRowTest: CategoryRowTestOption = .default
     var paywallTest: PaywallTestOption = .default
@@ -50,6 +51,17 @@ class DevSettingsPresenter {
             savedValue: interactor.activeTests.createAccountTest,
             updateAction: { tests in
                 tests.update(createAccountTest: newValue)
+            }
+        )
+    }
+    
+    func handleCreateAvatarChange(oldValue: Bool, newValue: Bool) {
+        updateTest(
+            property: &createAvatarTest,
+            newValue: newValue,
+            savedValue: interactor.activeTests.createAvatarTest,
+            updateAction: { tests in
+                tests.update(createAvatarTest: newValue)
             }
         )
     }

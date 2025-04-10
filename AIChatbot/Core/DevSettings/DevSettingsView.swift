@@ -44,6 +44,9 @@ struct DevSettingsView: View {
             Toggle("Create Account Test", isOn: $presenter.createAccountTest)
                 .onChange(of: presenter.createAccountTest, presenter.handleCreateAccountChange)
             
+            Toggle("Explore Create Avatar Test", isOn: $presenter.createAccountTest)
+                .onChange(of: presenter.createAccountTest, presenter.handleCreateAvatarChange)
+            
             Toggle("Onb Community Test", isOn: $presenter.onboardingCommunityTest)
                 .onChange(of: presenter.onboardingCommunityTest, presenter.handleOnbCommunityTestChange)
             

@@ -10,17 +10,20 @@ import FirebaseRemoteConfig
 
 struct ActiveABTests: Codable {
     private(set) var createAccountTest: Bool
+    private(set) var createAvatarTest: Bool
     private(set) var onboardingCommunityTest: Bool
     private(set) var categoryRowTest: CategoryRowTestOption
     private(set) var paywallTest: PaywallTestOption
     
     init(
         createAccountTest: Bool,
+        createAvatarTest: Bool,
         onboardingCommunityTest: Bool,
         categoryRowTest: CategoryRowTestOption,
         paywallTest: PaywallTestOption
     ) {
         self.createAccountTest = createAccountTest
+        self.createAvatarTest = createAvatarTest
         self.onboardingCommunityTest = onboardingCommunityTest
         self.categoryRowTest = categoryRowTest
         self.paywallTest = paywallTest
@@ -28,6 +31,7 @@ struct ActiveABTests: Codable {
     
     enum CodingKeys: String, CodingKey {
         case createAccountTest = "_202503_CreateAccTest"
+        case createAvatarTest = "_202503_CreateAvatarTest"
         case onboardingCommunityTest = "_202503_OnbCommunityTest"
         case categoryRowTest = "_202503_categoryRowTest"
         case paywallTest = "_202503_paywallTest"
@@ -36,6 +40,7 @@ struct ActiveABTests: Codable {
     var eventParameters: [String: Any] {
         let dict: [String: Any?] = [
             "test\(CodingKeys.createAccountTest.rawValue)": createAccountTest,
+            "test\(CodingKeys.createAvatarTest.rawValue)": createAvatarTest,
             "test\(CodingKeys.onboardingCommunityTest.rawValue)": onboardingCommunityTest,
             "test\(CodingKeys.categoryRowTest.rawValue)": categoryRowTest.rawValue,
             "test\(CodingKeys.paywallTest.rawValue)": paywallTest.rawValue
@@ -50,6 +55,10 @@ struct ActiveABTests: Codable {
     
     mutating func update(onboardingCommunityTest newValue: Bool) {
         onboardingCommunityTest = newValue
+    }
+    
+    mutating func update(createAvatarTest newValue: Bool) {
+        createAvatarTest = newValue
     }
     
     mutating func update(categoryRowTest newValue: CategoryRowTestOption) {
@@ -69,6 +78,9 @@ extension ActiveABTests {
         
         let onboardingCommunityTest = config.configValue(forKey: ActiveABTests.CodingKeys.onboardingCommunityTest.rawValue).boolValue
         self.onboardingCommunityTest = onboardingCommunityTest
+        
+        let createAvatarTest = config.configValue(forKey: ActiveABTests.CodingKeys.createAvatarTest.rawValue).boolValue
+        self.createAvatarTest = createAvatarTest
         
         let categoryRowTestStringValue = config.configValue(forKey: ActiveABTests.CodingKeys.categoryRowTest.rawValue).stringValue
         if let option = CategoryRowTestOption(rawValue: categoryRowTestStringValue) {

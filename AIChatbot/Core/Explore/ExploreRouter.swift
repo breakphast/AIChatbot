@@ -14,6 +14,7 @@ protocol ExploreRouter {
     func showChatView(delegate: ChatViewDelegate)
     func showCreateAccountView(delegate: CreateAccountDelegate, onDismiss: (() -> Void)?)
     func showDevSettingsView()
+    func showCreateAvatarView(onDismiss: @escaping () -> Void)
     
     // Modals
     func showPushNotificationModal(onEnablePressed: @escaping () -> Void, onCancelPressed: @escaping () -> Void)

@@ -13,12 +13,14 @@ class MockABTestService: ABTestService {
     
     init(
         createAccountTest: Bool? = nil,
+        createAvatarTest: Bool? = nil,
         onboardingCommunityTest: Bool? = nil,
         categoryRowTest: CategoryRowTestOption? = nil,
         paywallTest: PaywallTestOption? = nil
     ) {
         self.activeTests = ActiveABTests(
             createAccountTest: createAccountTest ?? false,
+            createAvatarTest: createAvatarTest ?? false,
             onboardingCommunityTest: onboardingCommunityTest ?? false,
             categoryRowTest: categoryRowTest ?? .default,
             paywallTest: paywallTest ?? .default

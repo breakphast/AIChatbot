@@ -12,6 +12,9 @@ class LocalABTestService: ABTestService {
     @UserDefault(key: ActiveABTests.CodingKeys.createAccountTest.rawValue, startingValue: .random())
     private var createAccountTest: Bool
     
+    @UserDefault(key: ActiveABTests.CodingKeys.createAvatarTest.rawValue, startingValue: .random())
+    private var createAvatarTest: Bool
+    
     @UserDefault(key: ActiveABTests.CodingKeys.onboardingCommunityTest.rawValue, startingValue: .random())
     private var onboardingCommunityTest: Bool
     
@@ -24,6 +27,7 @@ class LocalABTestService: ABTestService {
     var activeTests: ActiveABTests {
         ActiveABTests(
             createAccountTest: createAccountTest,
+            createAvatarTest: createAvatarTest,
             onboardingCommunityTest: onboardingCommunityTest,
             categoryRowTest: categoryRowTest,
             paywallTest: paywallTest

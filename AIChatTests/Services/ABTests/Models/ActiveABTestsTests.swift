@@ -45,6 +45,7 @@ struct ActiveABTestsTests {
     func testFetchUpdatedConfig() async throws {
         let expected = ActiveABTests(
             createAccountTest: .random,
+            createAvatarTest: .random,
             onboardingCommunityTest: .random,
             categoryRowTest: .default,
             paywallTest: .default
@@ -72,6 +73,7 @@ struct ActiveABTestsTests {
 
         let updated = ActiveABTests(
             createAccountTest: .random,
+            createAvatarTest: .random,
             onboardingCommunityTest: .random,
             categoryRowTest: .default,
             paywallTest: .default
@@ -91,6 +93,7 @@ struct ActiveABTestsTests {
     func testCodableRoundTrip() throws {
         let original = ActiveABTests(
             createAccountTest: .random,
+            createAvatarTest: .random,
             onboardingCommunityTest: .random,
             categoryRowTest: .default,
             paywallTest: .default
@@ -109,6 +112,7 @@ struct ActiveABTestsTests {
     func testEventParameters() throws {
         let model = ActiveABTests(
             createAccountTest: true,
+            createAvatarTest: .random,
             onboardingCommunityTest: false,
             categoryRowTest: .default,
             paywallTest: .default

@@ -12,6 +12,7 @@ protocol ExploreInteractor {
     var categoryRowTestType: CategoryRowTestOption { get }
     var auth: UserAuthInfo? { get }
     var createAccountTest: Bool { get }
+    var createAvatarTest: Bool { get }
     
     func trackEvent(event: LoggableEvent)
     func getFeaturedAvatars() async throws -> [AvatarModel]

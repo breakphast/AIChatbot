@@ -24,6 +24,10 @@ class ExplorePresenter {
         interactor.categoryRowTestType
     }
     
+    var createAvatarTest: Bool {
+        interactor.createAvatarTest
+    }
+    
     var showDevSettingsButton: Bool {
         #if DEV || MOCK
         true
@@ -111,6 +115,11 @@ class ExplorePresenter {
         router.showDevSettingsView()
     }
     
+    func onCreateAvatarPressed() {
+        interactor.trackEvent(event: Event.createAvatarPressed)
+        router.showCreateAvatarView(onDismiss: { })
+    }
+    
     func onTryAgainPressed() {
         isLoadingFeatured = true
         isLoadingPopular = true
@@ -179,6 +188,7 @@ class ExplorePresenter {
         case categoryPressed(category: CharacterOption)
         case tryAgainPressed
         case devSettingsPressed
+        case createAvatarPressed
         case pushNotifsStart
         case pushNotifsEnable(isAuthorized: Bool)
         case pushNotifsCancel
@@ -199,6 +209,7 @@ class ExplorePresenter {
             case .categoryPressed:                     return "Explore_CategoryPressed"
             case .tryAgainPressed:                     return "Explore_TryAgain_Pressed"
             case .devSettingsPressed:                  return "DevSettings_Pressed"
+            case .createAvatarPressed:                 return "CreateAvatar_Pressed"
             case .pushNotifsStart:                     return "Explore_PushNotifs_Start"
             case .pushNotifsEnable:                    return "Explore_PushNotifs_Enable"
             case .pushNotifsCancel:                    return "Explore_PushNotifs_Cancel"
