@@ -7,17 +7,21 @@
 
 import SwiftUI
 
-struct ProfileModalView: View {
+struct ProfileModalDelegate {
     var imageName: String? = Constants.randomImage
     var title: String? = "Alpha"
     var subtitle: String? = "Alien"
     var headline: String? = "An alien in the park."
     var onXMarkPressed: () -> Void = { }
+}
+
+struct ProfileModalView: View {
+    var delegate: ProfileModalDelegate = ProfileModalDelegate()
     
     var body: some View {
         VStack(spacing: 0) {
             ZStack(alignment: .topTrailing) {
-                if let imageName {
+                if let imageName = delegate.imageName {
                     ImageLoaderView(
                         urlString: imageName,
                         forceTransitionAnimation: true
@@ -29,26 +33,26 @@ struct ProfileModalView: View {
                     .font(.title)
                     .foregroundStyle(Color.black.opacity(0.7))
                     .anyButton {
-                        onXMarkPressed()
+                        delegate.onXMarkPressed()
                     }
                     .padding(12)
                     .tappableBackground()
             }
             
             VStack(alignment: .leading, spacing: 4) {
-                if let title {
+                if let title = delegate.title {
                     Text(title)
                         .font(.title)
                         .fontWeight(.semibold)
                 }
                 
-                if let subtitle {
+                if let subtitle = delegate.subtitle {
                     Text(subtitle)
                         .font(.title3)
                         .foregroundStyle(.secondary)
                 }
                 
-                if let headline {
+                if let headline = delegate.headline {
                     Text(headline)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
@@ -59,6 +63,7 @@ struct ProfileModalView: View {
         }
         .background(.thinMaterial)
         .cornerRadius(16)
+        .padding(40)
     }
 }
 
@@ -75,7 +80,7 @@ struct ProfileModalView: View {
     ZStack {
         Color.gray.ignoresSafeArea()
         
-        ProfileModalView(imageName: nil)
+        ProfileModalView(delegate: ProfileModalDelegate(imageName: nil))
             .padding(.horizontal, 40)
     }
 }

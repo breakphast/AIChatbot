@@ -154,4 +154,62 @@ struct CoreBuilder: Builder {
             delegate: delegate
         )
     }
+    
+    // MARK: Modals
+    
+    func pushNotificationModal(onEnablePressed: @escaping () -> Void, onCancelPressed: @escaping () -> Void) -> some View {
+        let delegate = CustomModalDelegate(
+            title: "Enable push notifications?",
+            subtitle: "We'll send you reminders and updates!",
+            primaryButtonTitle: "Enable",
+            primaryButtonAction: {
+                onEnablePressed()
+            },
+            secondaryButtonTitle: "Cancel",
+            secondaryButtonAction: {
+                onCancelPressed()
+            }
+        )
+        
+        return customModalView(delegate: delegate)
+    }
+    
+    func ratingsModal(onYesPressed: @escaping () -> Void, onNoPressed: @escaping () -> Void) -> some View {
+        let delegate = CustomModalDelegate(
+            title: "Are you enjoying AIChat?",
+            subtitle: "We'd love to hear your feedback!",
+            primaryButtonTitle: "Yes",
+            primaryButtonAction: {
+                onYesPressed()
+            },
+            secondaryButtonTitle: "No",
+            secondaryButtonAction: {
+                onNoPressed()
+            }
+        )
+        
+        return customModalView(delegate: delegate)
+    }
+    
+    func customModalView(delegate: CustomModalDelegate) -> some View {
+        CustomModalView(delegate: delegate)
+    }
+    
+    func profileModalView(avatar: AvatarModel, onXMarkPressed: @escaping () -> Void) -> some View {
+        let delegate = ProfileModalDelegate(
+            imageName: avatar.profileImageName,
+            title: avatar.name,
+            subtitle: avatar.characterOption?.rawValue.capitalized,
+            headline: avatar.characterDescription,
+            onXMarkPressed: {
+                onXMarkPressed()
+            }
+        )
+        
+        return profileModalView(delegate: delegate)
+    }
+    
+    func profileModalView(delegate: ProfileModalDelegate) -> some View {
+        ProfileModalView(delegate: delegate)
+    }
 }

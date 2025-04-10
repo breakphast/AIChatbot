@@ -7,22 +7,39 @@
 
 import SwiftUI
 
-struct CustomModalView: View {
+/*
+ title: "Enable push notifications?",
+ subtitle: "We'll send you reminders and updates!",
+ primaryButtonTitle: "Enable",
+ primaryButtonAction: {
+     onEnablePressed()
+ },
+ secondaryButtonTitle: "Cancel",
+ secondaryButtonAction: {
+     onCancelPressed()
+ }
+ */
+
+struct CustomModalDelegate {
     var title = "Title"
     var subtitle: String? = "This is a subtitle."
     var primaryButtonTitle = "Yes"
     var primaryButtonAction: () -> Void = { }
     var secondaryButtonTitle = "No"
     var secondaryButtonAction: () -> Void = { }
+}
+
+struct CustomModalView: View {
+    let delegate: CustomModalDelegate
     
     var body: some View {
         VStack(spacing: 24) {
             VStack(spacing: 12) {
-                Text(title)
+                Text(delegate.title)
                     .font(.title3)
                     .fontWeight(.semibold)
                 
-                if let subtitle {
+                if let subtitle = delegate.subtitle {
                     Text(subtitle)
                         .font(.callout)
                         .foregroundStyle(.secondary)
@@ -31,24 +48,24 @@ struct CustomModalView: View {
             .padding(12)
             
             VStack(spacing: 8) {
-                Text(primaryButtonTitle)
+                Text(delegate.primaryButtonTitle)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
                     .background(.accent)
                     .foregroundStyle(.white)
                     .cornerRadius(16)
                     .anyButton(.press) {
-                        primaryButtonAction()
+                        delegate.primaryButtonAction()
                     }
                 
-                Text(secondaryButtonTitle)
+                Text(delegate.secondaryButtonTitle)
                     .font(.headline)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
                     .tappableBackground()
                     .anyButton {
-                        secondaryButtonAction()
+                        delegate.secondaryButtonAction()
                     }
             }
         }
@@ -65,15 +82,18 @@ struct CustomModalView: View {
         Color.black.ignoresSafeArea()
         
         CustomModalView(
-            title: "Are you enjoying AIChat?",
-            subtitle: "We'd love to hear your feedback!",
-            primaryButtonTitle: "Yes",
-            primaryButtonAction: {
-                
-            },
-            secondaryButtonTitle: "No",
-            secondaryButtonAction: {
-                
-            })
+            delegate: CustomModalDelegate(
+                title: "Are you enjoying AIChat?",
+                subtitle: "We'd love to hear your feedback!",
+                primaryButtonTitle: "Yes",
+                primaryButtonAction: {
+                    
+                },
+                secondaryButtonTitle: "No",
+                secondaryButtonAction: {
+                    
+                }
+            )
+        )
     }
 }

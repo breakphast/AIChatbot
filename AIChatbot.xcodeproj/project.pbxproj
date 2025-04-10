@@ -10,7 +10,6 @@
 		3E3A6A912D8A3588009E07B4 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 3E3A6A902D8A3588009E07B4 /* FirebaseRemoteConfig */; };
 		3E4C86E72D5BF3E400440703 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3E4C86E62D5BF3E400440703 /* SDWebImageSwiftUI */; };
 		3E4D30B22D7509F40086239E /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 3E4D30B12D7509F40086239E /* FirebaseAuth */; };
-		3E4D30BD2D7516690086239E /* SignInAppleAsync in Frameworks */ = {isa = PBXBuildFile; productRef = 3E4D30BC2D7516690086239E /* SignInAppleAsync */; };
 		3E50DCAD2D77D53100BC15B3 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 3E50DCAC2D77D53100BC15B3 /* FirebaseStorage */; };
 		3E6BC5EB2D8C634E00268F31 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 3E6BC5EA2D8C634E00268F31 /* RevenueCat */; };
 		3E6BC5ED2D8C634E00268F31 /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3E6BC5EC2D8C634E00268F31 /* RevenueCatUI */; };
@@ -110,7 +109,6 @@
 			files = (
 				3E6C56E82DA80EA700E9A8ED /* SwiftfulAuthenticatingFirebase in Frameworks */,
 				3E6C56E32DA80E3D00E9A8ED /* SwiftfulAuthUI in Frameworks */,
-				3E4D30BD2D7516690086239E /* SignInAppleAsync in Frameworks */,
 				3E4C86E72D5BF3E400440703 /* SDWebImageSwiftUI in Frameworks */,
 				3E6BC5EB2D8C634E00268F31 /* RevenueCat in Frameworks */,
 				3E8AF2F32D769096002B1609 /* SwiftfulFirestore in Frameworks */,
@@ -239,7 +237,6 @@
 				3E4C86E62D5BF3E400440703 /* SDWebImageSwiftUI */,
 				3E99E7C82D6C074900BEB5B4 /* SwiftfulUtilities */,
 				3E4D30B12D7509F40086239E /* FirebaseAuth */,
-				3E4D30BC2D7516690086239E /* SignInAppleAsync */,
 				3E8AF2EF2D768A8A002B1609 /* FirebaseFirestore */,
 				3E8AF2F22D769096002B1609 /* SwiftfulFirestore */,
 				3E50DCAC2D77D53100BC15B3 /* FirebaseStorage */,
@@ -301,7 +298,6 @@
 				3E4C86E52D5BF3E400440703 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				3E99E7C72D6C074900BEB5B4 /* XCRemoteSwiftPackageReference "SwiftfulUtilities" */,
 				3E4D30B02D7509F40086239E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				3E4D30BB2D7516690086239E /* XCRemoteSwiftPackageReference "SignInAppleAsync" */,
 				3E8AF2F12D769096002B1609 /* XCRemoteSwiftPackageReference "SwiftfulFirestore" */,
 				3EEF79CE2D7FB8DB0038970D /* XCRemoteSwiftPackageReference "mixpanel-swift" */,
 				3E6BC5E92D8C634E00268F31 /* XCRemoteSwiftPackageReference "purchases-ios" */,
@@ -948,14 +944,6 @@
 				minimumVersion = 11.9.0;
 			};
 		};
-		3E4D30BB2D7516690086239E /* XCRemoteSwiftPackageReference "SignInAppleAsync" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftfulThinking/SignInAppleAsync.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
 		3E6BC5E92D8C634E00268F31 /* XCRemoteSwiftPackageReference "purchases-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/RevenueCat/purchases-ios.git";
@@ -1077,11 +1065,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3E4D30B02D7509F40086239E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
-		};
-		3E4D30BC2D7516690086239E /* SignInAppleAsync */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3E4D30BB2D7516690086239E /* XCRemoteSwiftPackageReference "SignInAppleAsync" */;
-			productName = SignInAppleAsync;
 		};
 		3E50DCAC2D77D53100BC15B3 /* FirebaseStorage */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -8,11 +8,10 @@
 import SwiftUI
 
 @MainActor
-protocol ChatInteractor {
+protocol ChatInteractor: GlobalInteractor {
     var currentUser: UserModel? { get }
     var isPremium: Bool { get }
     
-    func trackEvent(event: LoggableEvent)
     func getAvatar(id: String) async throws -> AvatarModel
     func getRecentAvatars() throws -> [AvatarModel]
     func addRecentAvatar(avatar: AvatarModel) async throws

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AuthenticationServices
+import SwiftfulAuthUI
 
 struct CreateAccountDelegate {
     var title: String = "Create Account?"
@@ -32,7 +32,7 @@ struct CreateAccountView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
-            SignInWithAppleButtonView(
+            SignInAppleButtonView(
                 type: .signUp,
                 style: .black,
                 cornerRadius: 10

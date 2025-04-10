@@ -8,14 +8,9 @@
 import SwiftUI
 
 @MainActor
-protocol ChatRouter {
+protocol ChatRouter: GlobalRouter {
     func showPaywallView()
-    func showAlert(error: Error)
-    func showAlert(_ option: AlertType, title: String, subtitle: String?, buttons: (@Sendable () -> AnyView)?)
-    func showSimpleAlert(title: String, subtitle: String?)
     func showProfileModal(avatar: AvatarModel, onXMarkPressed: @escaping () -> Void)
-    func dismissModal()
-    func dismissScreen()
 }
 
 extension CoreRouter: ChatRouter { }

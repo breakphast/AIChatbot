@@ -51,10 +51,14 @@ struct CoreRouter: GlobalRouter {
     }
     
     func showCreateAccountView(delegate: CreateAccountDelegate, onDismiss: (() -> Void)?) {
-        router.showScreen(.sheet, onDismiss: onDismiss) { router in
+        router.showResizableSheet(sheetDetents: [.medium], selection: nil, showDragIndicator: false, onDismiss: onDismiss) { router in
             builder.createAccountView(router: router, delegate: delegate)
-                .presentationDetents([.medium])
         }
+        
+//        router.showScreen(.sheet, onDismiss: onDismiss) { router in
+//            builder.createAccountView(router: router, delegate: delegate)
+//                .presentationDetents([.medium])
+//        }
     }
     
     func showCreateAvatarView(onDismiss: @escaping () -> Void) {
@@ -69,48 +73,20 @@ struct CoreRouter: GlobalRouter {
         router.showModal(
             transition: .move(edge: .bottom), backgroundColor: .black.opacity(0.8),
             destination: {
-                CustomModalView(
-                    title: "Enable push notifications?",
-                    subtitle: "We'll send you reminders and updates!",
-                    primaryButtonTitle: "Enable",
-                    primaryButtonAction: {
-                        onEnablePressed()
-                    },
-                    secondaryButtonTitle: "Cancel",
-                    secondaryButtonAction: {
-                        onCancelPressed()
-                    }
-                )
+                builder.pushNotificationModal(onEnablePressed: onEnablePressed, onCancelPressed: onCancelPressed)
             }
         )
     }
     
     func showProfileModal(avatar: AvatarModel, onXMarkPressed: @escaping () -> Void) {
         router.showModal(transition: .slide, backgroundColor: .black.opacity(0.6)) {
-            ProfileModalView(
-                imageName: avatar.profileImageName,
-                title: avatar.name,
-                subtitle: avatar.characterOption?.rawValue.capitalized,
-                headline: avatar.characterDescription) {
-                    onXMarkPressed()
-                }
-                .padding(40)
+            builder.profileModalView(avatar: avatar, onXMarkPressed: onXMarkPressed)
         }
     }
     
     func showRatingsModal(onYesPressed: @escaping () -> Void, onNoPressed: @escaping () -> Void) {
         router.showModal(transition: .fade, backgroundColor: .black.opacity(0.6)) {
-            CustomModalView(
-                title: "Are you enjoying AIChat?",
-                subtitle: "We'd love to hear your feedback!",
-                primaryButtonTitle: "Yes",
-                primaryButtonAction: {
-                    onYesPressed()
-                },
-                secondaryButtonTitle: "No",
-                secondaryButtonAction: {
-                    onNoPressed()
-                })
+            builder.ratingsModal(onYesPressed: onYesPressed, onNoPressed: onNoPressed)
         }
     }
 }
