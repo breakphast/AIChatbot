@@ -35,6 +35,7 @@ import SwiftfulLoggingFirebaseCrashlytics
 
 typealias LogManager = SwiftfulLogging.LogManager
 typealias LoggableEvent = SwiftfulLogging.LoggableEvent
+typealias LogService = SwiftfulLogging.LogService
 typealias AnyLoggableEvent = SwiftfulLogging.AnyLoggableEvent
 typealias LogType = SwiftfulLogging.LogType
 typealias MixpanelService = SwiftfulLoggingMixpanel.MixpanelService

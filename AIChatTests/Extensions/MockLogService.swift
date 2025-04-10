@@ -8,7 +8,7 @@
 import Testing
 @testable import AIChatbot
 
-class MockLogService: LogService {
+final class MockLogService: LogService, @unchecked Sendable {
     var identifiedUser: IdentifiedUser?
     var trackedEvents: [LoggableEvent] = []
     var userPropertiesHigh: [String: Any] = [:]
@@ -32,7 +32,7 @@ class MockLogService: LogService {
         trackedEvents.append(event)
     }
 
-    func trackScreenEvent(event: LoggableEvent) { }
+    func trackScreenView(event: LoggableEvent) { }
 }
 
 struct IdentifiedUser {
