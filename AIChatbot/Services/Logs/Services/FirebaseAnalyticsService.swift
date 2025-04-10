@@ -25,8 +25,8 @@ struct FirebaseAnalyticsService: LogService {
         #endif
     }
     
-    func identifyUser(userID: String, name: String?, email: String?) {
-        Analytics.setUserID(userID)
+    func identifyUser(userId: String, name: String?, email: String?) {
+        Analytics.setUserID(userId)
         
         if let name {
             Analytics.setUserProperty(name, forName: "account_name")

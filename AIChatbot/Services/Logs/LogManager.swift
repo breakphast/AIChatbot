@@ -16,9 +16,9 @@ class LogManager {
         self.services = services
     }
     
-    func identifyUser(userID: String, name: String?, email: String?) {
+    func identifyUser(userId: String, name: String?, email: String?) {
         for service in services {
-            service.identifyUser(userID: userID, name: name, email: email)
+            service.identifyUser(userId: userId, name: name, email: email)
         }
     }
     

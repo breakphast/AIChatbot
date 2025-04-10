@@ -15,6 +15,9 @@
 		3E6BC5EB2D8C634E00268F31 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 3E6BC5EA2D8C634E00268F31 /* RevenueCat */; };
 		3E6BC5ED2D8C634E00268F31 /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3E6BC5EC2D8C634E00268F31 /* RevenueCatUI */; };
 		3E6C56E02DA7F98700E9A8ED /* SwiftfulRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 3E6C56DF2DA7F98700E9A8ED /* SwiftfulRouting */; };
+		3E6C56E32DA80E3D00E9A8ED /* SwiftfulAuthUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3E6C56E22DA80E3D00E9A8ED /* SwiftfulAuthUI */; };
+		3E6C56E52DA80E3D00E9A8ED /* SwiftfulAuthenticating in Frameworks */ = {isa = PBXBuildFile; productRef = 3E6C56E42DA80E3D00E9A8ED /* SwiftfulAuthenticating */; };
+		3E6C56E82DA80EA700E9A8ED /* SwiftfulAuthenticatingFirebase in Frameworks */ = {isa = PBXBuildFile; productRef = 3E6C56E72DA80EA700E9A8ED /* SwiftfulAuthenticatingFirebase */; };
 		3E70F03C2D8B0557004BC604 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E70F03B2D8B0557004BC604 /* StoreKit.framework */; };
 		3E7BD2822D8649A40091F2C3 /* FirebaseFunctions in Frameworks */ = {isa = PBXBuildFile; productRef = 3E7BD2812D8649A40091F2C3 /* FirebaseFunctions */; };
 		3E8AF2F02D768A8A002B1609 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 3E8AF2EF2D768A8A002B1609 /* FirebaseFirestore */; };
@@ -99,6 +102,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3E6C56E82DA80EA700E9A8ED /* SwiftfulAuthenticatingFirebase in Frameworks */,
+				3E6C56E32DA80E3D00E9A8ED /* SwiftfulAuthUI in Frameworks */,
 				3E4D30BD2D7516690086239E /* SignInAppleAsync in Frameworks */,
 				3E4C86E72D5BF3E400440703 /* SDWebImageSwiftUI in Frameworks */,
 				3E6BC5EB2D8C634E00268F31 /* RevenueCat in Frameworks */,
@@ -110,6 +115,7 @@
 				3E6BC5ED2D8C634E00268F31 /* RevenueCatUI in Frameworks */,
 				3E50DCAD2D77D53100BC15B3 /* FirebaseStorage in Frameworks */,
 				3EEF79D02D7FB8DB0038970D /* Mixpanel in Frameworks */,
+				3E6C56E52DA80E3D00E9A8ED /* SwiftfulAuthenticating in Frameworks */,
 				3E6C56E02DA7F98700E9A8ED /* SwiftfulRouting in Frameworks */,
 				3E8AF2F02D768A8A002B1609 /* FirebaseFirestore in Frameworks */,
 				3E99E7C92D6C074900BEB5B4 /* SwiftfulUtilities in Frameworks */,
@@ -233,6 +239,9 @@
 				3E6BC5EA2D8C634E00268F31 /* RevenueCat */,
 				3E6BC5EC2D8C634E00268F31 /* RevenueCatUI */,
 				3E6C56DF2DA7F98700E9A8ED /* SwiftfulRouting */,
+				3E6C56E22DA80E3D00E9A8ED /* SwiftfulAuthUI */,
+				3E6C56E42DA80E3D00E9A8ED /* SwiftfulAuthenticating */,
+				3E6C56E72DA80EA700E9A8ED /* SwiftfulAuthenticatingFirebase */,
 			);
 			productName = AIChatbot;
 			productReference = 3EEE7B5B2D5AF00000FD40F3 /* AIChatbot.app */;
@@ -279,6 +288,8 @@
 				3EEF79CE2D7FB8DB0038970D /* XCRemoteSwiftPackageReference "mixpanel-swift" */,
 				3E6BC5E92D8C634E00268F31 /* XCRemoteSwiftPackageReference "purchases-ios" */,
 				3E6C56DE2DA7F98700E9A8ED /* XCRemoteSwiftPackageReference "SwiftfulRouting" */,
+				3E6C56E12DA80E3D00E9A8ED /* XCRemoteSwiftPackageReference "SwiftfulAuthenticating" */,
+				3E6C56E62DA80EA700E9A8ED /* XCRemoteSwiftPackageReference "SwiftfulAuthenticatingFirebase" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3EEE7B5C2D5AF00000FD40F3 /* Products */;
@@ -937,6 +948,22 @@
 				minimumVersion = 5.3.6;
 			};
 		};
+		3E6C56E12DA80E3D00E9A8ED /* XCRemoteSwiftPackageReference "SwiftfulAuthenticating" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulAuthenticating.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.10;
+			};
+		};
+		3E6C56E62DA80EA700E9A8ED /* XCRemoteSwiftPackageReference "SwiftfulAuthenticatingFirebase" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulAuthenticatingFirebase.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.8;
+			};
+		};
 		3E8AF2F12D769096002B1609 /* XCRemoteSwiftPackageReference "SwiftfulFirestore" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulFirestore";
@@ -1003,6 +1030,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3E6C56DE2DA7F98700E9A8ED /* XCRemoteSwiftPackageReference "SwiftfulRouting" */;
 			productName = SwiftfulRouting;
+		};
+		3E6C56E22DA80E3D00E9A8ED /* SwiftfulAuthUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3E6C56E12DA80E3D00E9A8ED /* XCRemoteSwiftPackageReference "SwiftfulAuthenticating" */;
+			productName = SwiftfulAuthUI;
+		};
+		3E6C56E42DA80E3D00E9A8ED /* SwiftfulAuthenticating */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3E6C56E12DA80E3D00E9A8ED /* XCRemoteSwiftPackageReference "SwiftfulAuthenticating" */;
+			productName = SwiftfulAuthenticating;
+		};
+		3E6C56E72DA80EA700E9A8ED /* SwiftfulAuthenticatingFirebase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3E6C56E62DA80EA700E9A8ED /* XCRemoteSwiftPackageReference "SwiftfulAuthenticatingFirebase" */;
+			productName = SwiftfulAuthenticatingFirebase;
 		};
 		3E7BD2812D8649A40091F2C3 /* FirebaseFunctions */ = {
 			isa = XCSwiftPackageProductDependency;

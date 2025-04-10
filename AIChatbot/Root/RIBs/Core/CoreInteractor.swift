@@ -54,7 +54,7 @@ struct CoreInteractor {
     }
     
     func getAuthID() throws -> String {
-        try authManager.getAuthID()
+        try authManager.getAuthId()
     }
     
     func signInApple() async throws -> (user: UserAuthInfo, isNewUser: Bool) {
@@ -154,8 +154,8 @@ struct CoreInteractor {
     }
     
     // MARK: LogManager
-    func identifyUser(userID: String, name: String?, email: String?) {
-        logManager.identifyUser(userID: userID, name: name, email: email)
+    func identifyUser(userId: String, name: String?, email: String?) {
+        logManager.identifyUser(userId: userId, name: name, email: email)
     }
     
     func addUserProperties(dict: [String: Any], isHighPriority: Bool) {

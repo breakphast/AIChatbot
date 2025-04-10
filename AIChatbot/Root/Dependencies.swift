@@ -6,6 +6,39 @@
 //
 
 import SwiftUI
+import SwiftfulRouting
+
+typealias RouterView = SwiftfulRouting.RouterView
+typealias AlertType = SwiftfulRouting.DialogOption
+typealias Router = SwiftfulRouting.AnyRouter
+
+import SwiftfulAuthenticating
+import SwiftfulAuthenticatingFirebase
+
+typealias UserAuthInfo = SwiftfulAuthenticating.UserAuthInfo
+typealias AuthManager = SwiftfulAuthenticating.AuthManager
+typealias MockAuthService = SwiftfulAuthenticating.MockAuthService
+
+extension AuthLogType {
+    var type: LogType {
+        switch self {
+        case .info:
+            return .info
+        case .analytic:
+            return .analytic
+        case .warning:
+            return .warning
+        case .severe:
+            return .severe
+        }
+    }
+}
+
+extension LogManager: AuthLogger {
+    func trackEvent(event: any AuthLogEvent) {
+        trackEvent(eventName: event.eventName, parameters: event.parameters, type: event.type.type)
+    }
+}
 
 @MainActor
 struct Dependencies {
@@ -30,7 +63,7 @@ struct Dependencies {
             logManager = LogManager(services: [
                 ConsoleService(printParameters: false)
             ])
-            authManager = AuthManager(service: MockAuthService(user: isSignedIn ? .mock() : nil), logManager: logManager)
+            authManager = AuthManager(service: MockAuthService(user: isSignedIn ? .mock() : nil), logger: logManager)
             userManager = UserManager(services: MockUserServices(user: isSignedIn ? .mock : nil), logManager: logManager)
             aiService = MockAIService()
             localAvatarService = MockLocalAvatarPersistence()
@@ -53,7 +86,7 @@ struct Dependencies {
                 MixpanelService(token: Keys.mixpanelToken),
                 FirebaseCrashlyticsService()
             ])
-            authManager = AuthManager(service: FirebaseAuthService(), logManager: logManager)
+            authManager = AuthManager(service: FirebaseAuthService(), logger: logManager)
             userManager = UserManager(services: ProductionUserServices(), logManager: logManager)
             aiService = OpenAIService()
             localAvatarService = SwiftDataLocalAvatarPersistence()
@@ -72,7 +105,7 @@ struct Dependencies {
                 MixpanelService(token: Keys.mixpanelToken),
                 FirebaseCrashlyticsService()
             ])
-            authManager = AuthManager(service: FirebaseAuthService(), logManager: logManager)
+            authManager = AuthManager(service: FirebaseAuthService(), logger: logManager)
             userManager = UserManager(services: ProductionUserServices(), logManager: logManager)
             abTestManager = ABTestManager(service: FirebaseABTestService(), logManager: logManager)
             purchaseManager = PurchaseManager(service: StoreKitPurchaseService(), logManager: logManager)

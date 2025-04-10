@@ -67,10 +67,10 @@ struct ConsoleService: LogService {
         self.printParameters = printParameters
     }
     
-    func identifyUser(userID: String, name: String?, email: String?) {
+    func identifyUser(userId: String, name: String?, email: String?) {
         let string = """
                     📈 Identify User
-                    userID: \(userID)
+                    userID: \(userId)
                     name: \(name ?? "unknown")
                     email: \(email ?? "unknown")
                     """

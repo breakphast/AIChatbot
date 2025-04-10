@@ -8,8 +8,8 @@
 import FirebaseCrashlytics
 
 struct FirebaseCrashlyticsService: LogService {
-    func identifyUser(userID: String, name: String?, email: String?) {
-        Crashlytics.crashlytics().setUserID(userID)
+    func identifyUser(userId: String, name: String?, email: String?) {
+        Crashlytics.crashlytics().setUserID(userId)
         
         if let name {
             Crashlytics.crashlytics().setCustomValue(name, forKey: "account_name")

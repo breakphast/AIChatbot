@@ -23,8 +23,8 @@ struct MixpanelService: LogService {
         Mixpanel.initialize(token: token, trackAutomaticEvents: true)
         instance.loggingEnabled = loggingEnabled
     }
-    func identifyUser(userID: String, name: String?, email: String?) {
-        instance.identify(distinctId: userID)
+    func identifyUser(userId: String, name: String?, email: String?) {
+        instance.identify(distinctId: userId)
         
         if let name {
             instance.people.set(property: "$name", to: name)
