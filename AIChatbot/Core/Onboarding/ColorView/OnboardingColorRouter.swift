@@ -10,6 +10,7 @@ import SwiftUI
 @MainActor
 protocol OnboardingColorRouter {
     func showOnboardingCompletedView(delegate: OnboardingCompletedDelegate)
+    func showOnboardingCategoryView(delegate: OnboardingCategoryDelegate)
 }
 
 extension OnbRouter: OnboardingColorRouter { }

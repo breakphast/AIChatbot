@@ -28,7 +28,12 @@ class OnboardingColorPresenter {
     func onContinueButtonPressed() {
         guard let selectedColor else { return }
         
-        let delegate = OnboardingCompletedDelegate(selectedColor: selectedColor)
-        router.showOnboardingCompletedView(delegate: delegate)
+        if interactor.onboardingCategoryTest {
+            let delegate = OnboardingCategoryDelegate(selectedColor: selectedColor)
+            router.showOnboardingCategoryView(delegate: delegate)
+        } else {
+            let delegate = OnboardingCompletedDelegate(selectedColor: selectedColor)
+            router.showOnboardingCompletedView(delegate: delegate)
+        }
     }
 }

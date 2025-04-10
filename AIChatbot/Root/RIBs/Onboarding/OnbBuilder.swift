@@ -46,6 +46,16 @@ struct OnbBuilder: Builder {
         )
     }
     
+    func onboardingCategoryView(router: AnyRouter, delegate: OnboardingCategoryDelegate) -> some View {
+        OnboardingCategoryView(
+            presenter: OnboardingCategoryPresenter(
+                interactor: interactor,
+                router: OnbRouter(router: router, builder: self)
+            ),
+            delegate: delegate
+        )
+    }
+    
     func onboardingIntroView(router: AnyRouter, delegate: OnboardingIntroDelegate) -> some View {
         OnboardingIntroView(
             presenter: OnboardingIntroPresenter(

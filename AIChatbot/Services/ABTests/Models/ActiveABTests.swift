@@ -12,6 +12,7 @@ struct ActiveABTests: Codable {
     private(set) var createAccountTest: Bool
     private(set) var createAvatarTest: Bool
     private(set) var onboardingCommunityTest: Bool
+    private(set) var onboardingCategoryTest: Bool
     private(set) var categoryRowTest: CategoryRowTestOption
     private(set) var paywallTest: PaywallTestOption
     
@@ -19,12 +20,14 @@ struct ActiveABTests: Codable {
         createAccountTest: Bool,
         createAvatarTest: Bool,
         onboardingCommunityTest: Bool,
+        onboardingCategoryTest: Bool,
         categoryRowTest: CategoryRowTestOption,
         paywallTest: PaywallTestOption
     ) {
         self.createAccountTest = createAccountTest
         self.createAvatarTest = createAvatarTest
         self.onboardingCommunityTest = onboardingCommunityTest
+        self.onboardingCategoryTest = onboardingCategoryTest
         self.categoryRowTest = categoryRowTest
         self.paywallTest = paywallTest
     }
@@ -33,6 +36,7 @@ struct ActiveABTests: Codable {
         case createAccountTest = "_202503_CreateAccTest"
         case createAvatarTest = "_202503_CreateAvatarTest"
         case onboardingCommunityTest = "_202503_OnbCommunityTest"
+        case onboardingCategoryTest = "_202503_OnbCategoryTest"
         case categoryRowTest = "_202503_categoryRowTest"
         case paywallTest = "_202503_paywallTest"
     }
@@ -42,6 +46,7 @@ struct ActiveABTests: Codable {
             "test\(CodingKeys.createAccountTest.rawValue)": createAccountTest,
             "test\(CodingKeys.createAvatarTest.rawValue)": createAvatarTest,
             "test\(CodingKeys.onboardingCommunityTest.rawValue)": onboardingCommunityTest,
+            "test\(CodingKeys.onboardingCategoryTest.rawValue)": onboardingCategoryTest,
             "test\(CodingKeys.categoryRowTest.rawValue)": categoryRowTest.rawValue,
             "test\(CodingKeys.paywallTest.rawValue)": paywallTest.rawValue
         ]
@@ -55,6 +60,10 @@ struct ActiveABTests: Codable {
     
     mutating func update(onboardingCommunityTest newValue: Bool) {
         onboardingCommunityTest = newValue
+    }
+    
+    mutating func update(onboardingCategoryTest newValue: Bool) {
+        onboardingCategoryTest = newValue
     }
     
     mutating func update(createAvatarTest newValue: Bool) {
@@ -79,6 +88,9 @@ extension ActiveABTests {
         let onboardingCommunityTest = config.configValue(forKey: ActiveABTests.CodingKeys.onboardingCommunityTest.rawValue).boolValue
         self.onboardingCommunityTest = onboardingCommunityTest
         
+        let onboardingCategoryTest = config.configValue(forKey: ActiveABTests.CodingKeys.onboardingCategoryTest.rawValue).boolValue
+        self.onboardingCategoryTest = onboardingCategoryTest
+        
         let createAvatarTest = config.configValue(forKey: ActiveABTests.CodingKeys.createAvatarTest.rawValue).boolValue
         self.createAvatarTest = createAvatarTest
         
@@ -102,6 +114,7 @@ extension ActiveABTests {
         [
             CodingKeys.createAccountTest.rawValue: createAccountTest as NSObject,
             CodingKeys.onboardingCommunityTest.rawValue: onboardingCommunityTest as NSObject,
+            CodingKeys.onboardingCategoryTest.rawValue: onboardingCategoryTest as NSObject,
             CodingKeys.categoryRowTest.rawValue: categoryRowTest.rawValue as NSObject,
             CodingKeys.paywallTest.rawValue: paywallTest.rawValue as NSObject
         ]

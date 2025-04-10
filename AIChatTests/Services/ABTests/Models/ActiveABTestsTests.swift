@@ -47,6 +47,7 @@ struct ActiveABTestsTests {
             createAccountTest: .random,
             createAvatarTest: .random,
             onboardingCommunityTest: .random,
+            onboardingCategoryTest: .random,
             categoryRowTest: .default,
             paywallTest: .default
         )
@@ -75,6 +76,7 @@ struct ActiveABTestsTests {
             createAccountTest: .random,
             createAvatarTest: .random,
             onboardingCommunityTest: .random,
+            onboardingCategoryTest: .random,
             categoryRowTest: .default,
             paywallTest: .default
         )
@@ -95,6 +97,7 @@ struct ActiveABTestsTests {
             createAccountTest: .random,
             createAvatarTest: .random,
             onboardingCommunityTest: .random,
+            onboardingCategoryTest: .random,
             categoryRowTest: .default,
             paywallTest: .default
         )
@@ -114,6 +117,7 @@ struct ActiveABTestsTests {
             createAccountTest: true,
             createAvatarTest: .random,
             onboardingCommunityTest: false,
+            onboardingCategoryTest: .random,
             categoryRowTest: .default,
             paywallTest: .default
         )

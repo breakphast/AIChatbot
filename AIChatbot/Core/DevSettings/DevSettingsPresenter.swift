@@ -17,6 +17,7 @@ class DevSettingsPresenter {
     var createAccountTest: Bool = false
     var createAvatarTest: Bool = false
     var onboardingCommunityTest: Bool = false
+    var onboardingCategoryTest: Bool = false
     var categoryRowTest: CategoryRowTestOption = .default
     var paywallTest: PaywallTestOption = .default
     
@@ -73,6 +74,17 @@ class DevSettingsPresenter {
             savedValue: interactor.activeTests.onboardingCommunityTest,
             updateAction: { tests in
                 tests.update(onboardingCommunityTest: newValue)
+            }
+        )
+    }
+    
+    func handleOnbCategoryTestChange(oldValue: Bool, newValue: Bool) {
+        updateTest(
+            property: &onboardingCategoryTest,
+            newValue: newValue,
+            savedValue: interactor.activeTests.onboardingCategoryTest,
+            updateAction: { tests in
+                tests.update(onboardingCategoryTest: newValue)
             }
         )
     }

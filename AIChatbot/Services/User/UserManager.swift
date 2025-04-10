@@ -115,9 +115,9 @@ class UserManager {
         }
     }
     
-    func markOnboardingCompletedForCurrentUser(profileColorHex: String) async throws {
+    func markOnboardingCompletedForCurrentUser(profileColorHex: String, category: String) async throws {
         let uid = try currentUserID()
-        try await remote.markOnboardingCompleted(userID: uid, profileColorHex: profileColorHex)
+        try await remote.markOnboardingCompleted(userID: uid, profileColorHex: profileColorHex, category: category)
     }
     
     func signOut() {
@@ -151,7 +151,7 @@ class UserManager {
 @MainActor
 protocol RemoteUserService: Sendable {
     func saveUser(user: UserModel) async throws
-    func markOnboardingCompleted(userID: String, profileColorHex: String) async throws
+    func markOnboardingCompleted(userID: String, profileColorHex: String, category: String?) async throws
     func streamUser(userID: String) -> AsyncThrowingStream<UserModel, Error>
     func deleteUser(userID: String) async throws
 }

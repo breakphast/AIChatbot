@@ -9,6 +9,7 @@ import SwiftUI
 
 struct OnboardingCompletedDelegate {
     var selectedColor: Color = .orange
+    var selectedCategory: CharacterOption = .alien
 }
 
 struct OnboardingCompletedView: View {
@@ -32,7 +33,7 @@ struct OnboardingCompletedView: View {
                 isLoading: presenter.isCompletingProfileSetup,
                 text: "Finish",
                 action: {
-                    presenter.onFinishButtonPressed(selectedColor: delegate.selectedColor)
+                    presenter.onFinishButtonPressed(delegate: delegate)
                 }
             )
             .accessibilityIdentifier("FinishButton")

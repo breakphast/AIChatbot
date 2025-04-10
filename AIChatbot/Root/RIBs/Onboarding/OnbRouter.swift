@@ -36,6 +36,12 @@ struct OnbRouter: GlobalRouter {
         }
     }
     
+    func showOnboardingCategoryView(delegate: OnboardingCategoryDelegate) {
+        router.showScreen(.push) { router in
+            builder.onboardingCategoryView(router: router, delegate: delegate)
+        }
+    }
+    
     func showCreateAccountView(delegate: CreateAccountDelegate, onDismiss: (() -> Void)?) {
         router.showResizableSheet(sheetDetents: [.medium], selection: nil, showDragIndicator: false, onDismiss: onDismiss) { router in
             builder.createAccountView(router: router, delegate: delegate)

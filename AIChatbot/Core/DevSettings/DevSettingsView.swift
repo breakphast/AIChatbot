@@ -50,6 +50,9 @@ struct DevSettingsView: View {
             Toggle("Onb Community Test", isOn: $presenter.onboardingCommunityTest)
                 .onChange(of: presenter.onboardingCommunityTest, presenter.handleOnbCommunityTestChange)
             
+            Toggle("Onb Category Test", isOn: $presenter.onboardingCategoryTest)
+                .onChange(of: presenter.onboardingCategoryTest, presenter.handleOnbCategoryTestChange)
+            
             Picker("Category Row Test", selection: $presenter.categoryRowTest) {
                 ForEach(CategoryRowTestOption.allCases, id: \.self) { option in
                     Text(option.rawValue)

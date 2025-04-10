@@ -8,8 +8,9 @@
 import SwiftUI
 
 @MainActor
-protocol OnboardingColorInteractor {
+protocol OnboardingColorInteractor: GlobalInteractor {
     func trackEvent(event: LoggableEvent)
+    var onboardingCategoryTest: Bool { get }
 }
 
 extension OnbInteractor: OnboardingColorInteractor { }

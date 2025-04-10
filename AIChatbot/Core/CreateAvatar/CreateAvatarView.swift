@@ -24,6 +24,9 @@ struct CreateAvatarView: View {
             }
         }
         .screenAppearAnalytics(name: "CreateAvatar")
+        .onFirstAppear {
+            presenter.assignDefaultCharOption()
+        }
     }
     
     private var backButton: some View {

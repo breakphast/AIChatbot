@@ -13,6 +13,7 @@ protocol CreateAvatarInteractor {
     func generateImage(input: String) async throws -> UIImage
     func getAuthID() throws -> String
     func createAvatar(avatar: AvatarModel, image: UIImage) async throws
+    var currentUser: UserModel? { get }
 }
 
 extension CoreInteractor: CreateAvatarInteractor { }

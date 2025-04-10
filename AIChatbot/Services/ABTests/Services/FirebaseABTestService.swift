@@ -22,6 +22,7 @@ class FirebaseABTestService: ABTestService {
             createAccountTest: false,
             createAvatarTest: false,
             onboardingCommunityTest: false,
+            onboardingCategoryTest: false,
             categoryRowTest: .default,
             paywallTest: .default
         )

@@ -117,6 +117,7 @@ struct Dependencies {
             let abTestService = MockABTestService(
                 createAvatarTest: true,
                 onboardingCommunityTest: isInOnboardingCommunityTest,
+                onboardingCategoryTest: false,
                 paywallTest: .custom
             )
             
@@ -134,7 +135,7 @@ struct Dependencies {
             userManager = UserManager(services: ProductionUserServices(), logManager: logManager)
             aiService = OpenAIService()
             localAvatarService = SwiftDataLocalAvatarPersistence()
-            remoteAvatarService = MockAvatarService()
+            remoteAvatarService = FirebaseAvatarService()
             chatService = FirebaseChatService()
             
             abTestManager = ABTestManager(service: LocalABTestService(), logManager: logManager)

@@ -19,7 +19,7 @@ class MockUserService: RemoteUserService {
         currentUser = user
     }
     
-    func markOnboardingCompleted(userID: String, profileColorHex: String) async throws {
+    func markOnboardingCompleted(userID: String, profileColorHex: String, category: String?) async throws {
         guard let currentUser else {
             throw URLError(.unknown)
         }
@@ -32,7 +32,8 @@ class MockUserService: RemoteUserService {
             creationVersion: currentUser.creationVersion,
             lastSignInDate: currentUser.lastSignInDate,
             didCompleteOnboarding: currentUser.didCompleteOnboarding,
-            profileColorHex: currentUser.profileColorHex
+            profileColorHex: currentUser.profileColorHex,
+            characterOption: currentUser.characterOption
         )
     }
     

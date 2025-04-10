@@ -10,7 +10,7 @@ import SwiftUI
 @MainActor
 protocol OnboardingCompletedInteractor {
     func updateAppState(showTabBar: Bool)
-    func markOnboardingCompletedForCurrentUser(profileColorHex: String) async throws
+    func markOnboardingCompletedForCurrentUser(profileColorHex: String, category: String) async throws
     func trackEvent(event: LoggableEvent)
 }
 

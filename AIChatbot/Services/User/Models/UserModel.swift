@@ -21,6 +21,7 @@ struct UserModel: Codable, StringIdentifiable {
     let lastSignInDate: Date?
     let didCompleteOnboarding: Bool?
     let profileColorHex: String?
+    let characterOption: String?
     
     var profileColorConverted: Color {
         guard let profileColorHex else { return .accent }
@@ -36,7 +37,8 @@ struct UserModel: Codable, StringIdentifiable {
         creationVersion: String? = nil,
         lastSignInDate: Date? = nil,
         didCompleteOnboarding: Bool? = nil,
-        profileColorHex: String? = nil
+        profileColorHex: String? = nil,
+        characterOption: String? = nil
     ) {
         self.userID = userID
         self.email = email
@@ -46,6 +48,7 @@ struct UserModel: Codable, StringIdentifiable {
         self.lastSignInDate = lastSignInDate
         self.didCompleteOnboarding = didCompleteOnboarding
         self.profileColorHex = profileColorHex
+        self.characterOption = characterOption
     }
     
     init(auth: UserAuthInfo, creationVersion: String?) {
@@ -67,6 +70,7 @@ struct UserModel: Codable, StringIdentifiable {
         case lastSignInDate = "last_sign_in_date"
         case didCompleteOnboarding = "did_complete_onboarding"
         case profileColorHex = "profile_color_hex"
+        case characterOption = "character_option"
     }
     
     var eventParameters: [String: Any] {
@@ -78,7 +82,8 @@ struct UserModel: Codable, StringIdentifiable {
             "user_\(CodingKeys.creationVersion.rawValue)": creationVersion,
             "user_\(CodingKeys.lastSignInDate.rawValue)": lastSignInDate,
             "user_\(CodingKeys.didCompleteOnboarding.rawValue)": didCompleteOnboarding,
-            "user_\(CodingKeys.profileColorHex.rawValue)": profileColorHex
+            "user_\(CodingKeys.profileColorHex.rawValue)": profileColorHex,
+            "user_\(CodingKeys.characterOption.rawValue)": characterOption
         ]
         
         return dict.compactMapValues({ $0 })
@@ -95,19 +100,22 @@ struct UserModel: Codable, StringIdentifiable {
                 userID: "user1",
                 creationDate: now,
                 didCompleteOnboarding: true,
-                profileColorHex: "#33A1FF"
+                profileColorHex: "#33A1FF",
+                characterOption: "Alien"
             ),
             UserModel(
                 userID: "user2",
                 creationDate: now.addingTimeInterval(-86400),
                 didCompleteOnboarding: false,
-                profileColorHex: "#FF5733"
+                profileColorHex: "#FF5733",
+                characterOption: "Alien"
             ),
             UserModel(
                 userID: "user3",
                 creationDate: now.addingTimeInterval(-604800),
                 didCompleteOnboarding: true,
-                profileColorHex: "#7DFF33"
+                profileColorHex: "#7DFF33",
+                characterOption: "Alien"
             )
         ]
     }

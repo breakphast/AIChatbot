@@ -8,7 +8,7 @@
 import SwiftUI
 
 @MainActor
-struct OnbInteractor {
+struct OnbInteractor: GlobalInteractor {
     private let logManager: LogManager
     private let appState: AppState
     private let userManager: UserManager
@@ -25,8 +25,20 @@ struct OnbInteractor {
         self.purchaseManager = container.resolve(PurchaseManager.self)!
     }
     
-    func trackEvent(event: any LoggableEvent) {
+    func trackEvent(eventName: String, parameters: [String: Any]? = nil, type: LogType = .analytic) {
+        logManager.trackEvent(eventName: eventName, parameters: parameters, type: type)
+    }
+    
+    func trackEvent(event: AnyLoggableEvent) {
         logManager.trackEvent(event: event)
+    }
+    
+    func trackEvent(event: LoggableEvent) {
+        logManager.trackEvent(event: event)
+    }
+    
+    func trackScreenEvent(event: LoggableEvent) {
+        logManager.trackScreenView(event: event)
     }
     
     func updateAppState(showTabBar: Bool) {
@@ -37,8 +49,15 @@ struct OnbInteractor {
         abTestManager.activeTests.onboardingCommunityTest
     }
     
-    func markOnboardingCompletedForCurrentUser(profileColorHex: String) async throws {
-        try await userManager.markOnboardingCompletedForCurrentUser(profileColorHex: profileColorHex)
+    var onboardingCategoryTest: Bool {
+        abTestManager.activeTests.onboardingCategoryTest
+    }
+    
+    func markOnboardingCompletedForCurrentUser(profileColorHex: String, category: String) async throws {
+        try await userManager.markOnboardingCompletedForCurrentUser(
+            profileColorHex: profileColorHex,
+            category: category
+        )
     }
     
     func login(user: UserAuthInfo, isNewUser: Bool) async throws {

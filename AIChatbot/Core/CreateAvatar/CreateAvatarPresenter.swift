@@ -27,6 +27,12 @@ class CreateAvatarPresenter {
         self.router = router
     }
     
+    func assignDefaultCharOption() {
+        if let currentUser = interactor.currentUser, let characterOption = currentUser.characterOption {
+            self.characterOption = CharacterOption(rawValue: characterOption) ?? .default
+        }
+    }
+    
     func onGenerateImagePressed() {
         interactor.trackEvent(event: Event.generateImageStart)
         isGenerating = true

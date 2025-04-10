@@ -15,6 +15,7 @@ class MockABTestService: ABTestService {
         createAccountTest: Bool? = nil,
         createAvatarTest: Bool? = nil,
         onboardingCommunityTest: Bool? = nil,
+        onboardingCategoryTest: Bool? = nil,
         categoryRowTest: CategoryRowTestOption? = nil,
         paywallTest: PaywallTestOption? = nil
     ) {
@@ -22,6 +23,7 @@ class MockABTestService: ABTestService {
             createAccountTest: createAccountTest ?? false,
             createAvatarTest: createAvatarTest ?? false,
             onboardingCommunityTest: onboardingCommunityTest ?? false,
+            onboardingCategoryTest: onboardingCategoryTest ?? false,
             categoryRowTest: categoryRowTest ?? .default,
             paywallTest: paywallTest ?? .default
         )

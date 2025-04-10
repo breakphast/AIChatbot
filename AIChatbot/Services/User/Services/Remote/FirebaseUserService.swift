@@ -17,10 +17,11 @@ struct FirebaseUserService: RemoteUserService {
         try await collection.setDocument(document: user)
     }
     
-    func markOnboardingCompleted(userID: String, profileColorHex: String) async throws {
+    func markOnboardingCompleted(userID: String, profileColorHex: String, category: String?) async throws {
         try await collection.updateDocument(id: userID, dict: [
             UserModel.CodingKeys.didCompleteOnboarding.rawValue: true,
-            UserModel.CodingKeys.profileColorHex.rawValue: profileColorHex
+            UserModel.CodingKeys.profileColorHex.rawValue: profileColorHex,
+            UserModel.CodingKeys.characterOption.rawValue: category ?? ""
         ])
     }
     

@@ -200,28 +200,28 @@ struct ExploreView: View {
     }
 }
 
-//#Preview("Has Data") {
-//    let container = DevPreview.shared.container()
-//    container.register(RemoteAvatarService.self, service: MockAvatarService())
-//    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
-//    
-//    return RouterView { router in
-//        builder.exploreView(router: router)
-//    }
-//    .previewEnvironment()
-//}
+#Preview("Has Data") {
+    let container = DevPreview.shared.container()
+    container.register(RemoteAvatarService.self, service: MockAvatarService())
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
+    
+    return RouterView { router in
+        builder.exploreView(router: router)
+    }
+    .previewEnvironment()
+}
 
-//#Preview("CategoryRowTest: Original") {
-//    let container = DevPreview.shared.container()
-//    container.register(RemoteAvatarService.self, service: MockAvatarService())
-//    container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(categoryRowTest: .original)))
-//    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
-//    
-//    return RouterView { router in
-//        builder.exploreView(router: router)
-//    }
-//    .previewEnvironment()
-//}
+#Preview("CategoryRowTest: Original") {
+    let container = DevPreview.shared.container()
+    container.register(RemoteAvatarService.self, service: MockAvatarService())
+    container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(categoryRowTest: .original)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
+    
+    return RouterView { router in
+        builder.exploreView(router: router)
+    }
+    .previewEnvironment()
+}
 
 #Preview("CreateAvatarTest") {
     let container = DevPreview.shared.container()
@@ -235,49 +235,49 @@ struct ExploreView: View {
     .previewEnvironment()
 }
 
-//#Preview("CategoryRowTest: Hidden") {
-//    let container = DevPreview.shared.container()
-//    container.register(RemoteAvatarService.self, service: MockAvatarService())
-//    container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(categoryRowTest: .hidden)))
-//    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
-//    
-//    return RouterView { router in
-//        builder.exploreView(router: router)
-//    }
-//    .previewEnvironment()
-//}
-//
-//#Preview("Has Data w/ Create Acct Test") {
-//    let container = DevPreview.shared.container()
-//    container.register(RemoteAvatarService.self, service: MockAvatarService())
-//    container.register(AuthManager.self, service: AuthManager(service: MockAuthService(user: .mock(isAnonymous: true))))
-//    container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(createAccountTest: true)))
-//    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
-//    
-//    return RouterView { router in
-//        builder.exploreView(router: router)
-//    }
-//    .previewEnvironment()
-//}
-//
-//#Preview("No Data") {
-//    let container = DevPreview.shared.container()
-//    container.register(RemoteAvatarService.self, service: MockAvatarService(avatars: [], delay: 2))
-//    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
-//    
-//    return RouterView { router in
-//        builder.exploreView(router: router)
-//    }
-//    .previewEnvironment()
-//}
-//
-//#Preview("Slow loading") {
-//    let container = DevPreview.shared.container()
-//    container.register(RemoteAvatarService.self, service: MockAvatarService(delay: 10))
-//    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
-//    
-//    return RouterView { router in
-//        builder.exploreView(router: router)
-//    }
-//    .previewEnvironment()
-//}
+#Preview("CategoryRowTest: Hidden") {
+    let container = DevPreview.shared.container()
+    container.register(RemoteAvatarService.self, service: MockAvatarService())
+    container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(categoryRowTest: .hidden)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
+    
+    return RouterView { router in
+        builder.exploreView(router: router)
+    }
+    .previewEnvironment()
+}
+
+#Preview("Has Data w/ Create Acct Test") {
+    let container = DevPreview.shared.container()
+    container.register(RemoteAvatarService.self, service: MockAvatarService())
+    container.register(AuthManager.self, service: AuthManager(service: MockAuthService(user: .mock(isAnonymous: true))))
+    container.register(ABTestManager.self, service: ABTestManager(service: MockABTestService(createAccountTest: true)))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
+    
+    return RouterView { router in
+        builder.exploreView(router: router)
+    }
+    .previewEnvironment()
+}
+
+#Preview("No Data") {
+    let container = DevPreview.shared.container()
+    container.register(RemoteAvatarService.self, service: MockAvatarService(avatars: [], delay: 2))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
+    
+    return RouterView { router in
+        builder.exploreView(router: router)
+    }
+    .previewEnvironment()
+}
+
+#Preview("Slow loading") {
+    let container = DevPreview.shared.container()
+    container.register(RemoteAvatarService.self, service: MockAvatarService(delay: 10))
+    let builder = CoreBuilder(interactor: CoreInteractor(container: container))
+    
+    return RouterView { router in
+        builder.exploreView(router: router)
+    }
+    .previewEnvironment()
+}

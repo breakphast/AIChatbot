@@ -20,14 +20,17 @@ class OnboardingCompletedPresenter {
         self.router = router
     }
     
-    func onFinishButtonPressed(selectedColor: Color) {
+    func onFinishButtonPressed(delegate: OnboardingCompletedDelegate) {
         interactor.trackEvent(event: Event.finishStart)
         isCompletingProfileSetup = true
         
         Task {
             do {
-                let hex = selectedColor.asHex()
-                try await interactor.markOnboardingCompletedForCurrentUser(profileColorHex: hex)
+                let hex = delegate.selectedColor.asHex()
+                try await interactor.markOnboardingCompletedForCurrentUser(
+                    profileColorHex: hex,
+                    category: delegate.selectedCategory.rawValue
+                )
                 interactor.trackEvent(event: Event.finishSuccess(hex: hex))
                 
                 isCompletingProfileSetup = false
