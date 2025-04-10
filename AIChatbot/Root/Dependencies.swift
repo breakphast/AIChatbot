@@ -19,6 +19,15 @@ typealias UserAuthInfo = SwiftfulAuthenticating.UserAuthInfo
 typealias AuthManager = SwiftfulAuthenticating.AuthManager
 typealias MockAuthService = SwiftfulAuthenticating.MockAuthService
 
+import SwiftfulPurchasing
+import SwiftfulPurchasingRevenueCat
+
+typealias PurchaseManager = SwiftfulPurchasing.PurchaseManager
+typealias PurchaseProfileAttributes = SwiftfulPurchasing.PurchaseProfileAttributes
+typealias PurchasedEntitlement = SwiftfulPurchasing.PurchasedEntitlement
+typealias AnyProduct = SwiftfulPurchasing.AnyProduct
+typealias MockPurchaseService = SwiftfulPurchasing.MockPurchaseService
+
 extension AuthLogType {
     var type: LogType {
         switch self {
@@ -36,6 +45,27 @@ extension AuthLogType {
 
 extension LogManager: AuthLogger {
     func trackEvent(event: any AuthLogEvent) {
+        trackEvent(eventName: event.eventName, parameters: event.parameters, type: event.type.type)
+    }
+}
+
+extension PurchaseLogType {
+    var type: LogType {
+        switch self {
+        case .info:
+            return .info
+        case .analytic:
+            return .analytic
+        case .warning:
+            return .warning
+        case .severe:
+            return .severe
+        }
+    }
+}
+
+extension LogManager: PurchaseLogger {
+    func trackEvent(event: any PurchaseLogEvent) {
         trackEvent(eventName: event.eventName, parameters: event.parameters, type: event.type.type)
     }
 }
@@ -77,7 +107,7 @@ struct Dependencies {
             )
             
             abTestManager = ABTestManager(service: abTestService, logManager: logManager)
-            purchaseManager = PurchaseManager(service: MockPurchaseService(), logManager: logManager)
+            purchaseManager = PurchaseManager(service: MockPurchaseService(), logger: logManager)
             appState = AppState(showTabBar: isSignedIn)
         case .dev:
             logManager = LogManager(services: [
@@ -96,7 +126,7 @@ struct Dependencies {
             abTestManager = ABTestManager(service: LocalABTestService(), logManager: logManager)
             purchaseManager = PurchaseManager(
                 service: RevenueCatPurchaseService(apiKey: Keys.revenueCatApiKey),
-                logManager: logManager
+                logger: logManager
             )
             appState = AppState()
         case .prod:
@@ -108,7 +138,7 @@ struct Dependencies {
             authManager = AuthManager(service: FirebaseAuthService(), logger: logManager)
             userManager = UserManager(services: ProductionUserServices(), logManager: logManager)
             abTestManager = ABTestManager(service: FirebaseABTestService(), logManager: logManager)
-            purchaseManager = PurchaseManager(service: StoreKitPurchaseService(), logManager: logManager)
+            purchaseManager = PurchaseManager(service: StoreKitPurchaseService(), logger: logManager)
             appState = AppState()
             
             aiService = OpenAIService()

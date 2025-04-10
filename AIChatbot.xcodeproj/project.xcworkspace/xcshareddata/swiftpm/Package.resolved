@@ -1,5 +1,5 @@
 {
-  "originHash" : "f394b2a24ce1833a245b464d44bd0d3ab6766f5cb3cc5336eeaa22920034f7dd",
+  "originHash" : "7ffe28f581655c294aff89ca1ece298fb764f843a7fb0eb7f012a3f54b2841b6",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -233,6 +233,24 @@
       "state" : {
         "revision" : "7fc9e1d74f655d7ae7d5f29016b89cfc83703622",
         "version" : "11.0.2"
+      }
+    },
+    {
+      "identity" : "swiftfulpurchasing",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SwiftfulThinking/SwiftfulPurchasing.git",
+      "state" : {
+        "revision" : "e57df9de1c3c36e84548bf52433a5cd16d8c26fc",
+        "version" : "1.1.1"
+      }
+    },
+    {
+      "identity" : "swiftfulpurchasingrevenuecat",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SwiftfulThinking/SwiftfulPurchasingRevenueCat.git",
+      "state" : {
+        "revision" : "e5c9d2154ac3b653073a9e8d6cd51ff5678a723b",
+        "version" : "1.0.3"
       }
     },
     {
