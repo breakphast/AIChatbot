@@ -9,7 +9,7 @@ import SwiftUI
 
 @MainActor
 struct OnbRouter: GlobalRouter {
-    let router: Router
+    let router: AnyRouter
     let builder: OnbBuilder
     
     func showOnboardingIntroView(delegate: OnboardingIntroDelegate) {

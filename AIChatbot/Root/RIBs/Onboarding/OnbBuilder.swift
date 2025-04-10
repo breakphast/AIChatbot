@@ -26,7 +26,7 @@ struct OnbBuilder: Builder {
         }
     }
     
-    func onboardingColorView(router: Router, delegate: OnboardingColorDelegate) -> some View {
+    func onboardingColorView(router: AnyRouter, delegate: OnboardingColorDelegate) -> some View {
         OnboardingColorView(
             presenter: OnboardingColorPresenter(
                 interactor: interactor,
@@ -36,7 +36,7 @@ struct OnbBuilder: Builder {
         )
     }
     
-    func onboardingCommunityView(router: Router, delegate: OnboardingCommunityDelegate) -> some View {
+    func onboardingCommunityView(router: AnyRouter, delegate: OnboardingCommunityDelegate) -> some View {
         OnboardingCommunityView(
             presenter: OnboardingCommunityPresenter(
                 interactor: interactor,
@@ -46,7 +46,7 @@ struct OnbBuilder: Builder {
         )
     }
     
-    func onboardingIntroView(router: Router, delegate: OnboardingIntroDelegate) -> some View {
+    func onboardingIntroView(router: AnyRouter, delegate: OnboardingIntroDelegate) -> some View {
         OnboardingIntroView(
             presenter: OnboardingIntroPresenter(
                 interactor: interactor,
@@ -56,7 +56,7 @@ struct OnbBuilder: Builder {
         )
     }
     
-    func onboardingCompletedView(router: Router, delegate: OnboardingCompletedDelegate) -> some View {
+    func onboardingCompletedView(router: AnyRouter, delegate: OnboardingCompletedDelegate) -> some View {
         OnboardingCompletedView(
             presenter: OnboardingCompletedPresenter(
                 interactor: interactor,
@@ -66,7 +66,7 @@ struct OnbBuilder: Builder {
         )
     }
     
-    func createAccountView(router: Router, delegate: CreateAccountDelegate = CreateAccountDelegate()) -> some View {
+    func createAccountView(router: AnyRouter, delegate: CreateAccountDelegate = CreateAccountDelegate()) -> some View {
         CreateAccountView(
             presenter: CreateAccountPresenter(
                 interactor: interactor,

@@ -38,7 +38,7 @@ struct CoreBuilder: Builder {
         ])
     }
     
-    func createAccountView(router: Router, delegate: CreateAccountDelegate = CreateAccountDelegate()) -> some View {
+    func createAccountView(router: AnyRouter, delegate: CreateAccountDelegate = CreateAccountDelegate()) -> some View {
         CreateAccountView(
             presenter: CreateAccountPresenter(
                 interactor: interactor,
@@ -48,7 +48,7 @@ struct CoreBuilder: Builder {
         )
     }
     
-    func exploreView(router: Router) -> some View {
+    func exploreView(router: AnyRouter) -> some View {
         ExploreView(
             presenter: ExplorePresenter(
                 interactor: interactor,
@@ -57,7 +57,7 @@ struct CoreBuilder: Builder {
         )
     }
     
-    func categoryListView(router: Router, delegate: CategoryListDelegate) -> some View {
+    func categoryListView(router: AnyRouter, delegate: CategoryListDelegate) -> some View {
         CategoryListView(
             presenter: CategoryListPresenter(
                 interactor: interactor,
@@ -67,7 +67,7 @@ struct CoreBuilder: Builder {
         )
     }
     
-    func devSettingsView(router: Router) -> some View {
+    func devSettingsView(router: AnyRouter) -> some View {
         DevSettingsView(
             presenter: DevSettingsPresenter(
                 interactor: interactor,
@@ -76,7 +76,7 @@ struct CoreBuilder: Builder {
         )
     }
     
-    func paywallView(router: Router) -> some View {
+    func paywallView(router: AnyRouter) -> some View {
         PaywallView(
             presenter: PaywallPresenter(
                 interactor: interactor,
@@ -85,7 +85,7 @@ struct CoreBuilder: Builder {
         )
     }
     
-    func chatView(router: Router, delegate: ChatViewDelegate = ChatViewDelegate()) -> some View {
+    func chatView(router: AnyRouter, delegate: ChatViewDelegate = ChatViewDelegate()) -> some View {
         ChatView(
             presenter: ChatPresenter(
                 interactor: interactor,
@@ -95,7 +95,7 @@ struct CoreBuilder: Builder {
         )
     }
     
-    func chatsView(router: Router) -> some View {
+    func chatsView(router: AnyRouter) -> some View {
         ChatsView(
             presenter: ChatsPresenter(
                 interactor: interactor,
@@ -107,7 +107,7 @@ struct CoreBuilder: Builder {
         )
     }
     
-    func createAvatarView(router: Router) -> some View {
+    func createAvatarView(router: AnyRouter) -> some View {
         CreateAvatarView(
             presenter: CreateAvatarPresenter(
                 interactor: interactor,
@@ -116,7 +116,7 @@ struct CoreBuilder: Builder {
         )
     }
     
-    func settingsView(router: Router) -> some View {
+    func settingsView(router: AnyRouter) -> some View {
         SettingsView(
             presenter: SettingsPresenter(
                 interactor: interactor,
@@ -125,7 +125,7 @@ struct CoreBuilder: Builder {
         )
     }
     
-    func profileView(router: Router) -> some View {
+    func profileView(router: AnyRouter) -> some View {
         ProfileView(
             presenter: ProfilePresenter(
                 interactor: interactor,
@@ -145,7 +145,7 @@ struct CoreBuilder: Builder {
         )
     }
     
-    func aboutView(router: Router, delegate: AboutDelegate) -> some View {
+    func aboutView(router: AnyRouter, delegate: AboutDelegate) -> some View {
         AboutView(
             presenter: AboutPresenter(
                 interactor: interactor,

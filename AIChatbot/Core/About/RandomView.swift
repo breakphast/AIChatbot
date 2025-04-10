@@ -49,7 +49,7 @@ struct RandomView: View {
 }
 
 extension CoreBuilder {
-    func randomView(router: Router, delegate: RandomDelegate) -> some View {
+    func randomView(router: AnyRouter, delegate: RandomDelegate) -> some View {
         RandomView(
             presenter: RandomPresenter(
                 interactor: interactor,

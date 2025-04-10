@@ -17,7 +17,7 @@ struct SearchView: View {
 
 extension CoreBuilder {
     
-    func searchView(router: Router, delegate: SearchDelegate) -> some View {
+    func searchView(router: AnyRouter, delegate: SearchDelegate) -> some View {
         SearchView(
             presenter: SearchPresenter(
                 interactor: interactor,

@@ -9,6 +9,6 @@ import SwiftUI
 
 @MainActor
 struct RootRouter: GlobalRouter {
-    let router: Router
+    let router: AnyRouter
     let builder: RootBuilder
 }
