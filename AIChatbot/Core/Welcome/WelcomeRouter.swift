@@ -9,7 +9,7 @@ import SwiftUI
 
 @MainActor
 protocol WelcomeRouter {
-    func showCreateAccountView(delegate: CreateAccountDelegate, onDisappear: (() -> Void)?)
+    func showCreateAccountView(delegate: CreateAccountDelegate, onDismiss: (() -> Void)?)
     func showOnboardingIntroView(delegate: OnboardingIntroDelegate)
 }
 

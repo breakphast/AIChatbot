@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import CustomRouting
 
 @MainActor
 protocol ExploreInteractor {

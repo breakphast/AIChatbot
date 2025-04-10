@@ -22,15 +22,17 @@ extension GlobalRouter {
     }
     
     func showAlert(_ option: AlertType, title: String, subtitle: String?, buttons: (@Sendable () -> AnyView)?) {
-        router.showAlert(option, title: title, subtitle: subtitle, buttons: buttons)
+        router.showAlert(option, title: title, subtitle: subtitle) {
+            buttons?()
+        }
     }
     
     func showSimpleAlert(title: String, subtitle: String?) {
-        router.showAlert(.alert, title: title, subtitle: subtitle, buttons: nil)
+        router.showAlert(.alert, title: title, subtitle: subtitle, alert: { })
     }
     
     func showAlert(error: Error) {
-        router.showAlert(.alert, title: "Error", subtitle: error.localizedDescription, buttons: nil)
+        router.showAlert(.alert, title: "Error", subtitle: error.localizedDescription, alert: { })
     }
     
     func dismissAlert() {

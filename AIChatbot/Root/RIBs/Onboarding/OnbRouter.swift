@@ -36,13 +36,10 @@ struct OnbRouter: GlobalRouter {
         }
     }
     
-    func showCreateAccountView(delegate: CreateAccountDelegate, onDisappear: (() -> Void)?) {
-        router.showScreen(.sheet) { router in
+    func showCreateAccountView(delegate: CreateAccountDelegate, onDismiss: (() -> Void)?) {
+        router.showScreen(.sheet, onDismiss: onDismiss) { router in
             builder.createAccountView(router: router, delegate: delegate)
                 .presentationDetents([.medium])
-                .onDisappear {
-                    onDisappear?()
-                }
         }
     }
 }

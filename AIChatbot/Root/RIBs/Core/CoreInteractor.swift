@@ -54,7 +54,7 @@ struct CoreInteractor {
     }
     
     func getAuthID() throws -> String {
-        try authManager.getAuthID()
+        try authManager.getAuthId()
     }
     
     func signInApple() async throws -> (user: UserAuthInfo, isNewUser: Bool) {
@@ -154,8 +154,8 @@ struct CoreInteractor {
     }
     
     // MARK: LogManager
-    func identifyUser(userID: String, name: String?, email: String?) {
-        logManager.identifyUser(userID: userID, name: name, email: email)
+    func identifyUser(userId: String, name: String?, email: String?) {
+        logManager.identifyUser(userId: userId, name: name, email: email)
     }
     
     func addUserProperties(dict: [String: Any], isHighPriority: Bool) {
@@ -179,7 +179,7 @@ struct CoreInteractor {
     }
     
     func trackScreenEvent(event: LoggableEvent) {
-        logManager.trackScreenEvent(event: event)
+        logManager.trackScreenView(event: event)
     }
     
     // MARK: PushManager
@@ -206,7 +206,7 @@ struct CoreInteractor {
     
     // MARK: PurchaseManager
     func getProducts(productIDs: [String]) async throws -> [AnyProduct] {
-        try await purchaseManager.getProducts(productIDs: productIDs)
+        try await purchaseManager.getProducts(productIds: productIDs)
     }
     
     func restorePurchase() async throws -> [PurchasedEntitlement] {
@@ -214,7 +214,7 @@ struct CoreInteractor {
     }
     
     func purchaseProduct(productID: String) async throws -> [PurchasedEntitlement] {
-        try await purchaseManager.purchaseProduct(productID: productID)
+        try await purchaseManager.purchaseProduct(productId: productID)
     }
     
     func updateProfileAttributes(attributes: PurchaseProfileAttributes) async throws {
@@ -251,12 +251,12 @@ struct CoreInteractor {
     
     func login(user: UserAuthInfo, isNewUser: Bool) async throws {
         try await userManager.login(auth: user, isNewUser: isNewUser)
-        try await purchaseManager.login(
-            userID: user.uid,
-            attributes: PurchaseProfileAttributes(
+        try await purchaseManager.logIn(
+            userId: user.uid,
+            userAttributes: PurchaseProfileAttributes(
                 email: user.email,
-                firebaseAppInstanceID: FirebaseAnalyticsService.appInstanceID,
-                mixpanelDistinctID: MixpanelService.distinctID
+                mixpanelDistinctId: Constants.mixpanelDistinctID,
+                firebaseAppInstanceId: Constants.firebaseAnalyticsAppInstanceID
             )
         )
     }

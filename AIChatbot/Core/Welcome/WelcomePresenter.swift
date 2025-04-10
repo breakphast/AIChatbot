@@ -34,7 +34,7 @@ class WelcomePresenter {
                 self.handleDidSignIn(isNewUser: isNewUser)
             }
         )
-        router.showCreateAccountView(delegate: delegate, onDisappear: {
+        router.showCreateAccountView(delegate: delegate, onDismiss: {
             
         })
     }

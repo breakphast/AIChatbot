@@ -37,12 +37,12 @@ struct RootInteractor {
     
     func login(user: UserAuthInfo, isNewUser: Bool) async throws {
         try await userManager.login(auth: user, isNewUser: isNewUser)
-        try await purchaseManager.login(
-            userID: user.uid,
-            attributes: PurchaseProfileAttributes(
+        try await purchaseManager.logIn(
+            userId: user.uid,
+            userAttributes: PurchaseProfileAttributes(
                 email: user.email,
-                firebaseAppInstanceID: FirebaseAnalyticsService.appInstanceID,
-                mixpanelDistinctID: MixpanelService.distinctID
+                mixpanelDistinctId: Constants.mixpanelDistinctID,
+                firebaseAppInstanceId: Constants.firebaseAnalyticsAppInstanceID
             )
         )
     }

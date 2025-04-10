@@ -6,6 +6,81 @@
 //
 
 import SwiftUI
+import SwiftfulRouting
+
+typealias RouterView = SwiftfulRouting.RouterView
+typealias AlertType = SwiftfulRouting.DialogOption
+typealias Router = SwiftfulRouting.AnyRouter
+
+import SwiftfulAuthenticating
+import SwiftfulAuthenticatingFirebase
+
+typealias UserAuthInfo = SwiftfulAuthenticating.UserAuthInfo
+typealias AuthManager = SwiftfulAuthenticating.AuthManager
+typealias MockAuthService = SwiftfulAuthenticating.MockAuthService
+
+import SwiftfulPurchasing
+import SwiftfulPurchasingRevenueCat
+
+typealias PurchaseManager = SwiftfulPurchasing.PurchaseManager
+typealias PurchaseProfileAttributes = SwiftfulPurchasing.PurchaseProfileAttributes
+typealias PurchasedEntitlement = SwiftfulPurchasing.PurchasedEntitlement
+typealias AnyProduct = SwiftfulPurchasing.AnyProduct
+typealias MockPurchaseService = SwiftfulPurchasing.MockPurchaseService
+
+import SwiftfulLogging
+import SwiftfulLoggingMixpanel
+import SwiftfulLoggingFirebaseAnalytics
+import SwiftfulLoggingFirebaseCrashlytics
+
+typealias LogManager = SwiftfulLogging.LogManager
+typealias LoggableEvent = SwiftfulLogging.LoggableEvent
+typealias AnyLoggableEvent = SwiftfulLogging.AnyLoggableEvent
+typealias LogType = SwiftfulLogging.LogType
+typealias MixpanelService = SwiftfulLoggingMixpanel.MixpanelService
+typealias FirebaseAnalyticsService = SwiftfulLoggingFirebaseAnalytics.FirebaseAnalyticsService
+
+extension AuthLogType {
+    var type: LogType {
+        switch self {
+        case .info:
+            return .info
+        case .analytic:
+            return .analytic
+        case .warning:
+            return .warning
+        case .severe:
+            return .severe
+        }
+    }
+}
+
+extension LogManager: @retroactive AuthLogger {
+    public func trackEvent(event: any AuthLogEvent) {
+        trackEvent(eventName: event.eventName, parameters: event.parameters, type: event.type.type)
+    }
+}
+
+extension PurchaseLogType {
+    var type: LogType {
+        switch self {
+        case .info:
+            return .info
+        case .analytic:
+            return .analytic
+        case .warning:
+            return .warning
+        case .severe:
+            return .severe
+        }
+    }
+}
+
+extension LogManager: @retroactive PurchaseLogger {
+    public func trackEvent(event: any PurchaseLogEvent) {
+        trackEvent(eventName: event.eventName, parameters: event.parameters, type: event.type.type)
+    }
+}
 
 @MainActor
 struct Dependencies {
@@ -30,7 +105,7 @@ struct Dependencies {
             logManager = LogManager(services: [
                 ConsoleService(printParameters: false)
             ])
-            authManager = AuthManager(service: MockAuthService(user: isSignedIn ? .mock() : nil), logManager: logManager)
+            authManager = AuthManager(service: MockAuthService(user: isSignedIn ? .mock() : nil), logger: logManager)
             userManager = UserManager(services: MockUserServices(user: isSignedIn ? .mock : nil), logManager: logManager)
             aiService = MockAIService()
             localAvatarService = MockLocalAvatarPersistence()
@@ -44,7 +119,7 @@ struct Dependencies {
             )
             
             abTestManager = ABTestManager(service: abTestService, logManager: logManager)
-            purchaseManager = PurchaseManager(service: MockPurchaseService(), logManager: logManager)
+            purchaseManager = PurchaseManager(service: MockPurchaseService(), logger: logManager)
             appState = AppState(showTabBar: isSignedIn)
         case .dev:
             logManager = LogManager(services: [
@@ -53,7 +128,7 @@ struct Dependencies {
                 MixpanelService(token: Keys.mixpanelToken),
                 FirebaseCrashlyticsService()
             ])
-            authManager = AuthManager(service: FirebaseAuthService(), logManager: logManager)
+            authManager = AuthManager(service: FirebaseAuthService(), logger: logManager)
             userManager = UserManager(services: ProductionUserServices(), logManager: logManager)
             aiService = OpenAIService()
             localAvatarService = SwiftDataLocalAvatarPersistence()
@@ -63,7 +138,7 @@ struct Dependencies {
             abTestManager = ABTestManager(service: LocalABTestService(), logManager: logManager)
             purchaseManager = PurchaseManager(
                 service: RevenueCatPurchaseService(apiKey: Keys.revenueCatApiKey),
-                logManager: logManager
+                logger: logManager
             )
             appState = AppState()
         case .prod:
@@ -72,10 +147,10 @@ struct Dependencies {
                 MixpanelService(token: Keys.mixpanelToken),
                 FirebaseCrashlyticsService()
             ])
-            authManager = AuthManager(service: FirebaseAuthService(), logManager: logManager)
+            authManager = AuthManager(service: FirebaseAuthService(), logger: logManager)
             userManager = UserManager(services: ProductionUserServices(), logManager: logManager)
             abTestManager = ABTestManager(service: FirebaseABTestService(), logManager: logManager)
-            purchaseManager = PurchaseManager(service: StoreKitPurchaseService(), logManager: logManager)
+            purchaseManager = PurchaseManager(service: StoreKitPurchaseService(), logger: logManager)
             appState = AppState()
             
             aiService = OpenAIService()

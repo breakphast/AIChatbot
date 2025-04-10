@@ -14,8 +14,8 @@ class MockLogService: LogService {
     var userPropertiesHigh: [String: Any] = [:]
     var userPropertiesLow: [String: Any] = [:]
     
-    func identifyUser(userID: String, name: String?, email: String?) {
-        identifiedUser = IdentifiedUser(userID: userID, name: name, email: email)
+    func identifyUser(userId: String, name: String?, email: String?) {
+        identifiedUser = IdentifiedUser(userID: userId, name: name, email: email)
     }
     
     func addUserProperties(dict: [String: Any], isHighPriority: Bool) {

@@ -6,14 +6,13 @@
 //
 
 import SwiftUI
-import CustomRouting
 
 @MainActor
 protocol ProfileRouter {
     func showSettingsView()
     func showSimpleAlert(title: String, subtitle: String?)
     func showChatView(delegate: ChatViewDelegate)
-    func showCreateAvatarView(onDisappear: @escaping () -> Void)
+    func showCreateAvatarView(onDismiss: @escaping () -> Void)
 }
 
 extension CoreRouter: ProfileRouter { }
