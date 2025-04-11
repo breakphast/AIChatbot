@@ -20,6 +20,7 @@ class DevSettingsPresenter {
     var onboardingCategoryTest: Bool = false
     var categoryRowTest: CategoryRowTestOption = .default
     var paywallTest: PaywallTestOption = .default
+    var chatAvatarModalTest: Bool = false
     
     init(interactor: DevSettingsInteractor, router: CoreRouter) {
         self.interactor = interactor
@@ -43,6 +44,7 @@ class DevSettingsPresenter {
         onboardingCommunityTest = interactor.activeTests.onboardingCommunityTest
         categoryRowTest = interactor.activeTests.categoryRowTest
         paywallTest = interactor.activeTests.paywallTest
+        chatAvatarModalTest = interactor.activeTests.chatAvatarModalTest
     }
     
     func handleCreateAccountChange(oldValue: Bool, newValue: Bool) {
@@ -85,6 +87,17 @@ class DevSettingsPresenter {
             savedValue: interactor.activeTests.onboardingCategoryTest,
             updateAction: { tests in
                 tests.update(onboardingCategoryTest: newValue)
+            }
+        )
+    }
+    
+    func handleChatAvatarModalTestChange(oldValue: Bool, newValue: Bool) {
+        updateTest(
+            property: &chatAvatarModalTest,
+            newValue: newValue,
+            savedValue: interactor.activeTests.chatAvatarModalTest,
+            updateAction: { tests in
+                tests.update(chatAvatarModalTest: newValue)
             }
         )
     }

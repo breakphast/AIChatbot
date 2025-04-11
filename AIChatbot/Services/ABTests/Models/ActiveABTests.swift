@@ -15,6 +15,7 @@ struct ActiveABTests: Codable {
     private(set) var onboardingCategoryTest: Bool
     private(set) var categoryRowTest: CategoryRowTestOption
     private(set) var paywallTest: PaywallTestOption
+    private(set) var chatAvatarModalTest: Bool
     
     init(
         createAccountTest: Bool,
@@ -22,7 +23,8 @@ struct ActiveABTests: Codable {
         onboardingCommunityTest: Bool,
         onboardingCategoryTest: Bool,
         categoryRowTest: CategoryRowTestOption,
-        paywallTest: PaywallTestOption
+        paywallTest: PaywallTestOption,
+        chatAvatarModalTest: Bool
     ) {
         self.createAccountTest = createAccountTest
         self.createAvatarTest = createAvatarTest
@@ -30,6 +32,7 @@ struct ActiveABTests: Codable {
         self.onboardingCategoryTest = onboardingCategoryTest
         self.categoryRowTest = categoryRowTest
         self.paywallTest = paywallTest
+        self.chatAvatarModalTest = chatAvatarModalTest
     }
     
     enum CodingKeys: String, CodingKey {
@@ -39,6 +42,7 @@ struct ActiveABTests: Codable {
         case onboardingCategoryTest = "_202503_OnbCategoryTest"
         case categoryRowTest = "_202503_categoryRowTest"
         case paywallTest = "_202503_paywallTest"
+        case chatAvatarModalTest = "_202503_chatAvatarModalTest"
     }
     
     var eventParameters: [String: Any] {
@@ -48,7 +52,8 @@ struct ActiveABTests: Codable {
             "test\(CodingKeys.onboardingCommunityTest.rawValue)": onboardingCommunityTest,
             "test\(CodingKeys.onboardingCategoryTest.rawValue)": onboardingCategoryTest,
             "test\(CodingKeys.categoryRowTest.rawValue)": categoryRowTest.rawValue,
-            "test\(CodingKeys.paywallTest.rawValue)": paywallTest.rawValue
+            "test\(CodingKeys.paywallTest.rawValue)": paywallTest.rawValue,
+            "test\(CodingKeys.chatAvatarModalTest.rawValue)": chatAvatarModalTest
         ]
         
         return dict.compactMapValues({ $0 })
@@ -76,6 +81,10 @@ struct ActiveABTests: Codable {
     
     mutating func update(paywallTest newValue: PaywallTestOption) {
         paywallTest = newValue
+    }
+    
+    mutating func update(chatAvatarModalTest newValue: Bool) {
+        chatAvatarModalTest = newValue
     }
 }
 
@@ -107,6 +116,9 @@ extension ActiveABTests {
         } else {
             self.paywallTest = .default
         }
+        
+        let chatAvatarModalTest = config.configValue(forKey: ActiveABTests.CodingKeys.chatAvatarModalTest.rawValue).boolValue
+        self.chatAvatarModalTest = chatAvatarModalTest
     }
     
     // Converted to a NSObject dictionary to setDefaults within FIrebaseABTestService
@@ -116,7 +128,8 @@ extension ActiveABTests {
             CodingKeys.onboardingCommunityTest.rawValue: onboardingCommunityTest as NSObject,
             CodingKeys.onboardingCategoryTest.rawValue: onboardingCategoryTest as NSObject,
             CodingKeys.categoryRowTest.rawValue: categoryRowTest.rawValue as NSObject,
-            CodingKeys.paywallTest.rawValue: paywallTest.rawValue as NSObject
+            CodingKeys.paywallTest.rawValue: paywallTest.rawValue as NSObject,
+            CodingKeys.chatAvatarModalTest.rawValue: chatAvatarModalTest as NSObject
         ]
     }
 }

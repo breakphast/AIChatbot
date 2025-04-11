@@ -17,7 +17,8 @@ class MockABTestService: ABTestService {
         onboardingCommunityTest: Bool? = nil,
         onboardingCategoryTest: Bool? = nil,
         categoryRowTest: CategoryRowTestOption? = nil,
-        paywallTest: PaywallTestOption? = nil
+        paywallTest: PaywallTestOption? = nil,
+        chatAvatarModalTest: Bool? = nil
     ) {
         self.activeTests = ActiveABTests(
             createAccountTest: createAccountTest ?? false,
@@ -25,7 +26,8 @@ class MockABTestService: ABTestService {
             onboardingCommunityTest: onboardingCommunityTest ?? false,
             onboardingCategoryTest: onboardingCategoryTest ?? false,
             categoryRowTest: categoryRowTest ?? .default,
-            paywallTest: paywallTest ?? .default
+            paywallTest: paywallTest ?? .default,
+            chatAvatarModalTest: chatAvatarModalTest ?? false
         )
     }
     

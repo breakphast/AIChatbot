@@ -11,6 +11,7 @@ import SwiftUI
 protocol ChatInteractor: GlobalInteractor {
     var currentUser: UserModel? { get }
     var isPremium: Bool { get }
+    var chatAvatarModalTest: Bool { get }
     
     func getAvatar(id: String) async throws -> AvatarModel
     func getRecentAvatars() throws -> [AvatarModel]

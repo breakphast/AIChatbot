@@ -21,6 +21,9 @@ class LocalABTestService: ABTestService {
     @UserDefault(key: ActiveABTests.CodingKeys.onboardingCommunityTest.rawValue, startingValue: .random())
     private var onboardingCommunityTest: Bool
     
+    @UserDefault(key: ActiveABTests.CodingKeys.chatAvatarModalTest.rawValue, startingValue: .random())
+    private var chatAvatarModalTest: Bool
+    
     @UserDefaultEnum(key: ActiveABTests.CodingKeys.categoryRowTest.rawValue, startingValue: CategoryRowTestOption.allCases.randomElement()!)
     private var categoryRowTest: CategoryRowTestOption
     
@@ -34,7 +37,8 @@ class LocalABTestService: ABTestService {
             onboardingCommunityTest: onboardingCommunityTest,
             onboardingCategoryTest: onboardingCategoryTest,
             categoryRowTest: categoryRowTest,
-            paywallTest: paywallTest
+            paywallTest: paywallTest,
+            chatAvatarModalTest: chatAvatarModalTest
         )
     }
     
@@ -44,6 +48,7 @@ class LocalABTestService: ABTestService {
         onboardingCategoryTest = updatedTests.onboardingCategoryTest
         categoryRowTest = updatedTests.categoryRowTest
         paywallTest = updatedTests.paywallTest
+        chatAvatarModalTest = updatedTests.chatAvatarModalTest
     }
     
     func fetchUpdatedConfig() async throws -> ActiveABTests {

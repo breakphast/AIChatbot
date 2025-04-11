@@ -24,7 +24,8 @@ class FirebaseABTestService: ABTestService {
             onboardingCommunityTest: false,
             onboardingCategoryTest: false,
             categoryRowTest: .default,
-            paywallTest: .default
+            paywallTest: .default,
+            chatAvatarModalTest: false
         )
         RemoteConfig.remoteConfig().setDefaults(defaultValues.asNSObjectDictionary)
         RemoteConfig.remoteConfig().activate()

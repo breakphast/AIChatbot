@@ -245,6 +245,10 @@ struct CoreInteractor {
     var createAvatarTest: Bool {
         abTestManager.activeTests.createAvatarTest
     }
+    
+    var chatAvatarModalTest: Bool {
+        abTestManager.activeTests.chatAvatarModalTest
+    }
         
     // MARK: SHARED
     func signOut() async throws {

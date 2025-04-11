@@ -257,10 +257,14 @@ class ChatPresenter {
     
     func onAvatarPressed() {
         interactor.trackEvent(event: Event.avatarImagePressed(avatar: avatar))
-        
         guard let avatar else { return }
-        router.showProfileModal(avatar: avatar) {
-            self.router.dismissModal()
+        
+        if interactor.chatAvatarModalTest {
+            router.showChatAvatarView(delegate: ChatAvatarDelegate(avatar: avatar))
+        } else {
+            router.showProfileModal(avatar: avatar) {
+                self.router.dismissModal()
+            }
         }
     }
     

@@ -49,7 +49,8 @@ struct ActiveABTestsTests {
             onboardingCommunityTest: .random,
             onboardingCategoryTest: .random,
             categoryRowTest: .default,
-            paywallTest: .default
+            paywallTest: .default,
+            chatAvatarModalTest: .random
         )
 
         let mockService = MockABTestService(
@@ -78,7 +79,8 @@ struct ActiveABTestsTests {
             onboardingCommunityTest: .random,
             onboardingCategoryTest: .random,
             categoryRowTest: .default,
-            paywallTest: .default
+            paywallTest: .default,
+            chatAvatarModalTest: .random
         )
 
         try mockService.saveUpdatedConfig(updatedTests: updated)
@@ -99,7 +101,8 @@ struct ActiveABTestsTests {
             onboardingCommunityTest: .random,
             onboardingCategoryTest: .random,
             categoryRowTest: .default,
-            paywallTest: .default
+            paywallTest: .default,
+            chatAvatarModalTest: .random
         )
 
         let data = try JSONEncoder().encode(original)
@@ -119,7 +122,8 @@ struct ActiveABTestsTests {
             onboardingCommunityTest: false,
             onboardingCategoryTest: .random,
             categoryRowTest: .default,
-            paywallTest: .default
+            paywallTest: .default,
+            chatAvatarModalTest: .random
         )
 
         let dict = model.eventParameters
