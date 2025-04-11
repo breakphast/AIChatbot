@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AppTrackingTransparency
+import SwiftfulUtilities
 
 @MainActor
 @Observable
