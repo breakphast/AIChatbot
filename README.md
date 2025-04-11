@@ -1,9 +1,8 @@
 📱 SwiftUI Advanced Architecture
 
 🗓 Duration: February 10, 2025 – April 11, 2025
-🎓 Status: Completed
 
-📄 Certificate
+🎓 Status: Completed
 
 You can view the official course completion certificate below:
 
